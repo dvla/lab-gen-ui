@@ -20,9 +20,6 @@ jobs:
   steps:
   - checkout: self
     submodules: false
-  - task: UseNode@1
-    inputs:
-    version: '18.x' # string. Version. Default: 10.x.
   - task: AzureStaticWebApp@0
     inputs:
       azure_static_web_apps_api_token: $(AZURE_STATIC_WEB_APPS_API_TOKEN_LIVELY_COAST_000F73403)
