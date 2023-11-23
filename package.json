@@ -15,10 +15,14 @@
   },
   "dependencies": {
     "@types/styled-components": "^5.1.30",
+    "ai": "^2.2.25",
+    "govuk-frontend": "^4.7.0",
     "govuk-react": "^0.10.6",
     "next": "14.0.3",
+    "openai": "^4.19.1",
     "react": "^18",
     "react-dom": "^18",
+    "sass": "^1.69.5",
     "styled-components": "^6.1.1"
   },
   "devDependencies": {

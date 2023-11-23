@@ -23,6 +23,9 @@ export default function Home() {
                     <ListItem>
                         <NextLink href="/jira-tickets">Jira Tickets</NextLink>
                     </ListItem>
+                    <ListItem>
+                        <NextLink href="/chat">Chat</NextLink>
+                    </ListItem>
                 </UnorderedList>
             </Page>
             <Footer />
