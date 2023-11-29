@@ -1,63 +1,36 @@
 'use client';
-import { useChat } from 'ai/react';
-import {
-    Main,
-    Footer,
-    H1,
-    Page,
-    Button,
-    Input,
-    GridRow,
-    GridCol,
-    UnorderedList,
-    ErrorSummary,
-    ListItem,
-} from 'govuk-react';
-import styles from '../styles/Chat.module.scss';
+import { useState } from 'react';
+import styles from '../styles/ChatPage.module.scss';
+import FixedPage from '../components/fixed-page';
+import Chat from '../components/chat';
+import { Message } from 'ai/react';
 
-export default function Chat() {
-    const { messages, input, error, handleInputChange, handleSubmit } = useChat();
+export default function ChatPage() {
+    let [chatResponse, setChatResponse]: any = useState('');
+    let [isLoading, setIsLoading]: any = useState(false);
+
+    const handleMessage = (message: string) => {
+        setChatResponse(message);
+    };
 
     return (
-        <>
-            <Page>
-                <H1>TechLab Chat</H1>
-                <Main>
-                    {error != null && (
-                        <section id="errorSection">
-                            <ErrorSummary heading="There was an error" errors={[{ text: (error as any).toString() }]} />
-                        </section>
-                    )}
-                    <GridRow>
-                        <GridCol setWidth="full">
-                            <section className={styles.chatHistory}>
-                                <UnorderedList listStyleType="none">
-                                    {messages.map((m) => (
-                                        <ListItem className={styles.listItem + " " + (m.role === 'user' ? styles.right : styles.left)} key={m.id}>
-                                            <section className={(m.role === 'user' ? styles.userMessage : styles.aiMessage)}>
-                                                <div className={styles.icon + " " + (m.role === 'user' ? styles.user : styles.ai)}></div>
-                                                <div>
-                                                    <p className={styles.message + " " + (m.role === 'user' ? styles.user : styles.ai)}>{m.content}</p>
-                                                    <p className={styles.from}>{m.role === 'user' ? 'User' : 'AI'}</p>
-                                                </div>
-                                            </section>
-                                        </ListItem>
-                                    ))}
-                                </UnorderedList>
-                            </section>
-                        </GridCol>
-                    </GridRow>
-                    <GridRow>
-                        <GridCol setWidth="full">
-                            <form className={styles.chatForm} onSubmit={handleSubmit}>
-                                <Input value={input} onChange={handleInputChange} placeholder="Say something..." />
-                                <Button className={styles.chatButton} type="submit">Chat</Button>
-                            </form>
-                        </GridCol>
-                    </GridRow>
-                </Main>
-            </Page>
-            <Footer />
-        </>
+        <FixedPage>
+            <h1 className={'govuk-heading-xl ' + styles.h1XL}>TechLab Chat</h1>
+            <div className={'govuk-grid-row ' + ' ' + styles.gridRow}>
+                <div className={'govuk-grid-column-one-half ' + styles.gridRowHalf}>
+                    <p>{isLoading ? 'Loading...' : 'Loaded'}</p>
+                    <p className={styles.displayText}>{chatResponse}</p>
+                </div>
+                <div className={'govuk-grid-column-one-half ' + styles.gridRowHalf}>
+                    <Chat 
+                        showHistory={true}
+                        onMessage={handleMessage}
+                        placeholder={"What would you like to know?"}
+                        rows={2}
+                        messageLoading={(loading) => setIsLoading(loading)}
+                   />
+                </div>
+            </div>
+        </FixedPage>
     );
 }

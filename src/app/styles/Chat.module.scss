@@ -1,18 +1,17 @@
-.chatForm{
-    display: flex;
-}
-
-.chatHistory{
+/* Scrollable chat history */
+.chatHistory {
     background-color: #f3f2f1;
     padding: 10px;
     margin: 10px 0px;
-    height: 500px;
     overflow: auto;
+    border: 2px solid;
+    flex: 1;
+    flex-basis: 0;
 
-    .listItem{
+    .listItem {
         display: flex;
 
-        .icon{
+        .icon {
             height: 40px;
             width: 40px;
             border-radius: 2em;
@@ -20,59 +19,76 @@
             flex: 0 0 40px;
         }
 
-        .icon.user{
-            background-color: 	#b1b4b6;
+        .icon.user {
+            background-color: #b1b4b6;
         }
 
-        .icon.ai{
-            background-color: 	#1d70b8;
+        .icon.ai {
+            background-color: #1d70b8;
         }
 
-        &.left{
+        &.left {
             justify-content: flex-start;
         }
 
-        &.right{
+        &.right {
             justify-content: flex-end;
         }
     }
 
-
-    & section{
+    & section {
         margin-bottom: 10px;
         width: fit-content;
         display: flex;
 
-        &.userMessage{
+        &.userMessage {
             flex-direction: row-reverse;
         }
 
-        &.aiMessage{
+        &.aiMessage {
             flex-direction: row;
         }
     }
 
-    & .message{
+    & .message {
         margin: 0;
         padding: 10px;
         margin-bottom: 5px;
+        white-space: pre-wrap;
 
-        &.user{
+        &.user {
             background-color: white;
         }
 
-        &.ai{
-            background-color:#5694ca;
+        &.ai {
+            background-color: #5694ca;
             color: white;
         }
     }
 
-    .from{
+    .from {
         margin: 0;
-        font-size: 14px;
+        font-size: 0.8rem;
+        color: #505a5f;
     }
 }
 
-.chatButton{
-    margin-left: 10px;
+/* Form elements used to send the user input*/
+.formGroup {
+    margin-bottom: 0;
+
+    button {
+        margin-left: 5px;
+        margin-bottom: 0;
+        width: auto;
+    }
+}
+
+.chatFormFieldInline {
+    display: flex;
+    align-items: baseline;
+}
+
+.textArea{
+    resize: none;
 }

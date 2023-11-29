@@ -1,0 +1,21 @@
+.h1XL {
+    margin-bottom: 20px;
+}
+
+/* When using columns */
+.gridRow{
+    display: flex;
+    flex: 1 1;
+}
+
+.gridRowHalf{
+    display: flex;
+    flex-direction: column;
+}
+
+.displayText{
+    overflow: auto;
+    flex: 1 1;
+    flex-basis: 0;
+    white-space: pre-wrap;
+}
