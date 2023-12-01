@@ -1,0 +1,86 @@
+trigger:
+  batch: true
+  branches:
+    include:
+      - main
+      - feature/*
+      - fix/*
+    exclude:
+      - releases/*
+
+variables:
+  - name: webAppName
+    value: 'lab-gen-demo'
+  - name: resourceGroupName
+    value: 'lab-gen-website'
+  - name: tag
+    value: '$(Build.BuildId)'
+  - name: zipFile
+    value: 'next-$(Build.BuildId).zip'
+  - name: isMain
+    value: $[eq(variables['Build.SourceBranch'], 'refs/heads/main')]
+  - name: 'System.Debug'
+    value: true
+  - name: slot
+    ${{ if eq(variables['Build.SourceBranch'], 'refs/heads/main') }}:
+      value: 'dev'
+    ${{ if ne(variables['Build.SourceBranch'], 'refs/heads/main') }}:
+      value: 'build'
+  - name: vmImageName
+    value: 'ubuntu-latest'
+
+pool:
+  vmImage: $(vmImageName)
+
+stages:
+  - stage: Build
+    displayName: Build and deploy project
+    jobs:
+      - job: 'LabGenerativeDemo'
+        displayName: 'Build Tech Lab Generative'
+        steps:
+          - task: UseNode@1
+            inputs:
+              version: '18.x'
+            displayName: 'Install Node.js'
+          - script: |
+              echo "Slot is $(slot), tag is $(tag) and isMain is $(isMain)"
+            displayName: 'Echo variables'
+          - script: |
+              npm ci
+            displayName: 'npm install'
+          - script: |
+              npm run build-ci
+            displayName: 'npm build'
+          - script: |
+              zip -r $(zipFile) .next/* package.json package-lock.json
+            displayName: 'Zip up files'
+          - publish: $(zipFile)
+            displayName: 'Upload package'
+            artifact: next
+
+  - stage: Deploy
+    displayName: Deploy the app
+    dependsOn: Build
+    condition: succeeded()
+    jobs:
+      - job: 'LabGenDeploy'
+        displayName: 'Deploy to Azure'
+        steps:
+          - task: DownloadPipelineArtifact@2
+            inputs:
+              buildType: 'current'
+              artifactName: 'next'
+              targetPath: '$(Pipeline.Workspace)/bin'
+          - task: AzureRmWebAppDeployment@4
+            displayName: Deploy the Web App
+            # condition: or(eq(variables['Build.Reason'], 'Manual'),eq(variables['Build.SourceBranch'], 'refs/heads/main'))
+            inputs:
+              ConnectionType: 'AzureRM'
+              appType: 'webAppLinux'
+              deployToSlotOrASE: true
+              SlotName: '$(slot)'
+              azureSubscription: $(azureSubscription)
+              WebAppName: $(webAppName)
+              ResourceGroupName: $(resourceGroupName)
+              Package: '$(Pipeline.Workspace)/bin/$(zipFile)'

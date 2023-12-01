@@ -5,13 +5,14 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start",
+    "build-ci":"next build && cp -r .next/static .next/standalone/.next/ && cp -r public .next/standalone/",
+    "start": "node .next/standalone/server.js",
     "lint": "next lint",
     "prettier-check": "prettier --check '**/*.{tsx,ts}'",
     "prettier-fix": "prettier --write '**/*.{tsx,ts}'"
   },
   "engines": {
-    "node": "18.17.1"
+    "node": "18.18.2"
   },
   "dependencies": {
     "@types/styled-components": "^5.1.30",
