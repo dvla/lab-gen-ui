@@ -1,3 +1,6 @@
+import AuthProvider from '@/app/components/auth-provider';
+import Login from '@/app/components/login';
+
 export default function Header() {
     return (
         <header className="govuk-header " role="banner" data-module="govuk-header">
@@ -23,6 +26,11 @@ export default function Header() {
                             <span className="govuk-header__logotype-text">GOV.UK</span>
                         </span>
                     </a>
+                </div>
+                <div className="govuk-header__content">
+                    < AuthProvider>
+                        <Login />
+                    </AuthProvider>
                 </div>
             </div>
         </header>
