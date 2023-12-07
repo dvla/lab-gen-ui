@@ -1,8 +1,8 @@
 import OpenAI from 'openai';
- 
+
 // Map of cached OpenAI clients
 const openaiClients = new Map();
- 
+
 /**
 * Returns the OpenAI client for the specified model name.
 *
@@ -14,14 +14,14 @@ export const getClient = (modelName = 'DEFAULT') => {
     if (client) {
         return client;
     }
- 
+
     // Create client for the specified model
     const deployment = process.env[`AZURE_DEPLOYMENT_${modelName}`] || 'gpt-turbo-default';
     console.log(`Model name is ${modelName} and deployment is ${deployment}`);
     const resource = process.env['AZURE_OPENAI_ENDPOINT'];
     const apiVersion = process.env['OPENAI_API_VERSION'];
     const apiKey = process.env['AZURE_OPENAI_API_KEY'];
- 
+
     if (!apiKey) {
         throw new Error('The AZURE_OPENAI_API_KEY environment variable is missing or empty.');
     }
