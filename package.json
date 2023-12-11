@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "build-ci":"next build && cp -r .next/static .next/standalone/.next/ && cp -r public .next/standalone/",
+    "build-ci": "next build && cp -r .next/static .next/standalone/.next/ && cp -r public .next/standalone/",
     "start": "node .next/standalone/server.js",
     "lint": "next lint",
     "prettier-check": "prettier --check '**/*.{tsx,ts}'",
@@ -20,11 +20,12 @@
     "govuk-frontend": "^4.7.0",
     "govuk-react": "^0.10.6",
     "mermaid": "^10.6.1",
-    "openai": "^4.19.1",
     "next": "14.0.3",
     "next-auth": "beta",
+    "openai": "^4.19.1",
     "react": "^18",
     "react-dom": "^18",
+    "react-markdown": "^9.0.1",
     "sass": "^1.69.5",
     "styled-components": "^6.1.1"
   },
