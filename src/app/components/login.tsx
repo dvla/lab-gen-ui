@@ -12,7 +12,7 @@ import styles from '@/app/styles/Login.module.scss';
  * If the user is authenticated, it displays their email and a sign out button.
  * If the user is not authenticated, it displays a sign in button.
  */
-export default function Login() {
+const Login = () => {
     const { data: session, status } = useSession();
     const userEmail = session?.user?.email?.split('.')[0] as string;
 
@@ -46,3 +46,5 @@ export default function Login() {
 
 const formStyle = { display: 'flex', alignItems: 'center' };
 const containerStyle = { display: 'flex', justifyContent: 'flex-end', alignItems: 'center' };
+
+export default Login;

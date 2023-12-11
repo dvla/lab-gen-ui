@@ -8,7 +8,7 @@ export const config = {
         CognitoProvider({
             clientId: process.env.AUTH_COGNITO_CLIENT_ID as string,
             clientSecret: process.env.AUTH_COGNITO_CLIENT_SECRET as string,
-            issuer: process.env.AUTH_OGNITO_ISSUER,
+            issuer: process.env.AUTH_COGNITO_ISSUER,
         }),
     ],
     debug: process.env.NODE_ENV === 'development' ? true : false,

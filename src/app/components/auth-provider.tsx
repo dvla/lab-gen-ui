@@ -5,7 +5,7 @@ type Props = {
     children?: React.ReactNode;
 };
 
-export default function AuthProvider({ children }: Props) {
+const AuthProvider = ({ children }: Props) => {
     return (
         <>
             <SessionProvider>
@@ -14,3 +14,5 @@ export default function AuthProvider({ children }: Props) {
         </>
     );
 }
+
+export default AuthProvider;

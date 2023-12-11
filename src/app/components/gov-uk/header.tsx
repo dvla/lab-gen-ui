@@ -1,7 +1,7 @@
 import AuthProvider from '@/app/components/auth-provider';
 import Login from '@/app/components/login';
 
-export default function Header() {
+const Header = () => {
     return (
         <header className="govuk-header " role="banner" data-module="govuk-header">
             <div className="govuk-header__container govuk-width-container">
@@ -36,3 +36,5 @@ export default function Header() {
         </header>
     );
 }
+
+export default Header;

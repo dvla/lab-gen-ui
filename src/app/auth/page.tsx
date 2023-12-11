@@ -3,7 +3,7 @@ import { H1, Page } from 'govuk-react';
 import AuthProvider from '@/app/components/auth-provider';
 import Login from '@/app/components/login';
 
-export default function AuthTest() {
+const AuthTest = () => {
     return (
         <>
             <Page>
@@ -15,3 +15,5 @@ export default function AuthTest() {
         </>
     );
 }
+
+export default AuthTest;

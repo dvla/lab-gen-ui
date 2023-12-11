@@ -24,7 +24,7 @@ import FixedPage from '../components/fixed-page';
  *
  * @return {JSX.Element} The rendered component elements.
  */
-export default function Diagrams() {
+const Diagrams = () => {
     const [selectedMessage, setSelectedMessage] = useState('');
     const [diagramType, setDiagramType] = useState('sequence');
     let [isLoading, setIsLoading] = useState(false);
@@ -152,3 +152,5 @@ export default function Diagrams() {
         </>
     );
 }
+
+export default Diagrams;

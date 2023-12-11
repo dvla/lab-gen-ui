@@ -1,6 +1,6 @@
 import styles from '../../styles/Footer.module.scss';
 
-export default function Footer() {
+const Footer = () => {
     return (
         <footer className={"govuk-footer " + styles.govukFooter} role="contentinfo">
             <div className="govuk-width-container ">
@@ -37,3 +37,5 @@ export default function Footer() {
         </footer>
     );
 }
+
+export default Footer;

@@ -20,7 +20,7 @@ import { useChat } from 'ai/react';
 import FixedPage from '../components/fixed-page';
 import ReactMarkdown from 'react-markdown';
 
-export default function JiraTickets() {
+const JiraTickets = () => {
     const [ticketTitle, setticketTitle] = useState('');
     const [description, setDescription] = useState('');
     const [formError, setFormError] = useState('');
@@ -175,3 +175,5 @@ export default function JiraTickets() {
         </>
     );
 }
+
+export default JiraTickets;
