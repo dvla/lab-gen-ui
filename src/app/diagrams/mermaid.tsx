@@ -21,6 +21,7 @@ interface MermaidProps {
 const Mermaid = ({ chart, onError }: MermaidProps) => {
     const mermaidRef = useRef<HTMLDivElement>(null);
     const [error, setError] = useState(null);
+    let [isLoading, setIsLoading] = useState(false);
 
     //Initializes mermaid when component first mounts
     useEffect(() => {
@@ -36,11 +37,13 @@ const Mermaid = ({ chart, onError }: MermaidProps) => {
      * Asynchronously renders a Mermaid diagram and manages errors.
      */
     const renderMermaid = async () => {
+        setIsLoading(false);
+        setError(null);
         if (mermaidRef.current) {
             mermaidRef.current.removeAttribute('data-processed');
             try {
                 await mermaid.run({ nodes: [mermaidRef.current] });
-                setError(null);
+                setIsLoading(true);
             } catch (error: any) {
                 if (error.hash === 'UnknownDiagramError') {
                     setError(error);
@@ -54,6 +57,11 @@ const Mermaid = ({ chart, onError }: MermaidProps) => {
     useEffect(() => {
         renderMermaid();
     }, [chart]);
+
+    //Scrolls to the diagram when it loads
+    useEffect(() => {
+        mermaidRef.current?.scrollIntoView({ behavior: 'smooth' });
+    }, [isLoading]);
 
     return error ? (
         <div className="mermaid" style={{ display: 'none' }} ref={mermaidRef}>

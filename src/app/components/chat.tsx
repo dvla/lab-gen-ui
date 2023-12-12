@@ -4,6 +4,7 @@ import { useEffect, useRef } from 'react';
 import { ErrorSummary } from 'govuk-react';
 
 const DEFAULT_ROWS = 2;
+const DEFAULT_INITIAL_MESSAGES_LENGTH = 3;
 const DEFAULT_SHOW_HISTORY = true;
 
 /**
@@ -32,6 +33,12 @@ interface ChatProps {
     onMessage?: (message: string) => void;
 
     /**
+     * A callback function that is called when a message is needed after an undo action from the chat history.
+     * @param message The message sent in the chat.
+     */
+    onUndo?: (message: string) => void;
+
+    /**
      * The initial messages to display in the chat.
      */
     initialMessages?: Message[];
@@ -52,6 +59,11 @@ interface ChatProps {
     rows?: number;
 
     /**
+     * Determines whether an undo message was requested.
+     */
+    undoMessageRequested?: boolean;
+
+    /**
      * A callback function that is called to check when the response has finished loading
      * @param isLoading True or false depending on if the response has finished loading
      */
@@ -64,18 +76,23 @@ interface ChatProps {
  * @param {Object} props - The props for the Chat component.
  * @param {boolean} props.showHistory - Determines if the chat history should be displayed.
  * @param {Function} props.onMessage - Callback function to handle new chat messages.
+ * @param {Function} props.onUndo - Callback function to handle the previous message after undo.
  * @param {Array} props.initialMessages - An array of initial chat messages.
  * @param {string} props.body - The body of the chat component.
  * @param {string} props.placeholder - The placeholder text for the chat input.
+ * @param {number} props.rows - The number of rows to show in the chat input.
+ * @param {boolean} props.undoMessageRequested - Whether an undo message was requested.
  * @param {Function} props.messageLoading - Callback function to handle loading state.
  */
 const Chat = ({
     showHistory = DEFAULT_SHOW_HISTORY,
     onMessage,
+    onUndo,
     initialMessages,
     body,
     placeholder,
     rows = DEFAULT_ROWS,
+    undoMessageRequested,
     messageLoading,
 }: ChatProps) => {
     const { messages, input, error, handleInputChange, handleSubmit, isLoading } = useChat({
@@ -100,6 +117,17 @@ const Chat = ({
             messageLoading(isLoading);
         }
     }, [messages, isLoading, messageLoading]);
+
+    useEffect(() => {
+        if (undoMessageRequested) {
+            //When undo message is requested, remove the last two messages as long it is not the intial AI response
+            if (messages.length > DEFAULT_INITIAL_MESSAGES_LENGTH) {
+                messages.pop();
+                messages.pop();
+                onUndo?.(messages[messages.length - 1].content);
+            }
+        }
+    }, [undoMessageRequested, onUndo]);
 
     return (
         <>

@@ -11,6 +11,7 @@ import {
     LoadingBox,
     Details,
     ErrorSummary,
+    Button,
 } from 'govuk-react';
 import diagramStyles from '../styles/Diagrams.module.scss';
 import Chat from '../components/chat';
@@ -29,14 +30,17 @@ const Diagrams = () => {
     const [diagramType, setDiagramType] = useState('sequence');
     let [isLoading, setIsLoading] = useState(false);
     const [firstMessageSent, setFirstMessageSent] = useState(false);
+    const [firstChangeMade, setFirstChangeMade] = useState(false);
+    const [undoMessageRequested, setUndoMessageRequested] = useState(false);
     const [mermaidError, setMermaidError] = useState<Error | null>(null);
     const DIAGRAM_ERROR_MESSAGE =
-        'Error loading diagram: Please try amending your specifications or asking in the chat to generate a new diagram.';
+        'Error loading diagram: Please try amending your specifications or if the option is available, use the button below to regenerate the previous diagram.';
     const initialPrompt = `
     You are part of a software development team. You are responsible for creating design documents for the project.
 
     Your mission is to create a ${diagramType} diagram in mermaid. The only thing you should output is the mermaid with no other text. 
     You should ensure that your output is a mermaid ${diagramType} diagram with a title. Only output the code and no other chat. 
+    You should only ever produce one mermaid diagram at a time even if requested to do multiple. 
   
     You should create the diagram for the following specifications:
     `;
@@ -54,6 +58,15 @@ const Diagrams = () => {
         if (!firstMessageSent) {
             setFirstMessageSent(true);
         }
+
+        if (!firstChangeMade && firstMessageSent) {
+            setFirstChangeMade(true);
+        }
+
+        if (undoMessageRequested) {
+            setUndoMessageRequested(false);
+        }
+
         setSelectedMessage(content);
     };
 
@@ -71,22 +84,39 @@ const Diagrams = () => {
     return (
         <>
             <FixedPage>
-                <H1>Dai O&apos;Gram</H1>{ mermaidError ?
-                <>
-                    <div>
-                        <ErrorSummary heading="Diagram Generation Error" errors={[{ text: DIAGRAM_ERROR_MESSAGE }]} />
-                    </div>
-                </>
-                : null}
+                <H1>Dai O&apos;Gram</H1>
+                {mermaidError ? (
+                    <>
+                        <div>
+                            <ErrorSummary
+                                heading="Diagram Generation Error"
+                                errors={[{ text: DIAGRAM_ERROR_MESSAGE }]}
+                            />
+                        </div>
+                    </>
+                ) : null}
+                <GridRow>
+                    <form
+                        onSubmit={(e) => {
+                            e.preventDefault();
+                            setUndoMessageRequested(true);
+                        }}
+                    >
+                        <GridCol>
+                            {firstChangeMade && mermaidError ? <Button type="submit">Regenerate Diagram</Button> : null}
+                        </GridCol>
+                    </form>
+                </GridRow>
                 <H3>Diagram Settings</H3>
                 <GridRow>
                     <GridCol setWidth="one-quarter">
                         <label className="govuk-label" htmlFor="chat-input">
-                            {"Select a diagram type"}
+                            {'Select a diagram type'}
                         </label>
                         <select
                             className={'govuk-select'}
                             onChange={(e: ChangeEvent<HTMLSelectElement>) => setDiagramType(e.target.value)}
+                            disabled={firstMessageSent}
                         >
                             <option value="sequence">Sequence</option>
                             <option value="class">Class</option>
@@ -107,8 +137,10 @@ const Diagrams = () => {
                         <Chat
                             showHistory={false}
                             onMessage={displayDiagram}
+                            onUndo={displayDiagram}
                             body={{ modelName: modelName }}
                             rows={10}
+                            undoMessageRequested={undoMessageRequested}
                             messageLoading={(isLoading) => setIsLoading(isLoading)}
                             initialMessages={[
                                 {
@@ -142,6 +174,20 @@ const Diagrams = () => {
                 </LoadingBox>
                 <SectionBreak level="LARGE" visible={!mermaidError && firstMessageSent} />
                 <GridRow>
+                    <form
+                        onSubmit={(e) => {
+                            e.preventDefault();
+                            setUndoMessageRequested(true);
+                        }}
+                    >
+                        <GridCol>
+                            {firstChangeMade && !mermaidError ? (
+                                <Button type="submit">Undo Latest Change</Button>
+                            ) : null}
+                        </GridCol>
+                    </form>
+                </GridRow>
+                <GridRow>
                     {firstMessageSent && !mermaidError ? (
                         <Details summary="View the Diagram Code">
                             <Paragraph>{selectedMessage}</Paragraph>
@@ -151,6 +197,6 @@ const Diagrams = () => {
             </FixedPage>
         </>
     );
-}
+};
 
 export default Diagrams;
