@@ -20,20 +20,21 @@ import { useChat } from 'ai/react';
 import FixedPage from '../components/fixed-page';
 import ReactMarkdown from 'react-markdown';
 
+const DEFAULT_STRING = '';
+
 const JiraTickets = () => {
-    const [ticketTitle, setticketTitle] = useState('');
-    const [description, setDescription] = useState('');
-    const [formError, setFormError] = useState('');
-    const [lastResponse, setLastResponse] = useState('');
+    const [ticketTitle, setTicketTitle] = useState(DEFAULT_STRING);
+    const [description, setDescription] = useState(DEFAULT_STRING);
+    const [formError, setFormError] = useState(DEFAULT_STRING);
+    const [lastResponse, setLastResponse] = useState(DEFAULT_STRING);
     const [hasPromptBeenSubmitted, setHasPromptBeenSubmitted] = useState(false);
 
     const initialPrompt = `You are an Agile practitioner with over 10 years of experience in the project management field. 
     You are an expert in Jira.`;
 
-    const tailoredPrompt = `Your task is to refine a Jira ticket based on the following sections, a Title: ${ticketTitle}, 
-    and a description: ${description}. 
-    Feel free to suggest changes to make the title snappier or better structured. 
-    Ensure that the description is rewritten as professionally as possible, making sure to flesh out any of the provided points.
+    const tailoredPrompt = `Given a Jira ticket based on the following sections, a Title: ${ticketTitle}, 
+    and a description: ${description}, ensure that the description is rewritten as professionally as possible, making sure to flesh out any of the provided points.
+    If a title is not given, infer a title from the description.
     As part of the description, include a section called “Acceptance Criteria”.
     The output should be in the format: Title, Description, Acceptance Criteria and nothing else.
     Ensure that the response is provided in markdown format, with the title using 2 # and the description headings using 3 #.
@@ -69,7 +70,7 @@ const JiraTickets = () => {
         if (!ticketTitle.trim() && !description.trim()) {
             setFormError('Please enter a title and/or description');
         } else {
-            setFormError(''); // Clear any existing errors
+            setFormError(DEFAULT_STRING); // Clear any existing errors
             handleInput(event); // Proceed with the original submit handler
         }
     };
@@ -87,6 +88,21 @@ const JiraTickets = () => {
         messages.pop();
         event.preventDefault();
         setInput(tailoredPrompt);
+    };
+
+    /**
+     * Resets the form fields and state variables to their default values.
+     *
+     * @param {Event} event - The form submit event.
+     * @return {void} This function does not return anything.
+     */
+    const resetToDefaults: FormEventHandler<HTMLFormElement> = (event) => {
+        setTicketTitle(DEFAULT_STRING);
+        setDescription(DEFAULT_STRING);
+        setFormError(DEFAULT_STRING);
+        setLastResponse(DEFAULT_STRING);
+        setHasPromptBeenSubmitted(false);
+        messages.splice(1);
     };
 
     useEffect(() => {
@@ -115,7 +131,7 @@ const JiraTickets = () => {
                                 <form className={styles.chatForm} onSubmit={handleSubmitWithValidation}>
                                     <LabelText className={jiraStyles.label}>Title</LabelText>
                                     <Input
-                                        onChange={(e: ChangeEvent<HTMLInputElement>) => setticketTitle(e.target.value)}
+                                        onChange={(e: ChangeEvent<HTMLInputElement>) => setTicketTitle(e.target.value)}
                                         value={ticketTitle}
                                         className={jiraStyles.titleBox}
                                     />
@@ -136,8 +152,8 @@ const JiraTickets = () => {
                                 </form>
                             </section>
                         </GridCol>
-                        <GridCol setWidth="one-half">
-                            <Label className={jiraStyles.inputArea}>
+                        <GridCol setWidth="one-half" className={jiraStyles.outputArea}>
+                            <Label className={jiraStyles.label}>
                                 <LabelText>Fresh Ticket</LabelText>
                             </Label>
                             <section className={styles.chatHistory}>
@@ -164,6 +180,7 @@ const JiraTickets = () => {
                                         ))}
                                 </UnorderedList>
                             </section>
+                            <Button onClick={resetToDefaults}>Reset Ticket</Button>
                         </GridCol>
                     </GridRow>
                     <SectionBreak level="LARGE" visible />
@@ -174,6 +191,6 @@ const JiraTickets = () => {
             </FixedPage>
         </>
     );
-}
+};
 
 export default JiraTickets;
