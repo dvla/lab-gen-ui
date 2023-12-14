@@ -49,6 +49,10 @@
         &.aiMessage {
             flex-direction: row;
         }
+
+        &.response {
+            flex-wrap: wrap;
+        }
     }
 
     & .message {

@@ -30,7 +30,7 @@ const JiraTickets = () => {
     const [hasPromptBeenSubmitted, setHasPromptBeenSubmitted] = useState(false);
 
     const initialPrompt = `You are an Agile practitioner with over 10 years of experience in the project management field. 
-    You are an expert in Jira.`;
+    You are an expert in Jira and well versed in User Story conventions.`;
 
     const tailoredPrompt = `Given a Jira ticket based on the following sections, a Title: ${ticketTitle}, 
     and a description: ${description}, ensure that the description is rewritten as professionally as possible, making sure to flesh out any of the provided points.
@@ -122,7 +122,7 @@ const JiraTickets = () => {
                         <ErrorSummary heading="There was an error" errors={[{ text: (error as any).toString() }]} />
                     </section>
                 )}
-                <H1>Ticket Master</H1>
+                <H1>User Story Generator</H1>
                 <main>
                     {formError && <ErrorSummary heading="There was a problem" description={formError} />}
                     <GridRow>
@@ -154,7 +154,7 @@ const JiraTickets = () => {
                         </GridCol>
                         <GridCol setWidth="one-half" className={jiraStyles.outputArea}>
                             <Label className={jiraStyles.label}>
-                                <LabelText>Fresh Ticket</LabelText>
+                                <LabelText>Ticket Preview</LabelText>
                             </Label>
                             <section className={styles.chatHistory}>
                                 <UnorderedList listStyleType="none">
@@ -170,11 +170,9 @@ const JiraTickets = () => {
                                                 key={m.id}
                                             >
                                                 <section
-                                                    className={
-                                                        m.role === 'user' ? styles.userMessage : styles.aiMessage
-                                                    }
+                                                    className={m.role === 'user' ? styles.userMessage : styles.response}
                                                 >
-                                                    {m.content}
+                                                    <ReactMarkdown>{m.content}</ReactMarkdown>
                                                 </section>
                                             </ListItem>
                                         ))}
@@ -184,9 +182,11 @@ const JiraTickets = () => {
                         </GridCol>
                     </GridRow>
                     <SectionBreak level="LARGE" visible />
-                    <Details summary="Markdown Preview">
-                        <ReactMarkdown>{lastResponse}</ReactMarkdown>
-                    </Details>
+                    <div>
+                        <Details summary="Display Raw Markdown">
+                            {lastResponse}
+                        </Details>
+                    </div>
                 </main>
             </FixedPage>
         </>
