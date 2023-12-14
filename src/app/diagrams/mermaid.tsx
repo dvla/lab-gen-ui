@@ -56,6 +56,7 @@ const Mermaid = ({ chart, onError }: MermaidProps) => {
     //Renders Mermaid chart
     useEffect(() => {
         renderMermaid();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [chart]);
 
     //Scrolls to the diagram when it loads

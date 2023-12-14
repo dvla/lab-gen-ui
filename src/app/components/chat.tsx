@@ -68,6 +68,11 @@ interface ChatProps {
      * @param isLoading True or false depending on if the response has finished loading
      */
     messageLoading?: (isLoading: boolean) => void;
+
+    /**
+     * The edited latest message
+     */
+    editedLatestMessage?: string;
 }
 
 /**
@@ -83,6 +88,7 @@ interface ChatProps {
  * @param {number} props.rows - The number of rows to show in the chat input.
  * @param {boolean} props.undoMessageRequested - Whether an undo message was requested.
  * @param {Function} props.messageLoading - Callback function to handle loading state.
+ * @param {string} props.editedLatestMessage - The edited latest message
  */
 const Chat = ({
     showHistory = DEFAULT_SHOW_HISTORY,
@@ -94,6 +100,7 @@ const Chat = ({
     rows = DEFAULT_ROWS,
     undoMessageRequested,
     messageLoading,
+    editedLatestMessage,
 }: ChatProps) => {
     const { messages, input, error, handleInputChange, handleSubmit, isLoading } = useChat({
         onFinish: (message) => {
@@ -120,14 +127,23 @@ const Chat = ({
 
     useEffect(() => {
         if (undoMessageRequested) {
-            //When undo message is requested, remove the last two messages as long it is not the intial AI response
+            //When undo message is requested, remove the last two messages as long it is not the initial AI response
             if (messages.length > DEFAULT_INITIAL_MESSAGES_LENGTH) {
                 messages.pop();
                 messages.pop();
                 onUndo?.(messages[messages.length - 1].content);
             }
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [undoMessageRequested, onUndo]);
+
+    // Set the latest message to the new edited message
+    useEffect(() => {
+        if(editedLatestMessage) {
+            messages[messages.length - 1].content = editedLatestMessage
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [editedLatestMessage]);
 
     return (
         <>

@@ -13,7 +13,8 @@ Create ```.env.local``` file in the project root, with the following -
 OPENAI_API_VERSION=
 AZURE_OPENAI_API_KEY=
 AZURE_OPENAI_ENDPOINT=
-AZURE_DEPLOYMENT=
+AZURE_DEPLOYMENT_DEFAULT=
+AZURE_DEPLOYMENT_GPT4=
 ```
 
 First, run the development server:
@@ -78,8 +79,11 @@ Chat component which uses the Azure model. You can show or hide the chat history
 
 - ```showHistory``` set to true or false whether you want to show the chat history
 - ```onMessage``` callback to receive the response from the chat
+- ```onUndo``` callback to recieve the previous message after an undo request
+- ```undoMessageRequested``` set to true when you want the previous AI message from the chat history and set back to false after this is recieved
 - ```initialMessages``` array of messages
 - ```body``` useChat body
 - ```placeholder``` placeholder text set in textarea or as label if there is no history
 - ```rows``` number of rows in the textarea
 - ```messageLoading``` callback to set loading state
+- ```editedLatestMessage``` updates the most recent message response to this string

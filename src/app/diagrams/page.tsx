@@ -1,6 +1,6 @@
 'use client';
 import Mermaid from './mermaid';
-import { useState, ChangeEvent } from 'react';
+import { useState, ChangeEvent, useRef } from 'react';
 import {
     H1,
     GridRow,
@@ -14,6 +14,7 @@ import {
     Button,
 } from 'govuk-react';
 import diagramStyles from '../styles/Diagrams.module.scss';
+import styles from '../styles/Chat.module.scss';
 import Chat from '../components/chat';
 import FixedPage from '../components/fixed-page';
 
@@ -28,11 +29,13 @@ import FixedPage from '../components/fixed-page';
 const Diagrams = () => {
     const [selectedMessage, setSelectedMessage] = useState('');
     const [diagramType, setDiagramType] = useState('sequence');
-    let [isLoading, setIsLoading] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
     const [firstMessageSent, setFirstMessageSent] = useState(false);
     const [firstChangeMade, setFirstChangeMade] = useState(false);
     const [undoMessageRequested, setUndoMessageRequested] = useState(false);
+    const [editMessage, setEditMessage] = useState(false);
     const [mermaidError, setMermaidError] = useState<Error | null>(null);
+    const mermaidRef = useRef<HTMLDivElement>(null);
     const DIAGRAM_ERROR_MESSAGE =
         'Error loading diagram: Please try amending your specifications or if the option is available, use the button below to regenerate the previous diagram.';
     const initialPrompt = `
@@ -41,7 +44,8 @@ const Diagrams = () => {
     Your mission is to create a ${diagramType} diagram in mermaid. The only thing you should output is the mermaid with no other text. 
     You should ensure that your output is a mermaid ${diagramType} diagram with a title. Only output the code and no other chat. 
     You should only ever produce one mermaid diagram at a time even if requested to do multiple. 
-  
+    It is IMPORTANT that you prevent the diagram being too big by summarising the diagram if it is going to be too large.
+
     You should create the diagram for the following specifications:
     `;
 
@@ -84,7 +88,7 @@ const Diagrams = () => {
     return (
         <>
             <FixedPage>
-                <H1>Dai O&apos;Gram</H1>
+                <H1>Diagram Generator</H1>
                 {mermaidError ? (
                     <>
                         <div>
@@ -154,12 +158,17 @@ const Diagrams = () => {
                                     ? 'What changes would you like to make?'
                                     : 'What are the specifications for your diagram?'
                             }
+                            editedLatestMessage={
+                                firstMessageSent
+                                    ? selectedMessage
+                                    : undefined
+                            }
                         />
                     </GridCol>
                 </GridRow>
                 <SectionBreak level="LARGE" visible />
                 <LoadingBox loading={isLoading}>
-                    <GridRow className={diagramStyles.paddedDiagramRow}>
+                    <GridRow ref={mermaidRef} className={diagramStyles.paddedDiagramRow}>
                         <GridCol>
                             {firstMessageSent ? (
                                 <Mermaid
@@ -190,7 +199,38 @@ const Diagrams = () => {
                 <GridRow>
                     {firstMessageSent && !mermaidError ? (
                         <Details summary="View the Diagram Code">
-                            <Paragraph>{selectedMessage}</Paragraph>
+                            {!editMessage ? (
+                                <Paragraph>{selectedMessage}</Paragraph>
+                            ) : (
+                                <textarea
+                                    className={'govuk-textarea ' + styles.textArea}
+                                    value={selectedMessage}
+                                    onChange={(e) => setSelectedMessage(e.target.value)}
+                                    rows={13}
+                                    cols={50}
+                                />
+                            )}
+                            <form
+                                onSubmit={(e) => {
+                                    e.preventDefault();
+                                    if (!editMessage) {
+                                        setEditMessage(true);
+                                    } else {
+                                        setEditMessage(false);
+                                        mermaidRef.current?.scrollIntoView({ behavior: 'smooth' });
+                                    }
+                                }}
+                            >
+                                <GridCol>
+                                    {firstMessageSent && !mermaidError ? (
+                                        !editMessage ? (
+                                            <Button type="submit">Edit Mermaid Code</Button>
+                                        ) : (
+                                            <Button type="submit">Confirm Changes</Button>
+                                        )
+                                    ) : null}
+                                </GridCol>
+                            </form>
                         </Details>
                     ) : null}
                 </GridRow>
