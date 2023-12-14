@@ -35,6 +35,7 @@ const Diagrams = () => {
     const [undoMessageRequested, setUndoMessageRequested] = useState(false);
     const [editMessage, setEditMessage] = useState(false);
     const [mermaidError, setMermaidError] = useState<Error | null>(null);
+    const [resetChatRequested, setResetChatRequested] = useState(false);
     const mermaidRef = useRef<HTMLDivElement>(null);
     const DIAGRAM_ERROR_MESSAGE =
         'Error loading diagram: Please try amending your specifications or if the option is available, use the button below to regenerate the previous diagram.';
@@ -43,7 +44,7 @@ const Diagrams = () => {
 
     Your mission is to create a ${diagramType} diagram in mermaid. The only thing you should output is the mermaid with no other text. 
     You should ensure that your output is a mermaid ${diagramType} diagram with a title. Only output the code and no other chat. 
-    You should only ever produce one mermaid diagram at a time even if requested to do multiple. 
+    You should only ever produce one mermaid diagram at a time even if requested to do multiple.
     It is IMPORTANT that you prevent the diagram being too big by summarising the diagram if it is going to be too large.
 
     You should create the diagram for the following specifications:
@@ -71,6 +72,10 @@ const Diagrams = () => {
             setUndoMessageRequested(false);
         }
 
+        if (resetChatRequested) {
+            setResetChatRequested(false);
+        }
+
         setSelectedMessage(content);
     };
 
@@ -83,6 +88,21 @@ const Diagrams = () => {
      */
     const handleMermaidError = (error: any) => {
         setMermaidError(error);
+    };
+
+    /**
+     * Resets the form fields and state variables to their default values.
+     */
+    const resetToDefaults = () => {
+        setSelectedMessage('');
+        setDiagramType('sequence');
+        setIsLoading(false);
+        setFirstMessageSent(false);
+        setFirstChangeMade(false);
+        setUndoMessageRequested(false);
+        setEditMessage(false);
+        setMermaidError(null);
+        setResetChatRequested(true);
     };
 
     return (
@@ -136,6 +156,18 @@ const Diagrams = () => {
                             <option value="c4 - deployment">C4 - Deployment</option>
                             <option value="c4 - dynamic">C4 - Dynamic</option>
                         </select>
+                        <GridRow className={diagramStyles.resetButton}>
+                        <form
+                            onSubmit={(e) => {
+                                e.preventDefault();
+                                resetToDefaults();
+                            }}
+                        >
+                            <GridCol>
+                                {!resetChatRequested && firstMessageSent ? <Button type="submit">Reset</Button> : null}
+                            </GridCol>
+                        </form>
+                        </GridRow>
                     </GridCol>
                     <GridCol setWidth="two-thirds" className={diagramStyles.inputBox}>
                         <Chat
@@ -158,11 +190,8 @@ const Diagrams = () => {
                                     ? 'What changes would you like to make?'
                                     : 'What are the specifications for your diagram?'
                             }
-                            editedLatestMessage={
-                                firstMessageSent
-                                    ? selectedMessage
-                                    : undefined
-                            }
+                            editedLatestMessage={firstMessageSent ? selectedMessage : undefined}
+                            resetChat={resetChatRequested}
                         />
                     </GridCol>
                 </GridRow>

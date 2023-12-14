@@ -6,13 +6,14 @@ const FixedPage = ({ children }: { children: React.ReactNode }) => {
     return (
         <>
             <div className={styles.chatPage}>
-                <Header/>
+                <Header />
                 <div className={'govuk-width-container ' + styles.mainContainer}>
                     <main className={'govuk-main-wrapper ' + styles.mainWrapper} id="main-content" role="main">
+                    <a href="/" className={"govuk-back-link" + ' ' + styles.backLink}>Back</a>
                         {children}
                     </main>
                 </div>
-                <Footer/>
+                <Footer />
             </div>
         </>
     );

@@ -12,9 +12,13 @@
 }
 
 .mainWrapper {
-    padding-top: 20px;
+    padding-top: 0px;
     padding-bottom: 20px;
     flex: 1;
     display: flex;
     flex-direction: column;
+}
+
+.backLink {
+    width: fit-content;
 }

@@ -73,6 +73,11 @@ interface ChatProps {
      * The edited latest message
      */
     editedLatestMessage?: string;
+
+    /**
+     * Reset the chat to the initial prompt
+     */
+    resetChat?: boolean;
 }
 
 /**
@@ -89,6 +94,7 @@ interface ChatProps {
  * @param {boolean} props.undoMessageRequested - Whether an undo message was requested.
  * @param {Function} props.messageLoading - Callback function to handle loading state.
  * @param {string} props.editedLatestMessage - The edited latest message
+ * @param {boolean} props.resetChat - Reset the chat to the initial prompt
  */
 const Chat = ({
     showHistory = DEFAULT_SHOW_HISTORY,
@@ -101,6 +107,7 @@ const Chat = ({
     undoMessageRequested,
     messageLoading,
     editedLatestMessage,
+    resetChat,
 }: ChatProps) => {
     const { messages, input, error, handleInputChange, handleSubmit, isLoading } = useChat({
         onFinish: (message) => {
@@ -144,6 +151,19 @@ const Chat = ({
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [editedLatestMessage]);
+
+    // Reset the chat to the initial prompt
+    useEffect(() => {
+        if (resetChat) {
+            messages.splice(0);
+            if (initialMessages) {
+                for (let i = 0; i < initialMessages.length; i++) {
+                  messages.push(initialMessages[i]);
+                }
+              }
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [resetChat, initialMessages]);
 
     return (
         <>

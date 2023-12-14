@@ -1,0 +1,45 @@
+.homeLinks {
+    color: #008670;
+    font-size: 23px;
+    font-weight: 700;
+    font-family: arial;
+    text-decoration: none;
+}
+
+.homeLinks:hover {
+    text-decoration-thickness: max(3px, .1875rem, .12em);
+    -webkit-text-decoration-skip-ink: none;
+    text-decoration-skip-ink: none;
+    -webkit-text-decoration-skip: none;
+    text-decoration-skip: none
+}
+
+.homeLinks:hover {
+    outline: 3px solid transparent;
+    color: #0b0c0c;
+    box-shadow: 0 0px,0 4px #0b0c0c;
+    text-decoration: none;
+    -webkit-box-decoration-break: clone;
+    box-decoration-break: clone
+}
+
+.mainWrapper {
+    padding-top: 40px;
+    padding-bottom: 20px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.topBorder {
+    border-top: 5px solid #008670;
+    padding-top: 20px;
+}
+
+.h1XL {
+    margin-bottom: 20px;
+}
+
+.homeDescription {
+    padding-top: 2px;
+}
