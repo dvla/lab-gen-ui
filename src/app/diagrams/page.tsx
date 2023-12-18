@@ -107,7 +107,7 @@ const Diagrams = () => {
 
     return (
         <>
-            <FixedPage>
+            <FixedPage backButton={true}>
                 <H1>Diagram Generator</H1>
                 {mermaidError ? (
                     <>

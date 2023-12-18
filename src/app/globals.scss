@@ -1,5 +1,39 @@
 @import "node_modules/govuk-frontend/govuk/all";
 
+@font-face {
+    font-family: GDS Transport;
+    font-style: normal;
+    font-weight: 400;
+    src: local('GDS Transport'), 
+        url(fonts/light-94a07e06a1-v2.woff2) format("woff2"),url(fonts/light-f591b13f7d-v2.woff) format("woff");
+    font-display: fallback
+}
+
+@font-face {
+    font-family: GDS Transport;
+    font-style: normal;
+    font-weight: 700;
+    src: url(fonts/bold-b542beb274-v2.woff2) format("woff2"),url(fonts/bold-affa96571d-v2.woff) format("woff");
+    font-display: fallback
+}
+
+@font-face {
+    font-family: nta;
+    font-style: normal;
+    font-weight: 400;
+    src: local('GDS Transport'), 
+        url(fonts/light-94a07e06a1-v2.woff2) format("woff2"),url(fonts/light-f591b13f7d-v2.woff) format("woff");
+    font-display: fallback
+}
+
+@font-face {
+    font-family: nta;
+    font-style: normal;
+    font-weight: 700;
+    src: url(fonts/bold-b542beb274-v2.woff2) format("woff2"),url(fonts/bold-affa96571d-v2.woff) format("woff");
+    font-display: fallback
+}
+
 body{
     margin: 0;
 }

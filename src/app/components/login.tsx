@@ -16,10 +16,6 @@ const Login = () => {
     const { data: session, status } = useSession();
     const userEmail = session?.user?.email?.split('.')[0] as string;
 
-    if (status === 'loading') {
-        return <p>..</p>;
-    }
-
     if (status === 'authenticated') {
         return (
             <>
