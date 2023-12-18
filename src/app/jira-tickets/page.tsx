@@ -54,6 +54,7 @@ const JiraTickets = () => {
                 setHasPromptBeenSubmitted(true);
             }
         },
+        api: '/api/models/chat/',
     });
 
     useEffect(() => {

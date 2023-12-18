@@ -10,11 +10,8 @@ npm install
 Create ```.env.local``` file in the project root, with the following - 
 
 ```bash
-OPENAI_API_VERSION=
-AZURE_OPENAI_API_KEY=
-AZURE_OPENAI_ENDPOINT=
-AZURE_DEPLOYMENT_DEFAULT=
-AZURE_DEPLOYMENT_GPT4=
+AZURE_APP_HOST=
+AZURE_APP_API_KEY=
 ```
 
 First, run the development server:

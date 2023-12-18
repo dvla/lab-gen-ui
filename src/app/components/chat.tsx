@@ -12,9 +12,10 @@ const DEFAULT_SHOW_HISTORY = true;
  */
 export interface ChatBody {
     /**
-     * The name of the model.
+     * The provider and variant to select the appropriate model.
      */
-    modelName: string;
+    provider: string;
+    variant: string;
 }
 
 /**
@@ -119,6 +120,7 @@ const Chat = ({
                 messageLoading(isLoading);
             }
         },
+        api: '/api/models/chat/',
         initialMessages,
         body,
     });

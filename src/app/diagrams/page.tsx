@@ -50,7 +50,8 @@ const Diagrams = () => {
     You should create the diagram for the following specifications:
     `;
 
-    const modelName = diagramType.startsWith('c4') ? 'GPT4' : 'DEFAULT';
+    const provider = 'AZURE';
+    const variant = diagramType.startsWith('c4') ? 'ADVANCED' : 'BASIC';
 
     /**
      * Displays the diagram content in the selected message.
@@ -174,7 +175,7 @@ const Diagrams = () => {
                             showHistory={false}
                             onMessage={displayDiagram}
                             onUndo={displayDiagram}
-                            body={{ modelName: modelName }}
+                            body={{ provider: provider, variant: variant }}
                             rows={10}
                             undoMessageRequested={undoMessageRequested}
                             messageLoading={(isLoading) => setIsLoading(isLoading)}
