@@ -1,26 +1,42 @@
-.inputArea {
-    .label{
-        margin-bottom: 10px;
+.previewGridCol {
+
+    .copyButton {
+        margin-bottom: 0px;
     }
+
+    .divOutput {
+        display: flex;
+        justify-content: space-evenly;
+        align-items: center;
+    }
+}
+
+.inputArea {
 
     .button{
         margin-bottom: 2px;
     }
 
     .titleBox{
+        margin-top: 15px;
         margin-bottom: 20px;
     }
 
     .descBox{
+        margin-top: 15px;
         margin-bottom: 20px;
     }
     
 }
 
-.outputArea {
-    text-align: right;
-
-    .label{
-        text-align: left;
+.rawMD {
+    padding-top: 10px;
+    padding-left: 15px;
+    
+    .button {
+        margin-top: 10px;
+        margin-bottom: 0px;
     }
 }
+
+

@@ -37,7 +37,7 @@ const JiraTickets = () => {
     If a title is not given, infer a title from the description.
     As part of the description, include a section called “Acceptance Criteria”.
     The output should be in the format: Title, Description, Acceptance Criteria and nothing else.
-    Ensure that the response is provided in markdown format, with the title using 2 # and the description headings using 3 #.
+    Ensure that the response is provided in markdown format, with the title using 2 # and the description headings using 3 #
     The only thing you should output is the markdown with no other text.`;
 
     const { messages, input, error, handleSubmit, setInput } = useChat({
@@ -48,6 +48,12 @@ const JiraTickets = () => {
                 content: initialPrompt,
             },
         ],
+
+        onFinish: (message) => {
+            if (!hasPromptBeenSubmitted) {
+                setHasPromptBeenSubmitted(true);
+            }
+        },
     });
 
     useEffect(() => {
@@ -110,7 +116,6 @@ const JiraTickets = () => {
             // Create a new event using the native Event constructor
             let event = new Event('submit', { cancelable: true });
             handleSubmit(event as unknown as FormEvent<HTMLFormElement>);
-            setHasPromptBeenSubmitted(true);
         }
     }, [handleSubmit, input]);
 
@@ -135,7 +140,6 @@ const JiraTickets = () => {
                                         value={ticketTitle}
                                         className={jiraStyles.titleBox}
                                     />
-
                                     <LabelText className={jiraStyles.label}>Description</LabelText>
                                     <textarea
                                         rows={17}
@@ -145,17 +149,39 @@ const JiraTickets = () => {
                                             setDescription(e.target.value)
                                         }
                                     />
-
                                     <Button className={styles.button} type="submit">
                                         Generate
                                     </Button>
                                 </form>
                             </section>
                         </GridCol>
-                        <GridCol setWidth="one-half" className={jiraStyles.outputArea}>
-                            <Label className={jiraStyles.label}>
-                                <LabelText>Ticket Preview</LabelText>
-                            </Label>
+                        <GridCol className={jiraStyles.previewGridCol} setWidth="one-half">
+                            <GridRow>
+                                <GridCol setWidth="60%">
+                                    <Label>
+                                        <LabelText>Ticket Preview</LabelText>
+                                    </Label>
+                                </GridCol>
+                                <GridCol setWidth="40%">
+                                    <div className={jiraStyles.divOutput}>
+                                        {hasPromptBeenSubmitted && (
+                                            <>
+                                                <Button
+                                                    className={jiraStyles.copyButton}
+                                                    onClick={() => navigator.clipboard.writeText(lastResponse)}
+                                                >
+                                                    {' '}
+                                                    Copy
+                                                </Button>
+                                                <Button className={jiraStyles.copyButton} onClick={resetToDefaults}>
+                                                    Reset
+                                                </Button>
+                                            </>
+                                        )}
+                                    </div>
+                                </GridCol>
+                            </GridRow>
+
                             <section className={styles.chatHistory}>
                                 <UnorderedList listStyleType="none">
                                     {messages
@@ -178,14 +204,23 @@ const JiraTickets = () => {
                                         ))}
                                 </UnorderedList>
                             </section>
-                            <Button onClick={resetToDefaults}>Reset Ticket</Button>
                         </GridCol>
                     </GridRow>
                     <SectionBreak level="LARGE" visible />
                     <div>
-                        <Details summary="Display Raw Markdown">
-                            {lastResponse}
-                        </Details>
+                        {hasPromptBeenSubmitted && (
+                            <Details summary="Display Raw Markdown">
+                                {lastResponse}
+                                <GridRow className={jiraStyles.rawMD}>
+                                    <Button
+                                        className={jiraStyles.button}
+                                        onClick={() => navigator.clipboard.writeText(lastResponse)}
+                                    >
+                                        Copy
+                                    </Button>
+                                </GridRow>
+                            </Details>
+                        )}
                     </div>
                 </main>
             </FixedPage>
