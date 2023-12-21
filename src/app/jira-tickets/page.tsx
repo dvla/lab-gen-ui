@@ -32,13 +32,30 @@ const JiraTickets = () => {
     const initialPrompt = `You are an Agile practitioner with over 10 years of experience in the project management field. 
     You are an expert in Jira and well versed in User Story conventions.`;
 
-    const tailoredPrompt = `Given a Jira ticket based on the following sections, a Title: ${ticketTitle}, 
-    and a description: ${description}, ensure that the description is rewritten as professionally as possible, making sure to flesh out any of the provided points.
-    If a title is not given, infer a title from the description.
-    As part of the description, include a section called “Acceptance Criteria”.
-    The output should be in the format: Title, Description, Acceptance Criteria and nothing else.
-    Ensure that the response is provided in markdown format, with the title using 2 # and the description headings using 3 #
-    The only thing you should output is the markdown with no other text.`;
+    const tailoredPrompt = `Given a Jira ticket based on the following sections, a title and a description, your job is to take a 
+    Jira User Story title and description and make significant improvements to allow it to fit within Agile standards. 
+
+    For the title, if a title is not provided, one must be inferred from the description following the rules provided above.
+    
+    For the description; if one is provided, it must be expanded upon greatly to maximize accuracy, clarity, level of detail and 
+    actionability for the user based on the key points. If one isn’t provided, create a comprehensive description based on what 
+    the title implies.
+
+    You must still keep the "Description" heading.
+
+    The description must be in 3 sections:  
+    1) A very brief story section in the style of "As a <type of user>, I want <some goal> so that <some reason>".
+    2) The improved description text.
+    3) The acceptance criteria which must be inferred from the title or description provided.
+    
+    The final output must be in Markdown Format and contain 3 headings: The title of the ticket, "Description" and "Acceptance Criteria" with 
+    the Title using 2 #'s and Description and Acceptance Criteria using 3 #’s.
+    
+    Here is the ticket that must be improved upon:
+    Title: ${ticketTitle},
+    Description: ${description}
+    
+    Remember to make the appropriate improvements to the given description and not just copy it from the input.`
 
     const { messages, input, error, handleSubmit, setInput } = useChat({
         initialMessages: [
