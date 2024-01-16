@@ -96,7 +96,6 @@ const Diagrams = () => {
      */
     const resetToDefaults = () => {
         setSelectedMessage('');
-        setDiagramType('sequence');
         setIsLoading(false);
         setFirstMessageSent(false);
         setFirstChangeMade(false);
