@@ -26,6 +26,15 @@
         margin-top: 15px;
         margin-bottom: 20px;
     }
+
+    .checkbox{
+        margin-left: 0%;
+        margin-bottom: 5%;
+
+        .checkLabel{
+            display: contents;
+        }
+    }
     
 }
 
@@ -36,6 +45,13 @@
     .button {
         margin-top: 10px;
         margin-bottom: 0px;
+    }
+}
+
+.historyResponse {
+
+    pre {
+        text-wrap: wrap;
     }
 }
 

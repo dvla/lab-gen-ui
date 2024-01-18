@@ -28,6 +28,7 @@ const JiraTickets = () => {
     const [formError, setFormError] = useState(DEFAULT_STRING);
     const [lastResponse, setLastResponse] = useState(DEFAULT_STRING);
     const [hasPromptBeenSubmitted, setHasPromptBeenSubmitted] = useState(false);
+    const [hasGherkin, setHasGherkin] = useState(false);
 
     const initialPrompt = `You are an Agile practitioner with over 10 years of experience in the project management field. 
     You are an expert in Jira and well versed in User Story conventions.`;
@@ -55,7 +56,13 @@ const JiraTickets = () => {
     Title: ${ticketTitle},
     Description: ${description}
     
-    Remember to make the appropriate improvements to the given description and not just copy it from the input.`
+    Remember to make the appropriate improvements to the given description and not just copy it from the input.`;
+
+    const gherkinPrompt = `Given a user story which contains a title: ${ticketTitle}, a description: ${description} or both, 
+    your job is to output the title and description on newlines in normal text and the acceptance criteria in Gherkin syntax using basic variable names. 
+    The description must be in the style of "As a <type of user>, I want <some goal> so that <some reason>".
+    Provide examples of possible entries for each attribute underneath the Gherkin code. Please provide numerous possible scenarios to ensure case coverage. 
+    Ensure that the acceptance criteria section is preceded by triple-backticks to force a code-block output.`;
 
     const { messages, input, error, handleSubmit, setInput } = useChat({
         initialMessages: [
@@ -82,6 +89,15 @@ const JiraTickets = () => {
             }
         }
     }, [messages, hasPromptBeenSubmitted]);
+
+    /**
+     * Toggles the hasGherkin state variable to
+     * the opposite of its current value when
+     * this handler is called.
+     */
+    const handleCheckbox = () => {
+        setHasGherkin(!hasGherkin);
+    };
 
     /**
      * Handles form submission with validation.
@@ -111,7 +127,11 @@ const JiraTickets = () => {
     const handleInput: FormEventHandler<HTMLFormElement> = (event) => {
         messages.pop();
         event.preventDefault();
-        setInput(tailoredPrompt);
+        if (!hasGherkin) {
+            setInput(tailoredPrompt);
+        } else {
+            setInput(gherkinPrompt);
+        }
     };
 
     /**
@@ -126,6 +146,7 @@ const JiraTickets = () => {
         setFormError(DEFAULT_STRING);
         setLastResponse(DEFAULT_STRING);
         setHasPromptBeenSubmitted(false);
+        setHasGherkin(false);
         messages.splice(1);
     };
 
@@ -148,6 +169,7 @@ const JiraTickets = () => {
                 <H1>User Story Generator</H1>
                 <main>
                     {formError && <ErrorSummary heading="There was a problem" description={formError} />}
+
                     <GridRow>
                         <GridCol setWidth="one-half">
                             <section className={jiraStyles.inputArea}>
@@ -167,6 +189,10 @@ const JiraTickets = () => {
                                             setDescription(e.target.value)
                                         }
                                     />
+                                    <GridRow className={jiraStyles.checkbox}>
+                                        <input type="checkbox" checked={hasGherkin} onChange={handleCheckbox}></input>
+                                        <Label className={jiraStyles.checkLabel}>Use Gherkin Syntax</Label>
+                                    </GridRow>
                                     <Button className={styles.button} type="submit">
                                         Generate
                                     </Button>
@@ -188,7 +214,6 @@ const JiraTickets = () => {
                                                     className={jiraStyles.copyButton}
                                                     onClick={() => navigator.clipboard.writeText(lastResponse)}
                                                 >
-                                                    {' '}
                                                     Copy
                                                 </Button>
                                                 <Button className={jiraStyles.copyButton} onClick={resetToDefaults}>
@@ -216,7 +241,9 @@ const JiraTickets = () => {
                                                 <section
                                                     className={m.role === 'user' ? styles.userMessage : styles.response}
                                                 >
-                                                    <ReactMarkdown>{m.content}</ReactMarkdown>
+                                                    <ReactMarkdown className={jiraStyles.historyResponse}>
+                                                        {m.content}
+                                                    </ReactMarkdown>
                                                 </section>
                                             </ListItem>
                                         ))}
