@@ -51,7 +51,7 @@ const Diagrams = () => {
     `;
 
     const provider = 'AZURE';
-    const variant = diagramType.startsWith('c4') ? 'ADVANCED' : 'BASIC';
+    const variant = diagramType.startsWith('*') ? 'ADVANCED' : 'BASIC';
 
     /**
      * Displays the diagram content in the selected message.
@@ -135,7 +135,7 @@ const Diagrams = () => {
                 <GridRow>
                     <GridCol setWidth="one-quarter">
                         <label className="govuk-label" htmlFor="chat-input">
-                            {'Select a diagram type'}
+                            Select a diagram type
                         </label>
                         <select
                             className={'govuk-select'}
@@ -147,15 +147,18 @@ const Diagrams = () => {
                             <option value="flowchart">Flowchart</option>
                             <option value="state">State</option>
                             <option value="enitity relationship">Entity Relationship</option>
-                            <option value="user journey">User Journey</option>
                             <option value="gantt">Gantt</option>
                             <option value="pie chart">Pie Chart</option>
                             <option value="requirement">Requirement</option>
-                            <option value="c4 - system context">C4 - System Context</option>
-                            <option value="c4 - container">C4 - Container</option>
-                            <option value="c4 - deployment">C4 - Deployment</option>
-                            <option value="c4 - dynamic">C4 - Dynamic</option>
+                            <option value="*user journey">* User Journey</option>
+                            <option value="*c4 - system context">* C4 - System Context</option>
+                            <option value="*c4 - container">* C4 - Container</option>
+                            <option value="*c4 - deployment">* C4 - Deployment</option>
+                            <option value="*c4 - dynamic">* C4 - Dynamic</option>
                         </select>
+                        <span className="govuk-hint">
+                            * Advanced diagrams may take longer to generate.
+                        </span>
                         <GridRow className={diagramStyles.resetButton}>
                         <form
                             onSubmit={(e) => {
