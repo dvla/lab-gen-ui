@@ -28,48 +28,45 @@ const JiraTickets = () => {
     const [formError, setFormError] = useState(DEFAULT_STRING);
     const [lastResponse, setLastResponse] = useState(DEFAULT_STRING);
     const [hasPromptBeenSubmitted, setHasPromptBeenSubmitted] = useState(false);
-    const [hasGherkin, setHasGherkin] = useState(false);
+    const [isGherkinChecked, setIsGherkinChecked] = useState(false);
 
-    const initialPrompt = `You are an Agile practitioner with over 10 years of experience in the project management field. 
-    You are an expert in Jira and well versed in User Story conventions.`;
-
-    const tailoredPrompt = `Given a Jira ticket based on the following sections, a title and a description, your job is to take a 
-    Jira User Story title and description and make significant improvements to allow it to fit within Agile standards. 
-
-    For the title, if a title is not provided, one must be inferred from the description following the rules provided above.
-    
-    For the description; if one is provided, it must be expanded upon greatly to maximize accuracy, clarity, level of detail and 
-    actionability for the user based on the key points. If one isn’t provided, create a comprehensive description based on what 
-    the title implies.
-
-    You must still keep the "Description" heading.
-
+    const TITLE_DESCRIPTION_GUIDANCE = `For the title, if a title is not provided, one must be inferred from the description following the rules provided above. 
+    For the description; if one is provided, it must be expanded upon greatly to maximize accuracy, clarity, level of detail, and actionability for the user based on the key points. 
+    If one isn’t provided, create a comprehensive description based on what the title implies. You must still keep the "Description" heading.
     The description must be in 3 sections:  
-    1) A very brief story section in the style of "As a <type of user>, I want <some goal> so that <some reason>".
-    2) The improved description text.
-    3) The acceptance criteria which must be inferred from the title or description provided.
-    
+    1) The improved description text in the style of "As a <type of user>, I want <some goal> so that <some reason>".
+    2) The acceptance criteria which must be inferred from the title or description provided.`;
+    const PROMPT_INTRODUCTION = `Given a Jira ticket based on the following sections, a title and a description, your job is to take a Jira User Story title and description and make significant improvements to allow it to fit within Agile standards.`; 
+    const OLD_TICKET = `Here is the ticket that must be improved upon: Title: ${ticketTitle}, Description: ${description}`;
+    const PLAIN_RESPONSE = "Please do not include any pleasantries or human-like interaction before or after the improved ticket. Also ensure that the Title, Description and Acceptance Criteria heading are output as markdown headings";
+    const INITIAL_PROMPT = `You are an Agile practitioner with over 10 years of experience in the project management field. 
+    You are an expert in Jira and well versed in User Story conventions as well as Behavior-Driven Development processes and operations.`;
+
+    const tailoredPrompt = `${PROMPT_INTRODUCTION} 
+    ${TITLE_DESCRIPTION_GUIDANCE}
     The final output must be in Markdown Format and contain 3 headings: The title of the ticket, "Description" and "Acceptance Criteria" with 
     the Title using 2 #'s and Description and Acceptance Criteria using 3 #’s.
-    
-    Here is the ticket that must be improved upon:
-    Title: ${ticketTitle},
-    Description: ${description}
-    
-    Remember to make the appropriate improvements to the given description and not just copy it from the input.`;
+    ${OLD_TICKET}
+    Remember to make the appropriate improvements to the given description and not just copy it from the input.
+    ${PLAIN_RESPONSE}`;
 
-    const gherkinPrompt = `Given a user story which contains a title: ${ticketTitle}, a description: ${description} or both, 
-    your job is to output the title and description on newlines in normal text and the acceptance criteria in Gherkin syntax using basic variable names. 
-    The description must be in the style of "As a <type of user>, I want <some goal> so that <some reason>".
-    Provide examples of possible entries for each attribute underneath the Gherkin code. Please provide numerous possible scenarios to ensure case coverage. 
-    Ensure that the acceptance criteria section is preceded by triple-backticks to force a code-block output.`;
+    const gherkinPrompt = `${PROMPT_INTRODUCTION}    
+    ${TITLE_DESCRIPTION_GUIDANCE}
+    The acceptance criteria must be in Gherkin syntax, where it will adhere to proper Gherkin syntax rules. Some examples of this include:
+    1) Correct indentation for each section heading.
+    2) Adherence to the Feature: Scenario: Given When Then format.
+    3) Only ONE feature per generation.
+    4) Please suggest numerous scenarios for each feature.
+    ${OLD_TICKET}
+    The response should only contain a Title, Description and Acceptance Criteria in the form of correct Gherkin syntax.
+    ${PLAIN_RESPONSE}`;
 
     const { messages, input, error, handleSubmit, setInput } = useChat({
         initialMessages: [
             {
                 id: '0',
                 role: 'user',
-                content: initialPrompt,
+                content: INITIAL_PROMPT,
             },
         ],
 
@@ -96,7 +93,7 @@ const JiraTickets = () => {
      * this handler is called.
      */
     const handleCheckbox = () => {
-        setHasGherkin(!hasGherkin);
+        setIsGherkinChecked(!isGherkinChecked);
     };
 
     /**
@@ -127,7 +124,7 @@ const JiraTickets = () => {
     const handleInput: FormEventHandler<HTMLFormElement> = (event) => {
         messages.pop();
         event.preventDefault();
-        if (!hasGherkin) {
+        if (!isGherkinChecked) {
             setInput(tailoredPrompt);
         } else {
             setInput(gherkinPrompt);
@@ -146,7 +143,7 @@ const JiraTickets = () => {
         setFormError(DEFAULT_STRING);
         setLastResponse(DEFAULT_STRING);
         setHasPromptBeenSubmitted(false);
-        setHasGherkin(false);
+        setIsGherkinChecked(false);
         messages.splice(1);
     };
 
@@ -190,7 +187,7 @@ const JiraTickets = () => {
                                         }
                                     />
                                     <GridRow className={jiraStyles.checkbox}>
-                                        <input type="checkbox" checked={hasGherkin} onChange={handleCheckbox}></input>
+                                        <input type="checkbox" checked={isGherkinChecked} onChange={handleCheckbox}></input>
                                         <Label className={jiraStyles.checkLabel}>Use Gherkin Syntax</Label>
                                     </GridRow>
                                     <Button className={styles.button} type="submit">
