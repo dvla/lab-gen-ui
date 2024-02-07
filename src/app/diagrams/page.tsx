@@ -51,7 +51,7 @@ const Diagrams = () => {
     `;
 
     const provider = 'AZURE';
-    const variant = diagramType.startsWith('*') ? 'ADVANCED' : 'BASIC';
+    const variant = diagramType.startsWith('*') ? 'ADVANCED' : 'GENERAL';
 
     /**
      * Displays the diagram content in the selected message.
