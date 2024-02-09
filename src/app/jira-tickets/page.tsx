@@ -30,7 +30,7 @@ const JiraTickets = () => {
     const [hasPromptBeenSubmitted, setHasPromptBeenSubmitted] = useState(false);
     const [isGherkinChecked, setIsGherkinChecked] = useState(false);
 
-    const TITLE_DESCRIPTION_GUIDANCE = `For the title, if a title is not provided, one must be inferred from the description following the rules provided above. 
+    const TITLE_DESCRIPTION_GUIDANCE = `For the title, if a title is not provided, one must be inferred from the description following the rules provided above. If one is, use that. 
     For the description; if one is provided, it must be expanded upon greatly to maximize accuracy, clarity, level of detail, and actionability for the user based on the key points. 
     If one isn’t provided, create a comprehensive description based on what the title implies. You must still keep the "Description" heading.
     The description must be in 3 sections:  
