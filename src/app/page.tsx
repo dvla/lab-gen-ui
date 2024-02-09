@@ -44,6 +44,14 @@ export default function Home() {
                                 Experience the power of AI-driven conversation with our chatbot
                             </p>
                         </li>
+                        <li>
+                            <NextLink className={styles.homeLinks} href="/prompt-templates">
+                                Instant Productivity
+                            </NextLink>
+                            <p className={styles.homeDescription}>
+                                Try a range of pre-defined templates such as summary, alliteration, or keywords
+                            </p>
+                        </li>
                     </ul>
                 </section>
             </FixedPage>
