@@ -52,6 +52,9 @@ export default function Home() {
                                 Try a range of pre-defined templates such as summary, alliteration, or keywords
                             </p>
                         </li>
+                        <li className={styles.infoLink}>
+                            <p className="govuk-body">  <a className="govuk-link" href="/model-info">Find out more about our models</a></p>
+                        </li>
                     </ul>
                 </section>
             </FixedPage>
