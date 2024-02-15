@@ -19,6 +19,7 @@ import jiraStyles from '../styles/Jira.module.scss';
 import { useChat } from 'ai/react';
 import FixedPage from '../components/fixed-page';
 import ReactMarkdown from 'react-markdown';
+import GherkinValidate from '../components/gherkinvalidate';
 
 const DEFAULT_STRING = '';
 
@@ -29,16 +30,17 @@ const JiraTickets = () => {
     const [lastResponse, setLastResponse] = useState(DEFAULT_STRING);
     const [hasPromptBeenSubmitted, setHasPromptBeenSubmitted] = useState(false);
     const [isGherkinChecked, setIsGherkinChecked] = useState(false);
+    const [shouldRender, setShouldRender] = useState(false);
 
-    const TITLE_DESCRIPTION_GUIDANCE = `For the title, if a title is not provided, one must be inferred from the description following the rules provided above. If one is, use that. 
+    const TITLE_DESCRIPTION_GUIDANCE = `For the title, if a title is not provided, one must be inferred from the description following the rules provided above. 
     For the description; if one is provided, it must be expanded upon greatly to maximize accuracy, clarity, level of detail, and actionability for the user based on the key points. 
     If one isn’t provided, create a comprehensive description based on what the title implies. You must still keep the "Description" heading.
-    The description must be in 3 sections:  
+    The description must be in 2 (unnamed) sections:  
     1) The improved description text in the style of "As a <type of user>, I want <some goal> so that <some reason>".
     2) The acceptance criteria which must be inferred from the title or description provided.`;
-    const PROMPT_INTRODUCTION = `Given a Jira ticket based on the following sections, a title and a description, your job is to take a Jira User Story title and description and make significant improvements to allow it to fit within Agile standards.`; 
+    const PROMPT_INTRODUCTION = `Given a Jira ticket based on the following sections, a title and a description, your job is to take a Jira User Story title and description and make significant improvements to allow it to fit within Agile standards.`;
     const OLD_TICKET = `Here is the ticket that must be improved upon: Title: ${ticketTitle}, Description: ${description}`;
-    const PLAIN_RESPONSE = "Please do not include any pleasantries or human-like interaction before or after the improved ticket. Also ensure that the Title, Description and Acceptance Criteria heading are output as markdown headings";
+    const PLAIN_RESPONSE = 'Please do not include any pleasantries or human-like interaction before or after the improved ticket. Also ensure that the Title, Description and Acceptance Criteria heading are output as markdown headings';
     const INITIAL_PROMPT = `You are an Agile practitioner with over 10 years of experience in the project management field. 
     You are an expert in Jira and well versed in User Story conventions as well as Behavior-Driven Development processes and operations.`;
 
@@ -54,7 +56,7 @@ const JiraTickets = () => {
     ${TITLE_DESCRIPTION_GUIDANCE}
     The acceptance criteria must be in Gherkin syntax, where it will adhere to proper Gherkin syntax rules. Some examples of this include:
     1) Correct indentation for each section heading.
-    2) Adherence to the Feature: Scenario: Given When Then format.
+    2) Adherence to the Feature: Scenario: Keyword: format.
     3) Only ONE feature per generation.
     4) Please suggest numerous scenarios for each feature.
     ${OLD_TICKET}
@@ -73,6 +75,7 @@ const JiraTickets = () => {
         onFinish: (message) => {
             if (!hasPromptBeenSubmitted) {
                 setHasPromptBeenSubmitted(true);
+                setShouldRender(isGherkinChecked);
             }
         },
         api: '/api/models/chat/',
@@ -102,6 +105,8 @@ const JiraTickets = () => {
      * @param {FormEvent<HTMLFormElement>} event - The form submission event.
      */
     const handleSubmitWithValidation: FormEventHandler<HTMLFormElement> = (event) => {
+        setHasPromptBeenSubmitted(false);
+        setShouldRender(false);
         event.preventDefault();
         // Check if both ticketTitle and description are empty
         if (!ticketTitle.trim() && !description.trim()) {
@@ -122,7 +127,7 @@ const JiraTickets = () => {
      * @return {void}
      */
     const handleInput: FormEventHandler<HTMLFormElement> = (event) => {
-        messages.pop();
+        messages.splice(0, messages.length);
         event.preventDefault();
         if (!isGherkinChecked) {
             setInput(tailoredPrompt);
@@ -138,13 +143,14 @@ const JiraTickets = () => {
      * @return {void} This function does not return anything.
      */
     const resetToDefaults: FormEventHandler<HTMLFormElement> = (event) => {
+        setShouldRender(false);
         setTicketTitle(DEFAULT_STRING);
         setDescription(DEFAULT_STRING);
         setFormError(DEFAULT_STRING);
         setLastResponse(DEFAULT_STRING);
         setHasPromptBeenSubmitted(false);
         setIsGherkinChecked(false);
-        messages.splice(1);
+        messages.splice(0);
     };
 
     useEffect(() => {
@@ -187,8 +193,17 @@ const JiraTickets = () => {
                                         }
                                     />
                                     <GridRow className={jiraStyles.checkbox}>
-                                        <input type="checkbox" checked={isGherkinChecked} onChange={handleCheckbox}></input>
-                                        <Label className={jiraStyles.checkLabel}>Use Gherkin Syntax</Label>
+                                        <div className="govuk-checkboxes__item" data-module="govuk-checkboxes">
+                                            <input
+                                                className="govuk-checkboxes__input"
+                                                type="checkbox"
+                                                checked={isGherkinChecked}
+                                                onChange={handleCheckbox}
+                                            ></input>
+                                            <label className="govuk-label govuk-checkboxes__label">
+                                                Use Gherkin Syntax
+                                            </label>
+                                        </div>
                                     </GridRow>
                                     <Button className={styles.button} type="submit">
                                         Generate
@@ -238,9 +253,13 @@ const JiraTickets = () => {
                                                 <section
                                                     className={m.role === 'user' ? styles.userMessage : styles.response}
                                                 >
-                                                    <ReactMarkdown className={jiraStyles.historyResponse}>
-                                                        {m.content}
-                                                    </ReactMarkdown>
+                                                    {shouldRender ? (
+                                                        <GherkinValidate content={m.content} />
+                                                    ) : (
+                                                        <ReactMarkdown className={jiraStyles.historyResponse}>
+                                                            {m.content}
+                                                        </ReactMarkdown>
+                                                    )}
                                                 </section>
                                             </ListItem>
                                         ))}
