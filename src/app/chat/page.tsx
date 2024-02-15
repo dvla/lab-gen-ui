@@ -12,7 +12,7 @@ const ChatPage = () => {
                     <Chat 
                         showHistory={true}
                         placeholder={"What would you like to know?"}
-                        rows={2}
+                        rows={4}
                    />
                 </div>
             </div>
