@@ -12,6 +12,7 @@ export const GET = async () => {
     try {
         const response = await fetch(appHost + 'prompts/', {
             headers: {
+                cache: 'no-store',
                 Authorization: appKey,
             },
         });

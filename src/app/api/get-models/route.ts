@@ -9,7 +9,7 @@ const appHost = process.env['AZURE_APP_HOST'];
  */
 export async function GET() {
     try {
-        const response = await fetch(appHost + 'models/');
+        const response = await fetch(appHost + 'models/', { cache: 'no-store' });
         if (response.ok) {
             const models = await response.json();
             return NextResponse.json(models, { status: response.status });
