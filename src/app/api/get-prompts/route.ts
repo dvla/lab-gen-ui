@@ -4,15 +4,15 @@ const appHost = process.env['AZURE_APP_HOST'];
 const appKey = process.env['AZURE_APP_API_KEY'] || 'no-api-key';
 
 /**
- * This function makes a GET request to retrieve prompts. 
- * 
+ * This function makes a GET request to retrieve prompts.
+ *
  * @return {Response} The response object representing the result of the GET request.
  */
 export const GET = async () => {
     try {
         const response = await fetch(appHost + 'prompts/', {
+            cache: 'no-store',
             headers: {
-                cache: 'no-store',
                 Authorization: appKey,
             },
         });
