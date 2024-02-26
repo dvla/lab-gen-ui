@@ -1,6 +1,6 @@
 import { Spinner } from "govuk-react";
-import { Variable } from "../generator/generator";
-import { Model, useStartConversation, Body } from "../generator/generator-tabs";
+import { Model, Variable } from "../generator/generator";
+import { useStartConversation, Body } from "../generator/generator-tabs";
 
 interface OneShotProps {
     variables: Variable[];

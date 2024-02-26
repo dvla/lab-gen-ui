@@ -7,16 +7,61 @@ import GeneratorHistory from './generator-history';
 import { useSWRConfig } from 'swr';
 import OneShot from '../one-shot/one-shot';
 
+/**
+ * Represents a variable with an id and value.
+ */
 export interface Variable {
+    /**
+     * The unique identifier for the variable.
+     */
     id: string;
+    /**
+     * The value of the variable.
+     */
     value: string;
+}
+
+/**
+ * Represents a model with provider, variant, description, and location.
+ */
+export interface Model {
+    /**
+     * The provider of the model.
+     */
+    provider: string;
+    /**
+     * The variant of the model.
+     */
+    variant: string;
+    /**
+     * The description of the model.
+     */
+    description: string;
+    /**
+     * The location of the model.
+     */
+    location: string;
+}
+
+/**
+ * Interface for response history
+ */
+export interface ResponseHistory {
+    /**
+     * Data field
+     */
+    data: string;
+    /**
+     * Model field
+     */
+    model: Model;
 }
 
 interface GeneratorProps {
     type: string;
     variables: Variable[];
     showTabs?: boolean;
-    model: any;
+    model: Model;
 }
 
 /**
@@ -34,7 +79,7 @@ const Generator = ({ type, variables, showTabs = true, model }: GeneratorProps):
     const [shouldRender, setShouldRender] = useState(false);
     const [formData, setFormData] = useState(variables);
     const [showHistory, setShowHistory] = useState(false);
-    const [history, setHistory] = useState<string[]>([]);
+    const [history, setHistory] = useState<ResponseHistory[]>([]);
     // Ref for previous history value
     const prevHistory = useRef<string>();
     const { mutate } = useSWRConfig();
@@ -56,25 +101,27 @@ const Generator = ({ type, variables, showTabs = true, model }: GeneratorProps):
             setStart(false);
         }
 
-        if(shouldRender){
+        if (shouldRender) {
             mutate('/api/start-conversation');
-        }
-        else{
+        } else {
             setShouldRender(true);
         }
-        
+
         setShowHistory(true);
-        
     };
 
     /**
      * Resets the form to its default state.
      */
     const resetToDefaults = () => {
-        if (showTabs) {
-            setStart(true);
+        setHistory([]);
+        let resetFormData = [...formData];
+        for(const field of resetFormData){
+            field.value = '';
         }
+        setFormData(resetFormData);
         setShouldRender(false);
+        setShowHistory(false);
     };
 
     /**
@@ -94,18 +141,21 @@ const Generator = ({ type, variables, showTabs = true, model }: GeneratorProps):
         setFormData(newFormData);
     };
 
-    
     /**
      * Updates the history with the given value if it's different from the previous value.
      *
      * @param {string} value - The new value to be added to the history
-     * @return {void} 
+     * @return {void}
      */
     const updateHistory = (value: string) => {
+        const responseHistory: ResponseHistory = {
+            data: value,
+            model: model,
+        };
         if (!prevHistory.current) {
-            setHistory([value, ...history]);
+            setHistory([responseHistory, ...history]);
         } else if (prevHistory.current && value !== prevHistory.current) {
-            setHistory([value, ...history]);
+            setHistory([responseHistory, ...history]);
         }
 
         prevHistory.current = value;
@@ -144,18 +194,25 @@ const Generator = ({ type, variables, showTabs = true, model }: GeneratorProps):
                                 </div>
                             ))}
                         </fieldset>
-                        <button type="submit" className="govuk-button govuk-button--start" data-module="govuk-button">
-                            Generate
-                        </button>
+                        <div className="govuk-button-group">
+                            <button type="submit" className="govuk-button" data-module="govuk-button">
+                                Generate
+                            </button>
+                            <button
+                                type='button'
+                                className="govuk-button govuk-button--secondary"
+                                data-module="govuk-button"
+                                onClick={resetToDefaults}
+                            >
+                                Reset
+                            </button>
+                        </div>
                     </form>
                 </div>
             )}
             {shouldRender && (
                 <div className={'govuk-grid-column-full ' + chatPageStyles.gridRowHalf}>
-                    <OneShot variables={formData}
-                        type={type}
-                        model={model}
-                        updateHistory={updateHistory}/>
+                    <OneShot variables={formData} type={type} model={model} updateHistory={updateHistory} />
                 </div>
             )}
             {showHistory && (

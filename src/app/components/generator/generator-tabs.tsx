@@ -1,5 +1,5 @@
 import useSWR from 'swr';
-import { Variable } from './generator';
+import { Model, Variable } from './generator';
 import { Spinner } from 'govuk-react';
 
 interface GeneratorTabsProps {
@@ -15,11 +15,6 @@ export interface Body {
     provider: string;
     variant: string;
     promptId: string;
-}
-
-export interface Model {
-    provider: string;
-    variant: string;
 }
 
 /**
