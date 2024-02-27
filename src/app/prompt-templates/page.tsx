@@ -5,22 +5,9 @@ import Generator, { Variable } from '../components/generator/generator';
 import chatPageStyles from '../styles/ChatPage.module.scss';
 import * as changeCase from 'change-case';
 import useSWR from 'swr';
+import { SWR_OPTIONS, fetcher } from '../lib/fetchers';
 import { modelContext } from '../config/model-context-config';
 import ModelSelect from '../components/options/model-select';
-
-const fetcher = (url: string) => fetch(url).then(async (res) => {
-    if (!res.ok) {
-        const response = await res.json()
-        const error = new Error(response.error);
-        throw error
-      }
-    return res.json()});
-const SWR_OPTIONS = {
-    revalidateIfStale: false,
-    revalidateOnFocus: false,
-    revalidateOnReconnect: false,
-    errorRetryCount: 5
-};
 
 /**
  * PromptTemplate component to generate a prompt template based on the selected type and variables.

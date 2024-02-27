@@ -1,6 +1,7 @@
-import { Spinner } from "govuk-react";
-import { Model, Variable } from "../generator/generator";
-import { useStartConversation, Body } from "../generator/generator-tabs";
+import { Spinner } from 'govuk-react';
+import { Variable } from '../generator/generator';
+import { Model, useStartConversation, Body } from '@/app/lib/fetchers';
+import { useEffect } from 'react';
 
 interface OneShotProps {
     variables: Variable[];
@@ -15,7 +16,7 @@ interface OneShotProps {
  * @param {OneShotProps} variables - The variables to be used in the conversation
  * @return {JSX.Element} The JSX element representing the OneShot component
  */
-const OneShot = ({variables, type, model, updateHistory}: OneShotProps) => {
+const OneShot = ({ variables, type, model, updateHistory }: OneShotProps) => {
     // Create body object with default values
     const body: Body = {
         variables: {},
@@ -31,7 +32,14 @@ const OneShot = ({variables, type, model, updateHistory}: OneShotProps) => {
 
     // Call useStartConversation API to get data and error states
     const { data, error, isLoading, isValidating } = useStartConversation(body);
-    
+
+    useEffect(() => {
+        // If data is available and not loading or validating, update history
+        if (!isLoading && !isValidating && data) {
+            updateHistory(data);
+        }
+    }, [data, isLoading, isValidating, updateHistory]);
+
     // If there is an error, display error message
     if (error) {
         return (
@@ -41,7 +49,7 @@ const OneShot = ({variables, type, model, updateHistory}: OneShotProps) => {
                     <div className="govuk-error-summary__body">
                         <ul className="govuk-list govuk-error-summary__list">
                             <li>
-                                <a href="#">Could not get response</a>
+                                <a href="#">{error.message}</a>
                             </li>
                         </ul>
                     </div>
@@ -50,21 +58,22 @@ const OneShot = ({variables, type, model, updateHistory}: OneShotProps) => {
         );
     }
 
-    // If data is available and not loading or validating, update history
-    if (!isLoading && !isValidating && data) {
-        updateHistory(data);
-    }
-
     return (
         <div className="govuk-grid-row">
             <div className="govuk-grid-column-full">
                 {(isLoading || isValidating) && (
                     // Render spinner if loading or validating
-                    <Spinner fill="#b1b4b6" height="56px" title="Example Spinner implementation" width="56px" style={{padding: '15px'}}/>
+                    <Spinner
+                        fill="#b1b4b6"
+                        height="56px"
+                        title="One Shot Spinner"
+                        width="56px"
+                        style={{ padding: '15px' }}
+                    />
                 )}
             </div>
         </div>
-    )
-}
+    );
+};
 
 export default OneShot;

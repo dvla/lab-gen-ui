@@ -1,7 +1,8 @@
 import ReactMarkdown from 'react-markdown';
 import chatPageStyles from '../../styles/ChatPage.module.scss';
 import jiraStyles from '../../styles/Jira.module.scss';
-import { Model, ResponseHistory } from './generator';
+import { ResponseHistory } from './generator';
+import { Model } from '@/app/lib/fetchers';
 
 interface GeneratorHistoryProps {
     history: ResponseHistory[];
@@ -45,7 +46,6 @@ const GeneratorHistory = ({ history }: GeneratorHistoryProps) => {
         <div>
             {history.length > 0 && (
                 <>
-                    {/* <h2 className="govuk-heading-m">Previous Results</h2> */}
                     <table className={"govuk-table " + chatPageStyles.historyTable}>
                         <caption className="govuk-table__caption govuk-table__caption--m">Results</caption>
                         <tbody className="govuk-table__body">

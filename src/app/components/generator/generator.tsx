@@ -1,11 +1,13 @@
 'use client';
 import { ChangeEvent, FormEventHandler, useEffect, useRef, useState } from 'react';
+import { useSWRConfig } from 'swr';
+import * as changeCase from 'change-case';
 import chatPageStyles from '../../styles/ChatPage.module.scss';
 import GeneratorTabs from './generator-tabs';
-import * as changeCase from 'change-case';
 import GeneratorHistory from './generator-history';
-import { useSWRConfig } from 'swr';
 import OneShot from '../one-shot/one-shot';
+import { usePathname, useRouter } from 'next/navigation';
+import { Model } from '@/app/lib/fetchers';
 
 /**
  * Represents a variable with an id and value.
@@ -19,28 +21,14 @@ export interface Variable {
      * The value of the variable.
      */
     value: string;
-}
-
-/**
- * Represents a model with provider, variant, description, and location.
- */
-export interface Model {
-    /**
-     * The provider of the model.
+    /*
+     * Show the variable input on the page
      */
-    provider: string;
-    /**
-     * The variant of the model.
+    show?: boolean;
+    /*
+     * Name of variable if different form id
      */
-    variant: string;
-    /**
-     * The description of the model.
-     */
-    description: string;
-    /**
-     * The location of the model.
-     */
-    location: string;
+    name?: string;
 }
 
 /**
@@ -59,9 +47,10 @@ export interface ResponseHistory {
 
 interface GeneratorProps {
     type: string;
+    model: Model;
     variables: Variable[];
     showTabs?: boolean;
-    model: Model;
+    showHistory?: boolean;
 }
 
 /**
@@ -73,16 +62,18 @@ interface GeneratorProps {
  * @param {ModelProps} model - the model for the generator
  * @return {JSX.Element} the generated form component
  */
-const Generator = ({ type, variables, showTabs = true, model }: GeneratorProps): JSX.Element => {
+const Generator = ({ type, model, variables, showTabs = true, showHistory = true }: GeneratorProps): JSX.Element => {
     // State variables
     const [start, setStart] = useState(true);
     const [shouldRender, setShouldRender] = useState(false);
     const [formData, setFormData] = useState(variables);
-    const [showHistory, setShowHistory] = useState(false);
+    const [viewHistory, setViewHistory] = useState(showHistory);
     const [history, setHistory] = useState<ResponseHistory[]>([]);
     // Ref for previous history value
     const prevHistory = useRef<string>();
     const { mutate } = useSWRConfig();
+    const router = useRouter();
+    const pathname = usePathname();
 
     // Update form data when variables change
     useEffect(() => {
@@ -107,7 +98,9 @@ const Generator = ({ type, variables, showTabs = true, model }: GeneratorProps):
             setShouldRender(true);
         }
 
-        setShowHistory(true);
+        if (showHistory) {
+            setViewHistory(true);
+        }
     };
 
     /**
@@ -115,13 +108,11 @@ const Generator = ({ type, variables, showTabs = true, model }: GeneratorProps):
      */
     const resetToDefaults = () => {
         setHistory([]);
-        let resetFormData = [...formData];
-        for(const field of resetFormData){
-            field.value = '';
+        if (showTabs) {
+            setStart(true);
         }
-        setFormData(resetFormData);
         setShouldRender(false);
-        setShowHistory(false);
+        router.replace(pathname);
     };
 
     /**
@@ -161,61 +152,60 @@ const Generator = ({ type, variables, showTabs = true, model }: GeneratorProps):
         prevHistory.current = value;
     };
 
+    const showGeneratorFields = (formData: Variable[]) => {
+        return formData.map(({ id, value, show, name }, index) =>
+            show === false ? null : (
+                <div className="govuk-form-group" key={id}>
+                    <label className="govuk-label" htmlFor={id}>
+                        {changeCase.capitalCase(name ? name : id)}
+                    </label>
+                    {id === 'input' || id === 'description' ? (
+                        <textarea
+                            className="govuk-textarea"
+                            id={id}
+                            name={id}
+                            value={value}
+                            rows={10}
+                            onChange={(e) => handleInputChange(e, index)}
+                        />
+                    ) : (
+                        <input
+                            className="govuk-input"
+                            id={id}
+                            name={id}
+                            value={value}
+                            type="text"
+                            onChange={(e) => handleInputChange(e, index)}
+                        />
+                    )}
+                </div>
+            )
+        );
+    };
+
     return (
         <div className="govuk-grid-row ">
             {start && (
                 <div className="govuk-grid-column-full">
                     <form onSubmit={handleInput}>
-                        <fieldset className="govuk-fieldset">
-                            {formData.map(({ id, value }, index) => (
-                                <div className="govuk-form-group" key={id}>
-                                    <label className="govuk-label" htmlFor={id}>
-                                        {changeCase.capitalCase(id)}
-                                    </label>
-                                    {id === 'input' ? (
-                                        <textarea
-                                            className="govuk-textarea"
-                                            id={id}
-                                            name={id}
-                                            value={value}
-                                            rows={10}
-                                            onChange={(e) => handleInputChange(e, index)}
-                                        />
-                                    ) : (
-                                        <input
-                                            className="govuk-input"
-                                            id={id}
-                                            name={id}
-                                            value={value}
-                                            type="text"
-                                            onChange={(e) => handleInputChange(e, index)}
-                                        />
-                                    )}
-                                </div>
-                            ))}
-                        </fieldset>
-                        <div className="govuk-button-group">
-                            <button type="submit" className="govuk-button" data-module="govuk-button">
-                                Generate
-                            </button>
-                            <button
-                                type='button'
-                                className="govuk-button govuk-button--secondary"
-                                data-module="govuk-button"
-                                onClick={resetToDefaults}
-                            >
-                                Reset
-                            </button>
-                        </div>
+                        <fieldset className="govuk-fieldset">{showGeneratorFields(formData)}</fieldset>
+                        <button type="submit" className="govuk-button" data-module="govuk-button">
+                            Generate
+                        </button>
                     </form>
                 </div>
             )}
-            {shouldRender && (
+            {!showTabs && shouldRender && (
                 <div className={'govuk-grid-column-full ' + chatPageStyles.gridRowHalf}>
                     <OneShot variables={formData} type={type} model={model} updateHistory={updateHistory} />
                 </div>
             )}
-            {showHistory && (
+            {showTabs && shouldRender && (
+                <div className="govuk-grid-column-full">
+                    <GeneratorTabs type={type} reset={resetToDefaults} model={model} variables={formData} />
+                </div>
+            )}
+            {viewHistory && (
                 <div className={'govuk-grid-column-full ' + chatPageStyles.gridRowHalf}>
                     <GeneratorHistory history={history} />
                 </div>
