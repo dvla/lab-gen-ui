@@ -6,8 +6,9 @@ import { modelContext } from '../config/model-context-config';
 import ModelSelect from '../components/options/model-select';
 import chatPageStyles from '../styles/ChatPage.module.scss';
 
+const DIAGRAM_TYPE = 1;
+
 const TextToDiagram = () => {
-    const DIAGRAM_TYPE = 1;
     const [promptType, setPromptType] = useState('diagram');
     const [diagramType, setDiagramType] = useState('sequence');
     const [variables, setVariables] = useState<Variable[]>([
@@ -42,7 +43,7 @@ const TextToDiagram = () => {
                 <div className="govuk-grid-row">
                     <div className="govuk-grid-column-two-thirds">
                         <h1 className="govuk-heading-l">Diagram Generator</h1>
-                        <Generator type={promptType} variables={variables} model={modelInfo} showHistory={false} />
+                        <Generator promptType={promptType} variables={variables} model={modelInfo} showHistory={false} />
                     </div>
                     <div
                         className={'govuk-grid-column-one-third ' + chatPageStyles.gridRowHalf}

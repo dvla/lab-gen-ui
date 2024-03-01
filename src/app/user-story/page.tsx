@@ -31,7 +31,7 @@ const UserStory = () => {
                     <div className="govuk-grid-row">
                         <div className="govuk-grid-column-two-thirds">
                             <h1 className="govuk-heading-l">User Story Generator</h1>
-                            <Generator type={promptType} variables={variables} model={modelInfo} showHistory={false} />
+                            <Generator promptType={promptType} variables={variables} model={modelInfo} showHistory={false} />
                         </div>
                         <div
                             className={'govuk-grid-column-one-third ' + chatPageStyles.gridRowHalf}

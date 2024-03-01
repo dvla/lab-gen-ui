@@ -28,6 +28,14 @@ export default function Home() {
                             </p>
                         </li>
                         <li>
+                            <NextLink className={styles.homeLinks} href="/image-to-text">
+                                Image to Text
+                            </NextLink>
+                            <p className={styles.homeDescription}>
+                            Unlock the full potential of your visual data with our cutting-edge Image to Text conversion tool
+                            </p>
+                        </li>
+                        <li>
                             <NextLink className={styles.homeLinks} href="/jira-tickets">
                                 User Story Generator
                             </NextLink>

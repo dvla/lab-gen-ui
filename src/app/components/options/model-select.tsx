@@ -1,4 +1,4 @@
-import { ChangeEvent, useContext } from 'react';
+import { ChangeEvent, useContext, useEffect } from 'react';
 import * as changeCase from 'change-case';
 import useSWR from 'swr';
 import { modelContext } from '@/app/config/model-context-config';
@@ -20,13 +20,17 @@ const SWR_OPTIONS = {
     errorRetryCount: 5,
 };
 
+interface ModelSelectProps {
+    variantLock?: string;
+}
+
 /**
 /**
  * A component that renders a select box for choosing a model.
  * It tracks the current model context, and handles selection changes
  * to update the model context.
  */
-const ModelSelect = () => {
+const ModelSelect = ({ variantLock }: ModelSelectProps) => {
     const {
         data: models,
         error: modelsError,
@@ -54,6 +58,21 @@ const ModelSelect = () => {
         }
     };
 
+    useEffect(() => {
+        // If the current modelInfo's variant is not the variantLock, update the context
+        if (variantLock && modelInfo.variant !== variantLock && models) {
+            const matchingModel = models.find((model: any) => model.variant === variantLock);
+            if (matchingModel) {
+                setModelContext({
+                    provider: matchingModel.provider,
+                    variant: matchingModel.variant,
+                    description: matchingModel.description,
+                    location: matchingModel.location,
+                });
+            }
+        }
+    }, [variantLock, models, modelInfo, setModelContext]);
+
     return (
         <div className="govuk-form-group">
             <label className="govuk-label" htmlFor="models">
@@ -69,11 +88,13 @@ const ModelSelect = () => {
                 {modelsError && <option>Models failed to load</option>}
                 {modelsLoading && <option>Loading...</option>}
                 {models &&
-                    models.map((model: any, index: number) => (
-                        <option key={index} value={`${model.provider} ${model.variant}`}>
-                            {changeCase.capitalCase(`${model.provider} ${model.variant}`)}
-                        </option>
-                    ))}
+                    models
+                        .filter((model: any) => !variantLock || model.variant === variantLock)
+                        .map((model: any, index: number) => (
+                            <option key={index} value={`${model.provider} ${model.variant}`}>
+                                {changeCase.capitalCase(`${model.provider} ${model.variant}`)}
+                            </option>
+                        ))}
             </select>
         </div>
     );

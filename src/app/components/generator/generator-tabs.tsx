@@ -12,20 +12,20 @@ import Mermaid from '@/app/diagrams/mermaid';
 interface GeneratorTabsProps {
     reset: () => void;
     variables: Variable[];
-    type: string;
+    promptType: string;
     model: Model;
 }
 
 /**
- * Generates tabs based on the provided variables and type.
+ * Generates tabs based on the provided variables and prompt type.
  *
  * @param {boolean} reset - function to reset the tabs
  * @param {Array<Variable>} variables - list of variables to be used in generating tabs
- * @param {string} type - the type of tabs to be generated
+ * @param {string} promptType - the prompt type
  * @param {Model} model - the model object
  * @return {JSX.Element} the generated tabs component
  */
-const GeneratorTabs = ({ reset, variables, type, model }: GeneratorTabsProps) => {
+const GeneratorTabs = ({ reset, variables, promptType, model }: GeneratorTabsProps) => {
     const [resultError, setResultError] = useState('');
 
     // Create body object with default values
@@ -33,7 +33,7 @@ const GeneratorTabs = ({ reset, variables, type, model }: GeneratorTabsProps) =>
         variables: {},
         provider: model.provider,
         variant: model.variant,
-        promptId: type,
+        promptId: promptType,
     };
 
     // Populate variables in the body object
@@ -80,11 +80,12 @@ const GeneratorTabs = ({ reset, variables, type, model }: GeneratorTabsProps) =>
         );
     }
 
+    
     /**
-     * Retrieves the tab result based on the provided type.
+     * Handle an error by setting the result error.
      *
-     * @param {string} type - the type of tab result to retrieve
-     * @return {JSX.Element} the tab result based on the provided type
+     * @param {any} error - the error to be handled
+     * @return {void} 
      */
     const handleError = (error: any) => {
         setResultError(error);
@@ -103,18 +104,23 @@ const GeneratorTabs = ({ reset, variables, type, model }: GeneratorTabsProps) =>
     };
 
     /**
-     * Retrieves the tab result based on the provided type.
+     * Retrieves the tab result based on the provided prompt type.
      *
-     * @param {string} type - the type of tab result to retrieve
-     * @return {ReactNode} the tab result based on the provided type
+     * @param {string} promptType - the chosen prompt type
+     * @return {ReactNode} the tab result based on the provided prompt type
      */
-    const getTabResult = (type: string) => {
+    const getTabResult = (promptType: string) => {
         if (data) {
-            switch (type) {
+            switch (promptType) {
                 case 'user-story-gherkin':
                     return <GherkinValidate content={data} />;
                 case 'diagram':
-                    return <Mermaid chart={data.replace('```mermaid', '').replaceAll('`', '')} onError={handleError} />;
+                    return (
+                        <Mermaid
+                            chart={data.replace('```mermaid', '').replaceAll('`', '')}
+                            onError={handleError}
+                        />
+                    );
                 default:
                     return <ReactMarkdown className={jiraStyles.historyResponse}>{data}</ReactMarkdown>;
             }
@@ -160,7 +166,7 @@ const GeneratorTabs = ({ reset, variables, type, model }: GeneratorTabsProps) =>
                 <div className="govuk-tabs__panel" id="result">
                     <div className="govuk-grid-row">
                         <div className="govuk-grid-column-full">
-                            {(isLoading || isValidating) ? (
+                            {isLoading || isValidating ? (
                                 // Render spinner if loading or validating
                                 <Spinner
                                     fill="#b1b4b6"
@@ -169,7 +175,7 @@ const GeneratorTabs = ({ reset, variables, type, model }: GeneratorTabsProps) =>
                                     width="56px"
                                 />
                             ) :
-                            (data && getTabResult(type))}
+                            (data && getTabResult(promptType))}
                         </div>
                     </div>
                 </div>

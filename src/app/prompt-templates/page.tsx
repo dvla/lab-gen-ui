@@ -10,7 +10,7 @@ import { modelContext } from '../config/model-context-config';
 import ModelSelect from '../components/options/model-select';
 
 /**
- * PromptTemplate component to generate a prompt template based on the selected type and variables.
+ * PromptTemplate component to generate a prompt template based on the selected prompt type and variables.
  *
  * @return {JSX.Element} The prompt template component
  */
@@ -20,7 +20,7 @@ const PromptTemplate = () => {
         error: promptsError,
         isLoading: promptsLoading,
     } = useSWR('/api/get-prompts', fetcher, SWR_OPTIONS);
-    const [type, setType] = useState('summary');
+    const [promptType, setPromptType] = useState('summary');
     const [variables, setVariables] = useState([{ id: 'input', value: '' }]);
     const [previousVariables, setPreviousVariables] = useState<Variable[]>([]);
     const { modelInfo } = useContext(modelContext);
@@ -49,19 +49,19 @@ const PromptTemplate = () => {
         //Get the new variables for the selected prompt type and use any previous input
         for (let prompt in prompts) {
             if (prompt === event.target.value) {
-                for (let promptType of prompts[prompt]) {
+                for (let promptID of prompts[prompt]) {
                     let pv = '';
                     for (let previousVariable of tempPreviousVariables) {
                         if (previousVariable.id === promptType) {
                             pv = previousVariable.value;
                         }
                     }
-                    tempVariables.push({ id: promptType, value: pv });
+                    tempVariables.push({ id: promptID, value: pv });
                 }
             }
         }
 
-        setType(event.target.value);
+        setPromptType(event.target.value);
         setVariables(tempVariables);
         setPreviousVariables(tempPreviousVariables);
     };
@@ -72,7 +72,7 @@ const PromptTemplate = () => {
             <div className="govuk-grid-row">
                 <div className="govuk-grid-column-two-thirds">
                     <h1 className="govuk-heading-l">Instant Productivity</h1>
-                    <Generator type={type} variables={variables} showTabs={false} model={modelInfo} />
+                    <Generator promptType={promptType} variables={variables} showTabs={false} model={modelInfo} />
                 </div>
                 <div
                     className={'govuk-grid-column-one-third ' + chatPageStyles.gridRowHalf}
@@ -101,7 +101,7 @@ const PromptTemplate = () => {
                                                 name={key}
                                                 type="radio"
                                                 value={key}
-                                                checked={key === type}
+                                                checked={key === promptType}
                                                 onChange={handleRadioChange}
                                             />
                                             <label className="govuk-label govuk-radios__label" htmlFor={key}>

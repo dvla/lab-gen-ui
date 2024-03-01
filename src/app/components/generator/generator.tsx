@@ -6,6 +6,7 @@ import chatPageStyles from '../../styles/ChatPage.module.scss';
 import GeneratorTabs from './generator-tabs';
 import GeneratorHistory from './generator-history';
 import OneShot from '../one-shot/one-shot';
+import FileUpload from '@/app/image-to-text/file-upload';
 import { usePathname, useRouter } from 'next/navigation';
 import { Model } from '@/app/lib/fetchers';
 
@@ -46,27 +47,37 @@ export interface ResponseHistory {
 }
 
 interface GeneratorProps {
-    type: string;
-    model: Model;
+    promptType?: string;
+    model: any;
     variables: Variable[];
+    file?: File;
     showTabs?: boolean;
     showHistory?: boolean;
+    showFileUpload?: boolean;
 }
 
 /**
  * Component for generating forms based on input variables for pre-defined prompt templates.
  *
- * @param {GeneratorProps} type - the type of generator
+ * @param {GeneratorProps} promptType - the type of prompt
  * @param {GeneratorProps} variables - the input variables for the form
  * @param {boolean} showTabs - whether to show tabs for the generator
  * @param {ModelProps} model - the model for the generator
  * @return {JSX.Element} the generated form component
  */
-const Generator = ({ type, model, variables, showTabs = true, showHistory = true }: GeneratorProps): JSX.Element => {
+const Generator = ({
+    promptType,
+    model,
+    variables,
+    showTabs = true,
+    showHistory = true,
+    showFileUpload = false,
+}: GeneratorProps): JSX.Element => {
     // State variables
     const [start, setStart] = useState(true);
     const [shouldRender, setShouldRender] = useState(false);
     const [formData, setFormData] = useState(variables);
+    const [file, setFile] = useState<File | undefined>(undefined);
     const [viewHistory, setViewHistory] = useState(showHistory);
     const [history, setHistory] = useState<ResponseHistory[]>([]);
     // Ref for previous history value
@@ -133,6 +144,20 @@ const Generator = ({ type, model, variables, showTabs = true, showHistory = true
     };
 
     /**
+     * Handles the file upload event.
+     *
+     * @param {ChangeEvent<HTMLInputElement>} event - the change event
+     * @return {void}
+     */
+    const handleFileUpload = (event: ChangeEvent<HTMLInputElement>) => {
+        if (event.target.files && event.target.files.length > 0) {
+            setFile(event.target.files[0]);
+        } else {
+            setFile(undefined);
+        }
+    };
+
+    /**
      * Updates the history with the given value if it's different from the previous value.
      *
      * @param {string} value - The new value to be added to the history
@@ -160,14 +185,26 @@ const Generator = ({ type, model, variables, showTabs = true, showHistory = true
                         {changeCase.capitalCase(name ? name : id)}
                     </label>
                     {id === 'input' || id === 'description' ? (
-                        <textarea
-                            className="govuk-textarea"
-                            id={id}
-                            name={id}
-                            value={value}
-                            rows={10}
-                            onChange={(e) => handleInputChange(e, index)}
-                        />
+                        <div>
+                            <textarea
+                                className="govuk-textarea"
+                                id={id}
+                                name={id}
+                                value={value}
+                                rows={10}
+                                onChange={(e) => handleInputChange(e, index)}
+                            />
+                            {showFileUpload && (
+                                <input
+                                    className="govuk-file-upload"
+                                    id={`${id}-file`} // Ensure the ID is unique for files
+                                    name={`${id}-file`}
+                                    type="file"
+                                    accept=".jpeg,.jpg,.png"
+                                    onChange={(e) => handleFileUpload(e)}
+                                />
+                            )}
+                        </div>
                     ) : (
                         <input
                             className="govuk-input"
@@ -197,12 +234,17 @@ const Generator = ({ type, model, variables, showTabs = true, showHistory = true
             )}
             {!showTabs && shouldRender && (
                 <div className={'govuk-grid-column-full ' + chatPageStyles.gridRowHalf}>
-                    <OneShot variables={formData} type={type} model={model} updateHistory={updateHistory} />
+                    {promptType && <OneShot variables={formData} promptType={promptType} model={model} updateHistory={updateHistory} />}
                 </div>
             )}
-            {showTabs && shouldRender && (
+            {showTabs && shouldRender && !showFileUpload && (
                 <div className="govuk-grid-column-full">
-                    <GeneratorTabs type={type} reset={resetToDefaults} model={model} variables={formData} />
+                    {promptType && <GeneratorTabs promptType={promptType} reset={resetToDefaults} model={model} variables={formData} />}
+                </div>
+            )}
+            {showTabs && shouldRender && showFileUpload && (
+                <div className={'govuk-grid-column-full ' + chatPageStyles.gridRowHalf}>
+                    {file && <FileUpload reset={resetToDefaults} variables={formData} model={model} file={file} />}
                 </div>
             )}
             {viewHistory && (

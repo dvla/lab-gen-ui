@@ -7,25 +7,40 @@ import useSWR from 'swr';
  * Interface for the body of a request.
  */
 export interface Body {
-    /** 
-     * Variables for the request with a dynamic structure 
+    /**
+     * The content of the request.
      */
-    variables: any;
+    content?: string;
 
-    /** 
-     * Provider for the model 
+    /**
+     * Variables for the request with a dynamic structure
+     */
+    variables?: any;
+
+    /**
+     * Provider for the model
      */
     provider: string;
 
-    /** 
+    /**
      * Variant for the model
      */
     variant: string;
 
-    /** 
+    /**
      * Prompt ID for the prompt type
      */
-    promptId: string;
+    promptId?: string;
+    
+    /**
+     * File to upload
+     */
+    file?: string;
+
+    /**
+     * File content type
+     */
+    fileContentType?: string;
 }
 
 /**
@@ -94,9 +109,9 @@ export const fetcher = (url: string) =>
  * @param {string} body - The body of the conversation
  * @return {object} An object containing data, error, isLoading, and isValidating
  */
-export const useStartConversation = (body: Body) => {
+export const useStartConversation = (body: Body | null) => {
     const { data, error, isLoading, isValidating } = useSWR(
-        '/api/start-conversation',
+        body ? '/api/start-conversation' : null, // Conditional on body being present
         (url: string) =>
             fetch(url, {
                 method: 'POST',

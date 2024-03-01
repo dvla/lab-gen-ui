@@ -5,24 +5,24 @@ import { useEffect } from 'react';
 
 interface OneShotProps {
     variables: Variable[];
-    type: string;
+    promptType: string;
     model: Model;
     updateHistory: (history: string) => void;
 }
 
 /**
- * Generate a one shot result using the given variables, type, and model. Update the history with the returned data.
+ * Generate a one shot result using the given variables, prompt type, and model. Update the history with the returned data.
  *
  * @param {OneShotProps} variables - The variables to be used in the conversation
  * @return {JSX.Element} The JSX element representing the OneShot component
  */
-const OneShot = ({ variables, type, model, updateHistory }: OneShotProps) => {
+const OneShot = ({ variables, promptType, model, updateHistory }: OneShotProps) => {
     // Create body object with default values
     const body: Body = {
         variables: {},
         provider: model.provider,
         variant: model.variant,
-        promptId: type,
+        promptId: promptType,
     };
 
     // Populate variables in the body object
