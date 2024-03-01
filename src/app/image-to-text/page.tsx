@@ -19,7 +19,7 @@ const ImageToText = () => {
                 <main>
                     <div className="govuk-grid-row">
                         <div className="govuk-grid-column-two-thirds">
-                            <h1 className="govuk-heading-l">Diagram to Text</h1>
+                            <h1 className="govuk-heading-l">Image to Text</h1>
                             <Generator variables={variables} model={modelInfo} showFileUpload={true}/>
                         </div>
                         <div
