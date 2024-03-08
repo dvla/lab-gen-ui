@@ -125,11 +125,12 @@ export const useStartConversation = (body: Body | null) => {
                     const error = new Error(response.error);
                     throw error;
                 }
+
                 return await res.text();
             }),
         {
             revalidateOnFocus: false,
-            errorRetryCount: 0
+            errorRetryCount: 0,
         }
     );
 

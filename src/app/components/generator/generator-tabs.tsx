@@ -16,6 +16,8 @@ interface GeneratorTabsProps {
     model: Model;
 }
 
+const MERMAID_PATTERN = /```mermaid((?:[^`]|`(?!``))+)```?/s
+
 /**
  * Generates tabs based on the provided variables and prompt type.
  *
@@ -115,12 +117,16 @@ const GeneratorTabs = ({ reset, variables, promptType, model }: GeneratorTabsPro
                 case 'user-story-gherkin':
                     return <GherkinValidate content={data} />;
                 case 'diagram':
-                    return (
-                        <Mermaid
-                            chart={data.replace('```mermaid', '').replaceAll('`', '')}
-                            onError={handleError}
-                        />
-                    );
+                    //finds mermaid code within a ```mermaid``` block
+                    const match = data.match(MERMAID_PATTERN);
+
+                    if (match && match[1]) {  
+                        const mermaidCode = match[1].trim();  
+                        return <Mermaid chart={mermaidCode} onError={handleError} />;
+                    } else {
+                        //if mermaid is not in code block or not present
+                        return <Mermaid chart={data} onError={handleError} />;
+                    }
                 default:
                     return <ReactMarkdown className={jiraStyles.historyResponse}>{data}</ReactMarkdown>;
             }

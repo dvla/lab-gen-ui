@@ -6,8 +6,11 @@ import mermaid from 'mermaid';
  */
 interface MermaidProps {
     chart: string;
-    onError: (error: any) => void;
+    onError: (error: string) => void;
 }
+
+const DIAGRAM_ERROR_MESSAGE =
+        'Error loading diagram: Please reset and try amending your specifications or using a different model.';
 
 /**
  * Renders Mermaid charts inside a React component, handling
@@ -39,15 +42,16 @@ const Mermaid = ({ chart, onError }: MermaidProps) => {
     const renderMermaid = async () => {
         setIsLoading(false);
         setError(null);
+        onError('');
         if (mermaidRef.current) {
             mermaidRef.current.removeAttribute('data-processed');
             try {
                 await mermaid.run({ nodes: [mermaidRef.current] });
                 setIsLoading(true);
             } catch (error: any) {
-                if (error.hash === 'UnknownDiagramError') {
+                if(error.hash !== "TypeError") {
                     setError(error);
-                    onError(error);
+                    onError(DIAGRAM_ERROR_MESSAGE);
                 }
             }
         }
