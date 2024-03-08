@@ -52,7 +52,7 @@ const PromptTemplate = () => {
                 for (let promptID of prompts[prompt]) {
                     let pv = '';
                     for (let previousVariable of tempPreviousVariables) {
-                        if (previousVariable.id === promptType) {
+                        if (previousVariable.id === promptID) {
                             pv = previousVariable.value;
                         }
                     }
@@ -72,7 +72,7 @@ const PromptTemplate = () => {
             <div className="govuk-grid-row">
                 <div className="govuk-grid-column-two-thirds">
                     <h1 className="govuk-heading-l">Instant Productivity</h1>
-                    <Generator promptType={promptType} variables={variables} showTabs={false} model={modelInfo} />
+                    <Generator promptType={promptType} variables={variables} showTabs={false} model={modelInfo} streaming={true}/>
                 </div>
                 <div
                     className={'govuk-grid-column-one-third ' + chatPageStyles.gridRowHalf}

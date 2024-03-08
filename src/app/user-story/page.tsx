@@ -13,6 +13,7 @@ const UserStory = () => {
         { id: 'title', value: '' },
         { id: 'input', value: '', name: 'description' },
     ]);
+    const [showSettings, setShowSettings] = useState(true);
     const { modelInfo } = useContext(modelContext);
 
     /**
@@ -25,14 +26,31 @@ const UserStory = () => {
         setPromptType(isGherkinChecked ? 'user-story' : 'user-story-gherkin');
     };
 
+    /**
+     * Function to update the display settings.
+     *
+     * @param {boolean} display - the new display setting
+     * @return {void} 
+     */
+    const displaySettings = (display: boolean) => {
+        setShowSettings(display);
+    };
+
     return (
         <FixedPage backButton={true} modelBanner={true}>
-                <main>
-                    <div className="govuk-grid-row">
-                        <div className="govuk-grid-column-two-thirds">
-                            <h1 className="govuk-heading-l">User Story Generator</h1>
-                            <Generator promptType={promptType} variables={variables} model={modelInfo} showHistory={false} />
-                        </div>
+            <main>
+                <div className="govuk-grid-row">
+                    <div className={showSettings ? "govuk-grid-column-two-thirds" : "govuk-grid-column-full"}>
+                        <h1 className="govuk-heading-l">User Story Generator</h1>
+                        <Generator
+                            promptType={promptType}
+                            variables={variables}
+                            model={modelInfo}
+                            showHistory={false}
+                            displaySettings={displaySettings}
+                        />
+                    </div>
+                    {showSettings && (
                         <div
                             className={'govuk-grid-column-one-third ' + chatPageStyles.gridRowHalf}
                             style={{ padding: '15px', backgroundColor: '#f3f2f1' }}
@@ -59,9 +77,10 @@ const UserStory = () => {
                                 </div>
                             </fieldset>
                         </div>
-                    </div>
-                </main>
-            </FixedPage>
+                    )}
+                </div>
+            </main>
+        </FixedPage>
     );
 };
 

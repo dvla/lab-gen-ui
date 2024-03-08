@@ -20,12 +20,12 @@ export interface Body {
     /**
      * Provider for the model
      */
-    provider: string;
+    provider?: string;
 
     /**
      * Variant for the model
      */
-    variant: string;
+    variant?: string;
 
     /**
      * Prompt ID for the prompt type
@@ -136,3 +136,31 @@ export const useStartConversation = (body: Body | null) => {
 
     return { data, error, isLoading, isValidating };
 };
+
+/**
+ * Asynchronous generator function to fetch completion tokens from the server.
+ *
+ * @param {Body} body - the request body for the API call
+ * @return {AsyncIterable<string>} an asynchronous iterable of completion tokens
+ */
+export async function* getCompletion(body: Body) {
+    const res = await fetch('/api/start-conversation', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(body)
+    });
+
+    const reader = res.body?.getReader();
+    if (!reader) throw new Error('No reader');
+    const decoder = new TextDecoder();
+
+    let done, value;
+    while (!done) {
+        ({ done, value } = await reader.read());
+        if (done) return;
+        const token = decoder.decode(value);
+        yield token;
+    }
+}

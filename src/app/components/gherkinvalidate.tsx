@@ -34,7 +34,7 @@ const GherkinValidate = ({ content }: GherkinValidateProps) => {
         { shouldRetryOnError: false }
     );
     if (error) return <WarningText>Error parsing Gherkin code, please try again</WarningText>;
-    if (isLoading) return <div>loading...</div>;
+    if (isLoading) return <ReactMarkdown className={jiraStyles.historyResponse}>{content}</ReactMarkdown>;
 
     return (
         <>

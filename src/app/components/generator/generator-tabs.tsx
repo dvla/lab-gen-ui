@@ -4,47 +4,36 @@ import { Tabs } from 'govuk-frontend';
 import ReactMarkdown from 'react-markdown';
 import jiraStyles from '../../styles/Jira.module.scss';
 import generatorStyles from '../../styles/Generator.module.scss';
-import { useStartConversation, Body, Model } from '@/app/lib/fetchers';
+import { Model } from '@/app/lib/fetchers';
 import GherkinValidate from '../gherkinvalidate';
 import { Variable } from './generator';
 import Mermaid from '@/app/diagrams/mermaid';
+import useStream from '@/app/hooks/useStream';
+import Error from '@/app/components/error';
 
 interface GeneratorTabsProps {
     reset: () => void;
     variables: Variable[];
     promptType: string;
     model: Model;
+    streamingEnabled: boolean;
 }
 
 const MERMAID_PATTERN = /```mermaid((?:[^`]|`(?!``))+)```?/s
 
 /**
- * Generates tabs based on the provided variables and prompt type.
+ * Generates tabs for the given input parameters and handles streaming data and errors.
  *
- * @param {boolean} reset - function to reset the tabs
- * @param {Array<Variable>} variables - list of variables to be used in generating tabs
- * @param {string} promptType - the prompt type
- * @param {Model} model - the model object
- * @return {JSX.Element} the generated tabs component
+ * @param {() => void} reset - function to reset the tabs
+ * @param {Variable[]} variables - array of variables
+ * @param {string} promptType - type of prompt
+ * @param {Model} model - model object
+ * @param {boolean} streamingEnabled - flag indicating if streaming is enabled
+ * @return {JSX.Element} the rendered tabs component
  */
-const GeneratorTabs = ({ reset, variables, promptType, model }: GeneratorTabsProps) => {
-    const [resultError, setResultError] = useState('');
-
-    // Create body object with default values
-    const body: Body = {
-        variables: {},
-        provider: model.provider,
-        variant: model.variant,
-        promptId: promptType,
-    };
-
-    // Populate variables in the body object
-    for (let v of variables) {
-        body.variables[v.id] = v.value;
-    }
-
-    // Call useStartConversation API to get data and error states
-    const { data, error, isLoading, isValidating } = useStartConversation(body);
+const GeneratorTabs = ({ reset, variables, promptType, model, streamingEnabled }: GeneratorTabsProps) => {
+    const [tabError, setTabError] = useState<string | null>(null);
+    const { data, isLoading, streamingFinished, error } = useStream({model, promptType, variables});
 
     // useEffect hook to initialize tabs
     useEffect(() => {
@@ -56,41 +45,17 @@ const GeneratorTabs = ({ reset, variables, promptType, model }: GeneratorTabsPro
             for (let tab of $tabs) {
                 new Tabs(tab).init();
             }
-        }
+        };
     }, []);
 
-    // If there is an error, display error message
-    if (error) {
-        return (
-            <>
-                <div className="govuk-error-summary" data-module="govuk-error-summary">
-                    <div role="alert">
-                        <h2 className="govuk-error-summary__title">There is a problem</h2>
-                        <div className="govuk-error-summary__body">
-                            <ul className="govuk-list govuk-error-summary__list">
-                                <li>
-                                    <a href="#">{error.message}</a>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-                <button className="govuk-button" onClick={reset}>
-                    Reset
-                </button>
-            </>
-        );
-    }
-
-    
     /**
      * Handle an error by setting the result error.
      *
      * @param {any} error - the error to be handled
-     * @return {void} 
+     * @return {void}
      */
-    const handleError = (error: any) => {
-        setResultError(error);
+    const handleError = (error: string) => {
+        setTabError(error);
     };
 
     /**
@@ -99,7 +64,7 @@ const GeneratorTabs = ({ reset, variables, promptType, model }: GeneratorTabsPro
      * @param {string | undefined} text - the text to be copied to the clipboard
      * @return {void}
      */
-    const copyToClipboard = (text: string | undefined) => {
+    const copyToClipboard = (text: string | null) => {
         if (text) {
             navigator.clipboard.writeText(text);
         }
@@ -111,9 +76,20 @@ const GeneratorTabs = ({ reset, variables, promptType, model }: GeneratorTabsPro
      * @param {string} promptType - the chosen prompt type
      * @return {ReactNode} the tab result based on the provided prompt type
      */
-    const getTabResult = (promptType: string) => {
-        if (data) {
-            switch (promptType) {
+    const getTabResult = (type: string) => {
+        // If loading or streaming not enabled, keep displaying spinner
+        if (isLoading || !streamingEnabled && !streamingFinished) {
+            return <Spinner fill="#b1b4b6" height="56px" width="56px" />;
+        }
+
+        // If streaming, return current streaming data in markdown
+        if (!streamingFinished && data) {
+            return <ReactMarkdown className={jiraStyles.historyResponse}>{data}</ReactMarkdown>;
+        }
+
+        // If streaming has finished display final result
+        if (streamingFinished && data) {
+            switch (type) {
                 case 'user-story-gherkin':
                     return <GherkinValidate content={data} />;
                 case 'diagram':
@@ -136,31 +112,24 @@ const GeneratorTabs = ({ reset, variables, promptType, model }: GeneratorTabsPro
     // Render tabs component
     return (
         <>
-            {resultError && (
-                <>
-                    <div className="govuk-error-summary" data-module="govuk-error-summary">
-                        <div role="alert">
-                            <h2 className="govuk-error-summary__title">There is a problem</h2>
-                            <div className="govuk-error-summary__body">
-                                <ul className="govuk-list govuk-error-summary__list">
-                                    <li>
-                                        <a href="#">{resultError}</a>
-                                    </li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-                    <button className="govuk-button" onClick={reset}>
-                        Reset
-                    </button>
-                </>
+            {(error || tabError) && (
+                <Error error={error} reset={reset} />
             )}
             <div className="govuk-tabs" data-module="govuk-tabs">
                 <h2 className="govuk-tabs__title">Contents</h2>
                 <ul className="govuk-tabs__list">
                     <li className="govuk-tabs__list-item govuk-tabs__list-item--selected">
-                        <a className="govuk-tabs__tab" href="#result">
+                        <a className={`govuk-tabs__tab ${generatorStyles.tabLoading}`} href="#result">
                             Result
+                            {!streamingFinished && (
+                                <Spinner
+                                    fill="#b1b4b6"
+                                    height="20px"
+                                    title="Example Spinner implementation"
+                                    width="20px"
+                                    style={{ marginLeft: '5px' }}
+                                />
+                            )}
                         </a>
                     </li>
                     <li className="govuk-tabs__list-item">
@@ -172,16 +141,7 @@ const GeneratorTabs = ({ reset, variables, promptType, model }: GeneratorTabsPro
                 <div className="govuk-tabs__panel" id="result">
                     <div className="govuk-grid-row">
                         <div className="govuk-grid-column-full">
-                            {isLoading || isValidating ? (
-                                // Render spinner if loading or validating
-                                <Spinner
-                                    fill="#b1b4b6"
-                                    height="56px"
-                                    title="Example Spinner implementation"
-                                    width="56px"
-                                />
-                            ) :
-                            (data && getTabResult(promptType))}
+                            {getTabResult(promptType)}
                         </div>
                     </div>
                 </div>

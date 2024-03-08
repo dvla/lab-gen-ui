@@ -1,6 +1,5 @@
 'use client';
 import { ChangeEvent, FormEventHandler, useEffect, useRef, useState } from 'react';
-import { useSWRConfig } from 'swr';
 import * as changeCase from 'change-case';
 import chatPageStyles from '../../styles/ChatPage.module.scss';
 import GeneratorTabs from './generator-tabs';
@@ -44,6 +43,10 @@ export interface ResponseHistory {
      * Model field
      */
     model: Model;
+    /**
+     * Stream Finished Field
+     */
+    streamingFinished: boolean;
 }
 
 interface GeneratorProps {
@@ -54,16 +57,23 @@ interface GeneratorProps {
     showTabs?: boolean;
     showHistory?: boolean;
     showFileUpload?: boolean;
+    streaming?: boolean;
+    displaySettings?: (display: boolean) => void;
 }
 
+
 /**
- * Component for generating forms based on input variables for pre-defined prompt templates.
+ * Generates a JSX element for the Generator component.
  *
- * @param {GeneratorProps} promptType - the type of prompt
- * @param {GeneratorProps} variables - the input variables for the form
- * @param {boolean} showTabs - whether to show tabs for the generator
- * @param {ModelProps} model - the model for the generator
- * @return {JSX.Element} the generated form component
+ * @param {string} promptType - the type of prompt
+ * @param {string} model - the model to be used
+ * @param {Variable[]} variables - the variables for the generator
+ * @param {boolean} showTabs - whether to show tabs
+ * @param {boolean} showHistory - whether to show history
+ * @param {boolean} showFileUpload - whether to show file upload
+ * @param {boolean} streaming - whether streaming is enabled
+ * @param {(display: boolean) => void} displaySettings - function to display settings on page
+ * @return {JSX.Element}
  */
 const Generator = ({
     promptType,
@@ -72,6 +82,8 @@ const Generator = ({
     showTabs = true,
     showHistory = true,
     showFileUpload = false,
+    streaming = true,
+    displaySettings
 }: GeneratorProps): JSX.Element => {
     // State variables
     const [start, setStart] = useState(true);
@@ -80,9 +92,9 @@ const Generator = ({
     const [file, setFile] = useState<File | undefined>(undefined);
     const [viewHistory, setViewHistory] = useState(showHistory);
     const [history, setHistory] = useState<ResponseHistory[]>([]);
+    const [isStreaming, setIsStreaming] = useState(false);
     // Ref for previous history value
     const prevHistory = useRef<string>();
-    const { mutate } = useSWRConfig();
     const router = useRouter();
     const pathname = usePathname();
 
@@ -103,15 +115,17 @@ const Generator = ({
             setStart(false);
         }
 
-        if (shouldRender) {
-            mutate('/api/start-conversation');
-        } else {
-            setShouldRender(true);
-        }
+        setShouldRender(true);
+        setIsStreaming(true);
 
         if (showHistory) {
             setViewHistory(true);
         }
+
+        if(displaySettings){
+            displaySettings(false);
+        }
+        
     };
 
     /**
@@ -123,7 +137,12 @@ const Generator = ({
             setStart(true);
         }
         setShouldRender(false);
+        setIsStreaming(false);
         router.replace(pathname);
+
+        if(displaySettings){
+            displaySettings(true);
+        }
     };
 
     /**
@@ -163,18 +182,23 @@ const Generator = ({
      * @param {string} value - The new value to be added to the history
      * @return {void}
      */
-    const updateHistory = (value: string) => {
+    const updateHistory = (value: string, streamingFinished: boolean) => {
         const responseHistory: ResponseHistory = {
             data: value,
             model: model,
+            streamingFinished: streamingFinished
         };
+
+        streamingFinished ? setIsStreaming(false) : setIsStreaming(true);
+
         if (!prevHistory.current) {
             setHistory([responseHistory, ...history]);
-        } else if (prevHistory.current && value !== prevHistory.current) {
+        } else if (prevHistory.current && value !== prevHistory.current || streamingFinished) {
             setHistory([responseHistory, ...history]);
         }
 
         prevHistory.current = value;
+        setShouldRender(false);
     };
 
     const showGeneratorFields = (formData: Variable[]) => {
@@ -226,7 +250,7 @@ const Generator = ({
                 <div className="govuk-grid-column-full">
                     <form onSubmit={handleInput}>
                         <fieldset className="govuk-fieldset">{showGeneratorFields(formData)}</fieldset>
-                        <button type="submit" className="govuk-button" data-module="govuk-button">
+                        <button type="submit" className="govuk-button" data-module="govuk-button" disabled={isStreaming}>
                             Generate
                         </button>
                     </form>
@@ -239,7 +263,7 @@ const Generator = ({
             )}
             {showTabs && shouldRender && !showFileUpload && (
                 <div className="govuk-grid-column-full">
-                    {promptType && <GeneratorTabs promptType={promptType} reset={resetToDefaults} model={model} variables={formData} />}
+                    {promptType && <GeneratorTabs promptType={promptType} reset={resetToDefaults} model={model} variables={formData} streamingEnabled={streaming} />}
                 </div>
             )}
             {showTabs && shouldRender && showFileUpload && (
@@ -249,7 +273,7 @@ const Generator = ({
             )}
             {viewHistory && (
                 <div className={'govuk-grid-column-full ' + chatPageStyles.gridRowHalf}>
-                    <GeneratorHistory history={history} />
+                    <GeneratorHistory history={history}/>
                 </div>
             )}
         </div>

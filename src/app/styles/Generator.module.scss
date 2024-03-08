@@ -1,4 +1,10 @@
 .code{
     white-space: break-spaces;
+    overflow-wrap: anywhere;
     text-align: justify;
+}
+
+.tabLoading{
+    display: flex;
+    align-items: center;
 }

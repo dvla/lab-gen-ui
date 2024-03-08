@@ -4,9 +4,11 @@ import { Tabs } from 'govuk-frontend';
 import { Variable } from '../components/generator/generator';
 import ReactMarkdown from 'react-markdown';
 import jiraStyles from '../styles/Jira.module.scss';
+import generatorStyles from '../styles/Generator.module.scss';
 
 import { Model, useStartConversation, Body } from '@/app/lib/fetchers';
 import Image from 'next/image';
+import useStream from '../hooks/useStream';
 
 interface FileUploadProps {
     reset: () => void;
@@ -52,27 +54,15 @@ const FileUpload = ({ reset, model, file, variables }: FileUploadProps) => {
             });
     }, [file]);
 
-    // Prepare the body for useStartConversation
-    const body: Body = {
-        provider: model.provider,
-        variant: model.variant,
-        variables: {},
-        file: fileBase64,
-        fileContentType: file.type,
-    };
-
-    // Populate variables in the body object
-    variables.forEach((v) => {
-        body.variables[v.id] = v.value;
-    });
-
     //Checks that fileBase64 has been set
     const shouldFetch = !!fileBase64;
+    let body = {};
 
-    const { data, error, isLoading, isValidating } = useStartConversation(shouldFetch ? body : null);
+    //const { data, error, isLoading, isValidating } = useStartConversation(shouldFetch ? body : null);
+    const { data, error, isLoading, streamingFinished } = useStream(shouldFetch ? {model, variables, fileBase64, fileType: file.type} : {});
 
     if (errorState || error) {
-        const errorMessage = errorState ? errorState.message : error?.message || 'Unknown error';
+        const errorMessage = errorState ? errorState.message : error || 'Unknown error';
         return (
             <div className="govuk-error-summary" data-module="govuk-error-summary">
                 <div role="alert">
@@ -95,8 +85,17 @@ const FileUpload = ({ reset, model, file, variables }: FileUploadProps) => {
                 <h2 className="govuk-tabs__title">Contents</h2>
                 <ul className="govuk-tabs__list">
                     <li className="govuk-tabs__list-item govuk-tabs__list-item--selected">
-                        <a className="govuk-tabs__tab" href="#result">
+                        <a className={`govuk-tabs__tab ${generatorStyles.tabLoading}`} href="#result">
                             Result
+                            {!streamingFinished && (
+                                <Spinner
+                                    fill="#b1b4b6"
+                                    height="20px"
+                                    title="Example Spinner implementation"
+                                    width="20px"
+                                    style={{ marginLeft: '5px' }}
+                                />
+                            )}
                         </a>
                     </li>
                     <li className="govuk-tabs__list-item">
@@ -108,7 +107,7 @@ const FileUpload = ({ reset, model, file, variables }: FileUploadProps) => {
                 <div className="govuk-tabs__panel" id="result">
                     <div className="govuk-grid-row">
                         <div className="govuk-grid-column-full">
-                            {isLoading || isValidating ? (
+                            {isLoading ? (
                                 // Render spinner if loading or validating
                                 <Spinner
                                     fill="#b1b4b6"

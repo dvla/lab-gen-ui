@@ -3,6 +3,7 @@ import chatPageStyles from '../../styles/ChatPage.module.scss';
 import jiraStyles from '../../styles/Jira.module.scss';
 import { ResponseHistory } from './generator';
 import { Model } from '@/app/lib/fetchers';
+import { Spinner } from 'govuk-react';
 
 interface GeneratorHistoryProps {
     history: ResponseHistory[];
@@ -15,7 +16,6 @@ interface GeneratorHistoryProps {
  * @return {JSX.Element} the rendered history component
  */
 const GeneratorHistory = ({ history }: GeneratorHistoryProps) => {
-
     /**
      * Returns the color class for a given model based on its provider and variant.
      *
@@ -53,7 +53,11 @@ const GeneratorHistory = ({ history }: GeneratorHistoryProps) => {
                                 <tr key={index} className="govuk-table__row">
                                     <td className="govuk-table__cell">
                                         <ReactMarkdown className={jiraStyles.historyResponse}>{item.data}</ReactMarkdown>
-                                        <strong className={`govuk-tag ${jiraStyles.govTagSmall} ${getTagColour(item.model)}`}>{item.model.provider} {item.model.variant}</strong>
+                                        <div className={jiraStyles.tagLoading}>
+                                            <strong className={`govuk-tag ${jiraStyles.govTagSmall} ${getTagColour(item.model)}`}>{item.model.provider} {item.model.variant}</strong>
+                                            {!item.streamingFinished && <Spinner fill="#b1b4b6" height="20px" title="One Shot Spinner" width="20px" style={{ padding: '0 10px' }} />}
+                                        </div>
+                                        
                                     </td>
                                 </tr>
                             ))}
