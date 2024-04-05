@@ -1,3 +1,4 @@
+"use client";
 import { Message, useChat } from 'ai/react';
 import styles from '../styles/Chat.module.scss';
 import { useEffect, useRef } from 'react';
@@ -108,10 +109,11 @@ const Chat = ({
     undoMessageRequested,
     messageLoading,
     editedLatestMessage,
-    resetChat,
+    resetChat
+
 }: ChatProps) => {
     const { messages, input, error, handleInputChange, handleSubmit, isLoading } = useChat({
-        onFinish: (message) => {
+        onFinish: (message: Message) => {
             if (onMessage) {
                 onMessage(message.content);
             }
@@ -120,10 +122,11 @@ const Chat = ({
                 messageLoading(isLoading);
             }
         },
-        api: '/api/models/chat/',
+        api: 'api/models/chat',
         initialMessages,
         body,
     });
+
     const chatHistoryBottom = useRef<HTMLDivElement>(null);
 
     useEffect(() => {

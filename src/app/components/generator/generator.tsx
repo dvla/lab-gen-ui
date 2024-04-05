@@ -47,6 +47,10 @@ export interface ResponseHistory {
      * Stream Finished Field
      */
     streamingFinished: boolean;
+    /**
+     * Conversation ID Field
+     */
+    conversationId: string | null;
 }
 
 interface GeneratorProps {
@@ -182,11 +186,12 @@ const Generator = ({
      * @param {string} value - The new value to be added to the history
      * @return {void}
      */
-    const updateHistory = (value: string, streamingFinished: boolean) => {
+    const updateHistory = (value: string, streamingFinished: boolean, conversationId: string | null) => {
         const responseHistory: ResponseHistory = {
             data: value,
             model: model,
-            streamingFinished: streamingFinished
+            streamingFinished: streamingFinished,
+            conversationId: conversationId,
         };
 
         streamingFinished ? setIsStreaming(false) : setIsStreaming(true);

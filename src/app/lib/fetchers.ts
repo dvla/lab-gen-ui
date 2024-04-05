@@ -1,4 +1,5 @@
-import useSWR from 'swr';
+import useSWR, { mutate } from 'swr';
+import { ChangeBody } from '../components/generator/change-result';
 
 /**
  * Interface representing the body of the request
@@ -143,9 +144,40 @@ export const useStartConversation = (body: Body | null) => {
  * @param {Body} body - the request body for the API call
  * @return {AsyncIterable<string>} an asynchronous iterable of completion tokens
  */
-export async function* getCompletion(body: Body) {
+export async function* getCompletion(body: Body): AsyncIterable<{ token: string; conversationId: string | null }> {
     const res = await fetch('/api/start-conversation', {
         method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(body)
+    });
+
+    const conversationId = res.headers.get('x-conversation-id');
+
+    const reader = res.body?.getReader();
+    if (!reader) throw new Error('No reader');
+    const decoder = new TextDecoder();
+
+    let done, value;
+    while (!done) {
+        ({ done, value } = await reader.read());
+        if (done) return {conversationId};
+        const token = decoder.decode(value);
+        yield { token, conversationId };
+    }
+}
+
+/**
+ * Generates an async iterator to retrieve continue completion tokens from the server.
+ *
+ * @param {Body} body - the body of the request
+ * @param {string} conversationId - the conversation ID
+ * @return {AsyncIterable<string>} an async iterator of continue completion tokens
+ */
+export async function* getContinueCompletion(body: Body, conversationId: string): AsyncIterable<string> {
+    const res = await fetch(`/api/continue-conversation?conversationId=${conversationId}`, {
+        method: 'PUT',
         headers: {
             'Content-Type': 'application/json',
         },
@@ -164,3 +196,29 @@ export async function* getCompletion(body: Body) {
         yield token;
     }
 }
+
+/**
+ * Generates a custom hook to fetch conversation history data based on the conversation ID.
+ *
+ * @param {string} conversationId - The ID of the conversation to fetch history for.
+ * @return {object} An object containing data, error, and loading state for the conversation history.
+ */
+export const useConversationHistory = (conversationId: string) => {
+    const { data, error, isLoading } = useSWR(conversationId ?
+        `/api/get-history?conversationId=${conversationId}` : null,
+        fetcher,
+        SWR_OPTIONS
+      );
+ 
+    return { data, error, isLoading };
+}
+
+/**
+* Reloads the history for a specific conversation.
+*
+* @param {string} conversationId - The ID of the conversation to reload history for
+* @return {void}
+*/
+export const reloadHistory = (conversationId: string) => {
+    mutate(`/api/get-history?conversationId=${conversationId}`);
+};

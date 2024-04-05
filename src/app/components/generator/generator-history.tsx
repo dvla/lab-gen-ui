@@ -24,7 +24,7 @@ const GeneratorHistory = ({ history }: GeneratorHistoryProps) => {
      */
     const getTagColour = (model: Model) => {
         const modelType = `${model.provider} ${model.variant}`;
-        switch(modelType) {
+        switch (modelType) {
             case 'AZURE GENERAL':
                 return 'govuk-tag--blue';
             case 'AZURE ADVANCED':
@@ -40,24 +40,48 @@ const GeneratorHistory = ({ history }: GeneratorHistoryProps) => {
             default:
                 return 'govuk-tag--grey';
         }
-    }
+    };
 
     return (
         <div>
             {history.length > 0 && (
                 <>
-                    <table className={"govuk-table " + chatPageStyles.historyTable}>
+                    <table className={'govuk-table ' + chatPageStyles.historyTable}>
                         <caption className="govuk-table__caption govuk-table__caption--m">Results</caption>
                         <tbody className="govuk-table__body">
                             {history.map((item, index) => (
                                 <tr key={index} className="govuk-table__row">
                                     <td className="govuk-table__cell">
-                                        <ReactMarkdown className={jiraStyles.historyResponse}>{item.data}</ReactMarkdown>
-                                        <div className={jiraStyles.tagLoading}>
-                                            <strong className={`govuk-tag ${jiraStyles.govTagSmall} ${getTagColour(item.model)}`}>{item.model.provider} {item.model.variant}</strong>
-                                            {!item.streamingFinished && <Spinner fill="#b1b4b6" height="20px" title="One Shot Spinner" width="20px" style={{ padding: '0 10px' }} />}
+                                        <ReactMarkdown className={jiraStyles.historyResponse}>
+                                            {item.data}
+                                        </ReactMarkdown>
+                                        <div className={jiraStyles.continueTags}>
+                                            <div className={jiraStyles.tagLoading}>
+                                                <strong
+                                                    className={`govuk-tag ${jiraStyles.govTagSmall} ${getTagColour(
+                                                        item.model
+                                                    )}`}
+                                                >
+                                                    {item.model.provider} {item.model.variant}
+                                                </strong>
+                                                {!item.streamingFinished && (
+                                                    <Spinner
+                                                        fill="#b1b4b6"
+                                                        height="20px"
+                                                        title="One Shot Spinner"
+                                                        width="20px"
+                                                        style={{ padding: '0 10px' }}
+                                                    />
+                                                )}
+                                            </div>
+                                            <a
+                                                href={`continue-chat/${item.conversationId}`}
+                                                data-testid="item.conversationID"
+                                                className="govuk-link govuk-link--no-visited-state"
+                                            >
+                                                Continue
+                                            </a>
                                         </div>
-                                        
                                     </td>
                                 </tr>
                             ))}

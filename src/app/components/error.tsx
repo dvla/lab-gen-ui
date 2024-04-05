@@ -25,9 +25,11 @@ const Error = ({ error, reset }: ErrorProps) => {
                     </div>
                 </div>
             </div>
-            <button className="govuk-button" onClick={reset}>
-                Reset
-            </button>
+            {reset && (
+                <button className="govuk-button" onClick={reset}>
+                    Reset
+                </button>
+            )}
         </>
     );
 };

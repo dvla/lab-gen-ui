@@ -8,7 +8,7 @@ interface OneShotProps {
     variables: Variable[];
     promptType: string;
     model: Model;
-    updateHistory: (history: string, streamingFinished: boolean) => void;
+    updateHistory: (history: string, streamingFinished: boolean, conversationId: string | null) => void;
 }
 
 /**

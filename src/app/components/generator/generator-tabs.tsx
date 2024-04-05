@@ -4,12 +4,13 @@ import { Tabs } from 'govuk-frontend';
 import ReactMarkdown from 'react-markdown';
 import jiraStyles from '../../styles/Jira.module.scss';
 import generatorStyles from '../../styles/Generator.module.scss';
-import { Model } from '@/app/lib/fetchers';
+import { Model, useConversationHistory } from '@/app/lib/fetchers';
 import GherkinValidate from '../gherkinvalidate';
 import { Variable } from './generator';
 import Mermaid from '@/app/diagrams/mermaid';
 import useStream from '@/app/hooks/useStream';
 import Error from '@/app/components/error';
+import ChangeResult from './change-result';
 
 interface GeneratorTabsProps {
     reset: () => void;
@@ -17,9 +18,10 @@ interface GeneratorTabsProps {
     promptType: string;
     model: Model;
     streamingEnabled: boolean;
+    conversationId?: string | null;
 }
 
-const MERMAID_PATTERN = /```mermaid((?:[^`]|`(?!``))+)```?/s
+const MERMAID_PATTERN = /```mermaid((?:[^`]|`(?!``))+)```?/s;
 
 /**
  * Generates tabs for the given input parameters and handles streaming data and errors.
@@ -31,10 +33,30 @@ const MERMAID_PATTERN = /```mermaid((?:[^`]|`(?!``))+)```?/s
  * @param {boolean} streamingEnabled - flag indicating if streaming is enabled
  * @return {JSX.Element} the rendered tabs component
  */
-const GeneratorTabs = ({ reset, variables, promptType, model, streamingEnabled }: GeneratorTabsProps) => {
+const GeneratorTabs = ({
+    reset,
+    variables,
+    promptType,
+    model,
+    streamingEnabled,
+    conversationId,
+}: GeneratorTabsProps) => {
     const [tabError, setTabError] = useState<string | null>(null);
-    const { data, isLoading, streamingFinished, error } = useStream({model, promptType, variables});
+    const [hasChanged, setHasChanged] = useState(false);
+    const [lastResponse, setLastResponse] = useState<string>('');
+    const {
+        data,
+        isLoading,
+        streamingFinished,
+        error,
+        conversationId: id,
+    } = useStream(!conversationId ? { model, promptType, variables } : {});
 
+    if (!conversationId) {
+        conversationId = id;
+    }
+
+        const { data: history } = useConversationHistory((streamingFinished && conversationId) || '');
     // useEffect hook to initialize tabs
     useEffect(() => {
         if (typeof window !== 'undefined') {
@@ -45,7 +67,7 @@ const GeneratorTabs = ({ reset, variables, promptType, model, streamingEnabled }
             for (let tab of $tabs) {
                 new Tabs(tab).init();
             }
-        };
+        }
     }, []);
 
     /**
@@ -78,7 +100,7 @@ const GeneratorTabs = ({ reset, variables, promptType, model, streamingEnabled }
      */
     const getTabResult = (type: string) => {
         // If loading or streaming not enabled, keep displaying spinner
-        if (isLoading || !streamingEnabled && !streamingFinished) {
+        if (isLoading || (!streamingEnabled && !streamingFinished)) {
             return <Spinner fill="#b1b4b6" height="56px" width="56px" />;
         }
 
@@ -96,8 +118,8 @@ const GeneratorTabs = ({ reset, variables, promptType, model, streamingEnabled }
                     //finds mermaid code within a ```mermaid``` block
                     const match = data.match(MERMAID_PATTERN);
 
-                    if (match && match[1]) {  
-                        const mermaidCode = match[1].trim();  
+                    if (match && match[1]) {
+                        const mermaidCode = match[1].trim();
                         return <Mermaid chart={mermaidCode} onError={handleError} />;
                     } else {
                         //if mermaid is not in code block or not present
@@ -109,18 +131,50 @@ const GeneratorTabs = ({ reset, variables, promptType, model, streamingEnabled }
         }
     };
 
+    /**
+     * A function that generates a ChangeResult component based on certain conditions.
+     *
+     * @return {JSX.Element} The ChangeResult component with specific props.
+     */
+    const getChangeResult = () => {
+        if (conversationId) {
+            let lastResult = "";
+            if (data) {
+                lastResult = history && history.length > 2 ? history[history.length - 1].content : null
+            } else {
+                lastResult = history && history.length > 1 ? history[history.length - 1].content : null
+            }
+            return (
+                <ChangeResult
+                    conversationId={conversationId}
+                    lastResult={lastResult}
+                    hasChanged={() => setHasChanged(true)}
+                    promptType={promptType}
+                    getLastResult={handleGetLastResult}
+                />
+            );
+        }
+    };
+
+    /**
+     * Handle getting the last result.
+     *
+     * @param {string} result - the result to set as the last response
+     */
+    const handleGetLastResult = (result: string) => {
+        setLastResponse(result);
+      };
+
     // Render tabs component
     return (
         <>
-            {(error || tabError) && (
-                <Error error={error} reset={reset} />
-            )}
+            {(error || tabError) && <Error error={error} reset={reset} />}
             <div className="govuk-tabs" data-module="govuk-tabs">
                 <h2 className="govuk-tabs__title">Contents</h2>
                 <ul className="govuk-tabs__list">
                     <li className="govuk-tabs__list-item govuk-tabs__list-item--selected">
                         <a className={`govuk-tabs__tab ${generatorStyles.tabLoading}`} href="#result">
-                            Result
+                            Content
                             {!streamingFinished && (
                                 <Spinner
                                     fill="#b1b4b6"
@@ -134,21 +188,22 @@ const GeneratorTabs = ({ reset, variables, promptType, model, streamingEnabled }
                     </li>
                     <li className="govuk-tabs__list-item">
                         <a className="govuk-tabs__tab" href="#code">
-                            Code
+                            Source
                         </a>
                     </li>
                 </ul>
                 <div className="govuk-tabs__panel" id="result">
                     <div className="govuk-grid-row">
                         <div className="govuk-grid-column-full">
-                            {getTabResult(promptType)}
+                            {!hasChanged && getTabResult(promptType)}
                         </div>
+                        {streamingFinished && getChangeResult()}
                     </div>
                 </div>
                 <div className="govuk-tabs__panel govuk-tabs__panel--hidden" id="code">
                     <div className="govuk-grid-row">
                         <div className="govuk-grid-column-full">
-                            <p className={`govuk-body ${generatorStyles.code}`}>{data}</p>
+                            <p className={`govuk-body ${generatorStyles.code}`}>{lastResponse ? lastResponse : data}</p>
                         </div>
                     </div>
                 </div>
@@ -157,7 +212,7 @@ const GeneratorTabs = ({ reset, variables, promptType, model, streamingEnabled }
                 <button className="govuk-button govuk-button--secondary" onClick={reset}>
                     Reset
                 </button>
-                <button className="govuk-button govuk-button--secondary" onClick={() => copyToClipboard(data)}>
+                <button className="govuk-button govuk-button--secondary" onClick={() => copyToClipboard(lastResponse ? lastResponse : data)}>
                     Copy
                 </button>
             </div>
