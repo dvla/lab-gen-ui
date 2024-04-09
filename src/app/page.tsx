@@ -10,7 +10,7 @@ export default function Home() {
                     <p className="govuk-phase-banner__content">
                         <strong className="govuk-tag govuk-phase-banner__content__tag">Beta</strong>
                         <span className="govuk-phase-banner__text">
-                            This is an experimental service – your feedback will help us to improve it. Do not use with personal data.
+                            This is an <NextLink href="/experimental">experimental</NextLink> service – your feedback will help us to improve it. Do not use with personal data.
                         </span>
                     </p>
                 </div>
@@ -19,7 +19,7 @@ export default function Home() {
                     <h2 className="govuk-heading-l">Generative AI Experiments</h2>
                     <ul className="govuk-list">
                         <li>
-                            <NextLink className={styles.homeLinks} href="/diagrams">
+                            <NextLink className={styles.homeLinks} href="/text-to-diagram">
                                 Diagram Generator
                             </NextLink>
                             <p className={styles.homeDescription}>
@@ -36,7 +36,7 @@ export default function Home() {
                             </p>
                         </li>
                         <li>
-                            <NextLink className={styles.homeLinks} href="/jira-tickets">
+                            <NextLink className={styles.homeLinks} href="/user-story">
                                 User Story Generator
                             </NextLink>
                             <p className={styles.homeDescription}>

@@ -8,9 +8,10 @@ interface FixedPageProps {
     children: React.ReactNode;
     backButton?: boolean;
     modelBanner?: boolean;
+    backLink?: string;
 }
 
-const FixedPage = ({ children, backButton, modelBanner }: FixedPageProps) => {
+const FixedPage = ({ children, backButton, modelBanner, backLink }: FixedPageProps) => {
     return (
         <>
             <div className={styles.chatPage}>
@@ -20,7 +21,7 @@ const FixedPage = ({ children, backButton, modelBanner }: FixedPageProps) => {
                         {modelBanner && <ModelBanner></ModelBanner>}
                         {backButton && (
                             <a
-                                href="/"
+                                href={backLink ? backLink : "/"}
                                 className={'govuk-back-link' + ' ' + styles.backLink}
                                 onClick={() => window.close()}
                             >

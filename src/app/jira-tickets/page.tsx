@@ -163,7 +163,7 @@ const JiraTickets = () => {
 
     return (
         <>
-            <FixedPage backButton={true}>
+            <FixedPage backButton={true} backLink='/experimental'>
                 {error != null && (
                     <section id="errorSection">
                         <ErrorSummary heading="There was an error" errors={[{ text: (error as any).toString() }]} />

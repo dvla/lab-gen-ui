@@ -107,7 +107,7 @@ const Diagrams = () => {
 
     return (
         <>
-            <FixedPage backButton={true}>
+            <FixedPage backButton={true} backLink="/experimental">
                 <H1>Diagram Generator</H1>
                 {mermaidError ? (
                     <>
@@ -156,20 +156,20 @@ const Diagrams = () => {
                             <option value="*c4 - deployment">* C4 - Deployment</option>
                             <option value="*c4 - dynamic">* C4 - Dynamic</option>
                         </select>
-                        <span className="govuk-hint">
-                            * Advanced diagrams may take longer to generate.
-                        </span>
+                        <span className="govuk-hint">* Advanced diagrams may take longer to generate.</span>
                         <GridRow className={diagramStyles.resetButton}>
-                        <form
-                            onSubmit={(e) => {
-                                e.preventDefault();
-                                resetToDefaults();
-                            }}
-                        >
-                            <GridCol>
-                                {!resetChatRequested && firstMessageSent ? <Button type="submit">Reset</Button> : null}
-                            </GridCol>
-                        </form>
+                            <form
+                                onSubmit={(e) => {
+                                    e.preventDefault();
+                                    resetToDefaults();
+                                }}
+                            >
+                                <GridCol>
+                                    {!resetChatRequested && firstMessageSent ? (
+                                        <Button type="submit">Reset</Button>
+                                    ) : null}
+                                </GridCol>
+                            </form>
                         </GridRow>
                     </GridCol>
                     <GridCol setWidth="two-thirds" className={diagramStyles.inputBox}>
