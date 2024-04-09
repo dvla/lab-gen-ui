@@ -44,24 +44,24 @@ const modelInfo = [
     summary: "Multimodal AI that blends visual and textual analysis for comprehensive understanding"  
     },  
     {  
-    modelName: "Bedrock General (Claude Instant)",  
+    modelName: "Bedrock General (Claude 3 Haiku)",  
     speed: "Very Fast",  
     costIndicator: "$",  
-    trainingData: "Early 2023",  
-    contextSize: "100,000 tokens",  
+    trainingData: "August 2023",  
+    contextSize: "200,000 tokens",  
     capabilities: "Rapid text generation, quick answers, basic Q&A",  
-    location: "Frankfurt (EU)",  
-    summary: "Designed for speed over depth, providing instant responses"  
+    location: "Paris (EU)",  
+    summary: "Designed for simple queries and requests with near-instant responsiveness"  
     },  
     {  
-    modelName: "Bedrock Advanced (Claude 2.1)",  
-    speed: "Slow",  
-    costIndicator: "$$$$",  
-    trainingData: "Early 2023",  
+    modelName: "Bedrock Advanced (Claude 3 Sonnet)",  
+    speed: "Fast",  
+    costIndicator: "$$",  
+    trainingData: "August 2023",  
     contextSize: "200,000 tokens",  
     capabilities: "Text generation, summarization, comparing and contrasting multiple documents, and analysis",  
-    location: "Frankfurt (EU)",  
-    summary: "High accuracy and context size for effective document analysis"  
+    location: "Paris (EU)",  
+    summary: "Strikes the ideal balance between intelligence and speed for many applications"  
     },  
     {  
     modelName: "Vertex General (Gemini Pro)",  
@@ -70,7 +70,7 @@ const modelInfo = [
     trainingData: "Feb 2023",  
     contextSize: "32,760 tokens",  
     capabilities: "Natural language tasks, multi-turn text, and code generation",  
-    location: "US",  
+    location: "UK",  
     summary: "Fast and affordable AI for easy chat and quick code creation"  
     }  
 ];  
