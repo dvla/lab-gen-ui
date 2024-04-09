@@ -7,5 +7,5 @@ import type { Session } from 'next-auth';
  * @return {string} The unique identifier for the business user.
  */
 export const getBusinessUser = (session: Session): string => {
-    return session?.user?.email?.split('.')[0] || '';
+    return session?.user?.email?.split('@')[0] || '';
 };

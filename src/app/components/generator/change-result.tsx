@@ -14,6 +14,7 @@ interface ChangeResultProps {
     promptType: string;
     hasChanged: () => void;
     getLastResult: (result: string) => void;
+    renderPreview: boolean;
 }
 
 export interface ChangeBody {
@@ -30,9 +31,10 @@ const MERMAID_PATTERN = /```mermaid((?:[^`]|`(?!``))+)```?/s;
  * @param {string} promptType - the type of prompt
  * @param {boolean} hasChanged - flag to indicate if a change has occurred
  * @param {function} getLastResult - function to get the last result
+ * @param {boolean} renderPreview - flag to indicate if the preview should be rendered
  * @return {JSX.Element} the ChangeResult component
  */
-const ChangeResult = ({ conversationId, lastResult, promptType, hasChanged, getLastResult }: ChangeResultProps) => {
+const ChangeResult = ({ conversationId, lastResult, promptType, hasChanged, getLastResult, renderPreview }: ChangeResultProps) => {
     const [tabError, setTabError] = useState<string | null>(null);
     const [isLoading, setIsLoading] = useState(false);
     const [isStreaming, setIsStreaming] = useState(false);
@@ -125,7 +127,7 @@ const ChangeResult = ({ conversationId, lastResult, promptType, hasChanged, getL
                         {tabError && <Error error={tabError} />}
                         <div className="govuk-!-padding-bottom-2">{result && displayResult()}</div>
                     </div>
-                    {!isStreaming && (
+                    {!isStreaming && !renderPreview && (
                         <div className="govuk-grid-column-full">
                             <details className="govuk-details" open>
                                 <summary className="govuk-details__summary">
@@ -134,7 +136,7 @@ const ChangeResult = ({ conversationId, lastResult, promptType, hasChanged, getL
                                 <div className="govuk-details__text">
                                     <fieldset className="govuk-fieldset">
                                         <div className={`govuk-form-group ${changeResultStyles.form}`}>
-                                            <label className="govuk-label" htmlFor="address-line-1">
+                                            <label className="govuk-label" htmlFor="change-text">
                                                 Make a change
                                             </label>
                                             <textarea

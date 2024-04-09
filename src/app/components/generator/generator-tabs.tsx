@@ -4,12 +4,13 @@ import { Tabs } from 'govuk-frontend';
 import ReactMarkdown from 'react-markdown';
 import jiraStyles from '../../styles/Jira.module.scss';
 import generatorStyles from '../../styles/Generator.module.scss';
-import { Model, useConversationHistory } from '@/app/lib/fetchers';
+import { Model, useConversationHistory, useDeleteConversationHistoryEntries } from '@/app/lib/fetchers';
 import GherkinValidate from '../gherkinvalidate';
 import { Variable } from './generator';
 import Mermaid from '@/app/diagrams/mermaid';
 import useStream from '@/app/hooks/useStream';
 import Error from '@/app/components/error';
+import HistoryTab from '../history/historyTab';
 import ChangeResult from './change-result';
 
 interface GeneratorTabsProps {
@@ -51,12 +52,16 @@ const GeneratorTabs = ({
         error,
         conversationId: id,
     } = useStream(!conversationId ? { model, promptType, variables } : {});
+    const [isHistoryTabOpen, setIsHistoryTabOpen] = useState(window.location.hash === '#history');
+    const [renderPreview, setRenderPreview] = useState(false);
+    const [hasDeleted, setHasDeleted] = useState(false);
+    const [preview, setPreview] = useState('');
 
     if (!conversationId) {
         conversationId = id;
     }
 
-        const { data: history } = useConversationHistory((streamingFinished && conversationId) || '');
+    const { data: history } = useConversationHistory((streamingFinished && conversationId) || '');
     // useEffect hook to initialize tabs
     useEffect(() => {
         if (typeof window !== 'undefined') {
@@ -68,6 +73,24 @@ const GeneratorTabs = ({
                 new Tabs(tab).init();
             }
         }
+
+        // Handle hash changes to check whether the history tab is open
+        const handleHashChange = () => {
+            setIsHistoryTabOpen(window.location.hash === '#history');
+            // Reset the result to the latest message if the history tab is opened
+            if (window.location.hash === '#history') {
+                setRenderPreview(false);
+                setPreview('');
+            }
+        };
+
+        // Add event listener for hash changes
+        window.addEventListener('hashchange', handleHashChange);
+
+        // Clean up event listener
+        return () => {
+            window.removeEventListener('hashchange', handleHashChange);
+        };
     }, []);
 
     /**
@@ -93,6 +116,30 @@ const GeneratorTabs = ({
     };
 
     /**
+     * Sets the preview text and renders it if the input text is not null.
+     *
+     * @param {string | null} text - The text to be set as the preview.
+     */
+    const previewHistoricResult = (text: string | null) => {
+        if (text) {
+            setPreview(text);
+            setRenderPreview(true);
+            window.location.hash = '#result';
+        }
+    };
+
+    /**
+     * Handles the delete of the history entries.
+     *
+     * @param {number} num_entries - the number of entries to delete
+     * @return {void} 
+     */
+    const UseDeleteHistoryEntries = (num_entries: number) => {
+        useDeleteConversationHistoryEntries(conversationId || '', num_entries);
+        setHasDeleted(true);
+    };
+
+    /**
      * Retrieves the tab result based on the provided prompt type.
      *
      * @param {string} promptType - the chosen prompt type
@@ -111,22 +158,23 @@ const GeneratorTabs = ({
 
         // If streaming has finished display final result
         if (streamingFinished && data) {
+            const resultToBeRendered = renderPreview ? preview : lastResponse ? lastResponse : data;
             switch (type) {
                 case 'user-story-gherkin':
-                    return <GherkinValidate content={data} />;
+                    return <GherkinValidate content={resultToBeRendered} />;
                 case 'diagram':
                     //finds mermaid code within a ```mermaid``` block
-                    const match = data.match(MERMAID_PATTERN);
+                    const match = resultToBeRendered.match(MERMAID_PATTERN);
 
                     if (match && match[1]) {
                         const mermaidCode = match[1].trim();
                         return <Mermaid chart={mermaidCode} onError={handleError} />;
                     } else {
                         //if mermaid is not in code block or not present
-                        return <Mermaid chart={data} onError={handleError} />;
+                        return <Mermaid chart={resultToBeRendered} onError={handleError} />;
                     }
                 default:
-                    return <ReactMarkdown className={jiraStyles.historyResponse}>{data}</ReactMarkdown>;
+                    return <ReactMarkdown className={jiraStyles.historyResponse}>{resultToBeRendered}</ReactMarkdown>;
             }
         }
     };
@@ -138,12 +186,17 @@ const GeneratorTabs = ({
      */
     const getChangeResult = () => {
         if (conversationId) {
-            let lastResult = "";
-            if (data) {
-                lastResult = history && history.length > 2 ? history[history.length - 1].content : null
+            let lastResult = '';
+            if (data && !hasDeleted) {
+                lastResult = history && history.length > 2 ? history[history.length - 1].content : null;
             } else {
-                lastResult = history && history.length > 1 ? history[history.length - 1].content : null
+                lastResult = history && history.length > 1 ? history[history.length - 1].content : null;
             }
+
+            if (renderPreview && hasChanged) {
+                lastResult = preview;
+            }
+
             return (
                 <ChangeResult
                     conversationId={conversationId}
@@ -151,6 +204,7 @@ const GeneratorTabs = ({
                     hasChanged={() => setHasChanged(true)}
                     promptType={promptType}
                     getLastResult={handleGetLastResult}
+                    renderPreview={renderPreview}
                 />
             );
         }
@@ -163,7 +217,7 @@ const GeneratorTabs = ({
      */
     const handleGetLastResult = (result: string) => {
         setLastResponse(result);
-      };
+    };
 
     // Render tabs component
     return (
@@ -191,19 +245,40 @@ const GeneratorTabs = ({
                             Source
                         </a>
                     </li>
+                    <li className="govuk-tabs__list-item">
+                        <a className="govuk-tabs__tab" href="#history">
+                            History
+                        </a>
+                    </li>
                 </ul>
                 <div className="govuk-tabs__panel" id="result">
                     <div className="govuk-grid-row">
-                        <div className="govuk-grid-column-full">
-                            {!hasChanged && getTabResult(promptType)}
-                        </div>
+                        <div className="govuk-grid-column-full">{ renderPreview ? <strong className="govuk-tag">Preview</strong> : null } {!hasChanged && getTabResult(promptType)}</div>
                         {streamingFinished && getChangeResult()}
                     </div>
                 </div>
                 <div className="govuk-tabs__panel govuk-tabs__panel--hidden" id="code">
                     <div className="govuk-grid-row">
                         <div className="govuk-grid-column-full">
-                            <p className={`govuk-body ${generatorStyles.code}`}>{lastResponse ? lastResponse : data}</p>
+                            <p className={`govuk-body ${generatorStyles.code}`}>
+                                {renderPreview ? preview : lastResponse ? lastResponse : data}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div
+                    className={`govuk-tabs__panel govuk-tabs__panel--hidden ${generatorStyles.historyTab}`}
+                    id="history"
+                >
+                    <div className="govuk-grid-row">
+                        <div className="govuk-grid-column-full">
+                            <HistoryTab
+                                history={history}
+                                streamingFinished={streamingFinished}
+                                copyToClipboard={copyToClipboard}
+                                previewHistoricResult={previewHistoricResult}
+                                UseDeleteHistoryEntries={UseDeleteHistoryEntries}
+                            />
                         </div>
                     </div>
                 </div>
@@ -212,9 +287,14 @@ const GeneratorTabs = ({
                 <button className="govuk-button govuk-button--secondary" onClick={reset}>
                     Reset
                 </button>
-                <button className="govuk-button govuk-button--secondary" onClick={() => copyToClipboard(lastResponse ? lastResponse : data)}>
-                    Copy
-                </button>
+                {!isHistoryTabOpen && (
+                    <button
+                        className="govuk-button govuk-button--secondary"
+                        onClick={() => copyToClipboard(renderPreview ? preview : lastResponse ? lastResponse : data)}
+                    >
+                        Copy
+                    </button>
+                )}
             </div>
         </>
     );

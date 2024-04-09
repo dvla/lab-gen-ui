@@ -32,7 +32,7 @@ export interface Body {
      * Prompt ID for the prompt type
      */
     promptId?: string;
-    
+
     /**
      * File to upload
      */
@@ -150,7 +150,7 @@ export async function* getCompletion(body: Body): AsyncIterable<{ token: string;
         headers: {
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify(body)
+        body: JSON.stringify(body),
     });
 
     const conversationId = res.headers.get('x-conversation-id');
@@ -198,6 +198,34 @@ export async function* getContinueCompletion(body: Body, conversationId: string)
 }
 
 /**
+ * Asynchronous function that deletes conversation history entries.
+ *
+ * @param {string | null} conversationId - The ID of the conversation
+ * @param {number} numEntries - The number of entries to delete
+ * @return {Promise<void>} A Promise that resolves when the history entries are deleted
+ */
+export const useDeleteConversationHistoryEntries = async (conversationId: string | null, numEntries: number) => {
+    if (conversationId) {
+        const response = await fetch(
+            `/api/delete-history-entry?conversationId=${conversationId}&numEntries=${numEntries}`,
+            {
+                method: 'DELETE',
+            }
+        );
+
+        mutate(`/api/get-history?conversationId=${conversationId}`);
+
+        if (!response.ok) {
+            const error = new Error('Failed to delete history entries');
+            throw error;
+        }
+    } else {
+        const error = new Error('No conversation ID provided');
+        throw error;
+    }
+};
+
+/**
  * Generates a custom hook to fetch conversation history data based on the conversation ID.
  *
  * @param {string} conversationId - The ID of the conversation to fetch history for.
@@ -209,7 +237,7 @@ export const useConversationHistory = (conversationId: string) => {
         fetcher,
         SWR_OPTIONS
       );
- 
+
     return { data, error, isLoading };
 }
 
