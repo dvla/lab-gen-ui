@@ -40,6 +40,7 @@ const ChangeResult = ({ conversationId, lastResult, promptType, hasChanged, getL
     const [isStreaming, setIsStreaming] = useState(false);
     const [changeText, setChangeText] = useState('');
     const [result, setResult] = useState(lastResult);
+    const [streamingResult, setStreamingResult] = useState('');
 
     useEffect(() => {
         setResult(lastResult);
@@ -51,6 +52,7 @@ const ChangeResult = ({ conversationId, lastResult, promptType, hasChanged, getL
         setIsLoading(true);
         setResult('');
         setTabError(null);
+        setStreamingResult('');
 
         if (conversationId) {
             let allTokens = '';
@@ -59,7 +61,7 @@ const ChangeResult = ({ conversationId, lastResult, promptType, hasChanged, getL
                 setIsStreaming(true);
                 allTokens += token;
                 if (promptType != 'diagram') {
-                    setResult((d) => (d ? d + token : token));
+                    setStreamingResult((result) => result + token);
                 }
             }
             setResult(allTokens);
@@ -72,6 +74,10 @@ const ChangeResult = ({ conversationId, lastResult, promptType, hasChanged, getL
         }
         setIsLoading(false);
     }, [changeText, conversationId, getLastResult, hasChanged, promptType]);
+
+    useEffect(() => {
+        setResult(streamingResult);
+    }, [streamingResult]);
 
     /**
      * Handle an error by setting the result error.
