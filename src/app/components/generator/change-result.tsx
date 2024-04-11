@@ -137,7 +137,7 @@ const ChangeResult = ({ conversationId, lastResult, promptType, hasChanged, getL
                         <div className="govuk-grid-column-full">
                             <details className="govuk-details" open>
                                 <summary className="govuk-details__summary">
-                                    <span className="govuk-details__summary-text">Change</span>
+                                    <span className="govuk-details__summary-text">Edit</span>
                                 </summary>
                                 <div className="govuk-details__text">
                                     <fieldset className="govuk-fieldset">
