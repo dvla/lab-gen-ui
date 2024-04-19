@@ -2,7 +2,7 @@ import { Spinner } from 'govuk-react';
 import { Variable } from '../generator/generator';
 import { Model } from '@/app/lib/fetchers';
 import useStream from '@/app/hooks/useStream';
-import Error from '@/app/components/error';
+import ErrorComponent from '@/app/components/error';
 
 interface OneShotProps {
     variables: Variable[];
@@ -23,7 +23,7 @@ const OneShot = ({ variables, promptType, model, updateHistory }: OneShotProps) 
     // If there is an error, display error message
     if (error) {
         return (
-            <Error error={error}/>
+            <ErrorComponent error={error} reset={() => window.location.reload()}/>
         );
     }
 

@@ -10,7 +10,7 @@ interface ErrorProps {
  * @param {() => void} reset - the function to call when the reset button is clicked
  * @return {JSX.Element} the rendered error component
  */
-const Error = ({ error, reset }: ErrorProps) => {
+const ErrorComponent = ({ error, reset }: ErrorProps) => {
     return (
         <>
             <div className="govuk-error-summary" data-module="govuk-error-summary">
@@ -34,4 +34,4 @@ const Error = ({ error, reset }: ErrorProps) => {
     );
 };
 
-export default Error;
+export default ErrorComponent;

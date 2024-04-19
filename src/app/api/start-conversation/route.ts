@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { auth } from '@/app/lib/auth';
 import { StreamingTextResponse } from 'ai';
-import { getBusinessUser } from '@/app/lib/utils';
+import { getBusinessUser, streamError } from '@/app/lib/utils';
 
 const appHost = process.env['AZURE_APP_HOST'];
 const appKey = process.env['AZURE_APP_API_KEY'] || 'no-api-key';
@@ -22,7 +22,6 @@ export const POST = async (req: NextRequest) => {
             });
 
             const conversationId = response.headers.get('x-conversation-id');
-
             // Check if the response is successful (status code 2xx)
             if (response.ok) {
 
@@ -54,10 +53,15 @@ export const POST = async (req: NextRequest) => {
                         return new Response();
                     }
                 }
+                
             } else {
+                if (response.body) {
+                    const errorBodyString = await streamError(response.body);
+                    return NextResponse.json({ error: errorBodyString }, { status: response.status });
+                }
                 // Handle non-successful response (e.g., error status code)
-                console.error('Error:', response.status, response.statusText);
-                return Response.json({ error: 'Failed to fetch data' }, { status: response.status });
+                console.log('Error:', response.body, response.statusText);
+                return NextResponse.json({ error: 'Failed to fetch' }, { status: response.status });
             }
         } catch (error) {
             console.error('Error fetching data:', error);

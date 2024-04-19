@@ -159,12 +159,17 @@ const useStream = ({
             } catch (err) {
                 setIsLoading(false);
                 setStreamingFinished(true);
+                let errorMessage = ''
                 if (err instanceof Error) {
-                    setError(err.message);
+                    errorMessage = err.message;
                 } else if (typeof err === 'string') {
-                    setError(err);
+                    errorMessage = err
                 }
-                console.log(err);
+                if (updateHistory) {
+                    updateHistory(errorMessage, true, null);
+                }
+                setError(errorMessage);
+
             }
         };
         // Check if streaming has not started and start conversation

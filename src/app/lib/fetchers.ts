@@ -141,8 +141,44 @@ export const useStartConversation = (body: Body | null) => {
 /**
  * Asynchronous generator function to fetch completion tokens from the server.
  *
+ * @param {Response} res - the response object from the API call
+ * @param {string | null} conversationId - the conversation ID
+ * @return {AsyncIterable<{ token: string; conversationId: string | null }>} an async iterable of completion tokens
+ */
+async function* streamTokens(
+    res: Response,
+    conversationId: string | null
+): AsyncIterable<{ token: string; conversationId: string | null }> {
+    if (!res.ok) {
+        const response = await res.json();
+        const error = new Error(response.error || 'Request failed');
+        throw error;
+    }
+
+    const reader = res.body?.getReader();
+    if (!reader) throw new Error('No reader');
+    const decoder = new TextDecoder();
+
+    try {
+        let readResult;
+        do {
+            readResult = await reader.read();
+            if (readResult.done) break;
+            const token = decoder.decode(readResult.value, { stream: true });
+            yield { token, conversationId };
+        } while (!readResult.done);
+    } catch (error) {
+        console.error('Error processing stream:', error);
+    } finally {
+        reader.releaseLock();
+    }
+}
+
+/**
+ * Asynchronous generator function to fetch completion tokens from the server.
+ *
  * @param {Body} body - the request body for the API call
- * @return {AsyncIterable<string>} an asynchronous iterable of completion tokens
+ * @return {AsyncIterable<{ token: string; conversationId: string | null }>} an async iterable of completion tokens
  */
 export async function* getCompletion(body: Body): AsyncIterable<{ token: string; conversationId: string | null }> {
     const res = await fetch('/api/start-conversation', {
@@ -155,17 +191,7 @@ export async function* getCompletion(body: Body): AsyncIterable<{ token: string;
 
     const conversationId = res.headers.get('x-conversation-id');
 
-    const reader = res.body?.getReader();
-    if (!reader) throw new Error('No reader');
-    const decoder = new TextDecoder();
-
-    let done, value;
-    while (!done) {
-        ({ done, value } = await reader.read());
-        if (done) return {conversationId};
-        const token = decoder.decode(value);
-        yield { token, conversationId };
-    }
+    yield* streamTokens(res, conversationId);
 }
 
 /**
@@ -181,18 +207,10 @@ export async function* getContinueCompletion(body: Body, conversationId: string)
         headers: {
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify(body)
+        body: JSON.stringify(body),
     });
 
-    const reader = res.body?.getReader();
-    if (!reader) throw new Error('No reader');
-    const decoder = new TextDecoder();
-
-    let done, value;
-    while (!done) {
-        ({ done, value } = await reader.read());
-        if (done) return;
-        const token = decoder.decode(value);
+    for await (const { token } of streamTokens(res, conversationId)) {
         yield token;
     }
 }
@@ -232,21 +250,21 @@ export const useDeleteConversationHistoryEntries = async (conversationId: string
  * @return {object} An object containing data, error, and loading state for the conversation history.
  */
 export const useConversationHistory = (conversationId: string) => {
-    const { data, error, isLoading } = useSWR(conversationId ?
-        `/api/get-history?conversationId=${conversationId}` : null,
+    const { data, error, isLoading } = useSWR(
+        conversationId ? `/api/get-history?conversationId=${conversationId}` : null,
         fetcher,
         SWR_OPTIONS
-      );
+    );
 
     return { data, error, isLoading };
-}
+};
 
 /**
-* Reloads the history for a specific conversation.
-*
-* @param {string} conversationId - The ID of the conversation to reload history for
-* @return {void}
-*/
+ * Reloads the history for a specific conversation.
+ *
+ * @param {string} conversationId - The ID of the conversation to reload history for
+ * @return {void}
+ */
 export const reloadHistory = (conversationId: string) => {
     mutate(`/api/get-history?conversationId=${conversationId}`);
 };

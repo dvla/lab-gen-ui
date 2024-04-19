@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { auth } from '@/app/lib/auth';
 import { StreamingTextResponse } from 'ai';
-import { getBusinessUser } from '@/app/lib/utils';
+import { getBusinessUser, streamError } from '@/app/lib/utils';
 
 const appHost = process.env['AZURE_APP_HOST'];
 const appKey = process.env['AZURE_APP_API_KEY'] || 'no-api-key';
@@ -60,7 +60,13 @@ export const PUT = async (req: NextRequest) => {
                     }
                 }
             } else {
-                return new NextResponse('Error in continuing the conversation', { status: response.status });
+                if (response.body) {
+                    const errorBodyString = await streamError(response.body);
+                    return NextResponse.json({ error: errorBodyString }, { status: response.status });
+                }
+                else {
+                    return new NextResponse('Error in continuing the conversation', { status: response.status });
+                }
             }
         } catch (error) {
             console.error('Failed to continue conversation', error);

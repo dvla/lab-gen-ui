@@ -9,7 +9,7 @@ import GherkinValidate from '../gherkinvalidate';
 import { Variable } from './generator';
 import Mermaid from '@/app/diagrams/mermaid';
 import useStream from '@/app/hooks/useStream';
-import Error from '@/app/components/error';
+import ErrorComponent from '@/app/components/error';
 import HistoryTab from '../history/historyTab';
 import ChangeResult from './change-result';
 
@@ -132,7 +132,7 @@ const GeneratorTabs = ({
      * Handles the delete of the history entries.
      *
      * @param {number} num_entries - the number of entries to delete
-     * @return {void} 
+     * @return {void}
      */
     const UseDeleteHistoryEntries = (num_entries: number) => {
         useDeleteConversationHistoryEntries(conversationId || '', num_entries);
@@ -222,7 +222,7 @@ const GeneratorTabs = ({
     // Render tabs component
     return (
         <>
-            {(error || tabError) && <Error error={error} reset={reset} />}
+            {(error || tabError) && <ErrorComponent error={error || tabError} reset={reset} />}
             <div className="govuk-tabs" data-module="govuk-tabs">
                 <h2 className="govuk-tabs__title">Contents</h2>
                 <ul className="govuk-tabs__list">
@@ -253,7 +253,10 @@ const GeneratorTabs = ({
                 </ul>
                 <div className="govuk-tabs__panel" id="result">
                     <div className="govuk-grid-row">
-                        <div className="govuk-grid-column-full">{ renderPreview ? <strong className="govuk-tag">Preview</strong> : null } {!hasChanged && getTabResult(promptType)}</div>
+                        <div className="govuk-grid-column-full">
+                            {renderPreview ? <strong className="govuk-tag">Preview</strong> : null}{' '}
+                            {!hasChanged && getTabResult(promptType)}
+                        </div>
                         {streamingFinished && getChangeResult()}
                     </div>
                 </div>

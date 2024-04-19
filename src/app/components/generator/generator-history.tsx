@@ -4,7 +4,6 @@ import jiraStyles from '../../styles/Jira.module.scss';
 import { ResponseHistory } from './generator';
 import { Model } from '@/app/lib/fetchers';
 import { Spinner } from 'govuk-react';
-
 interface GeneratorHistoryProps {
     history: ResponseHistory[];
 }
@@ -74,13 +73,16 @@ const GeneratorHistory = ({ history }: GeneratorHistoryProps) => {
                                                     />
                                                 )}
                                             </div>
-                                            <a
+                                            {item.conversationId && (
+                                                <a
                                                 href={`continue-chat/${item.conversationId}`}
                                                 data-testid="item.conversationID"
                                                 className="govuk-link govuk-link--no-visited-state"
                                             >
                                                 Continue
                                             </a>
+                                            )}
+                                            
                                         </div>
                                     </td>
                                 </tr>

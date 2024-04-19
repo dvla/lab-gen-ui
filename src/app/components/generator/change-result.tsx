@@ -5,7 +5,7 @@ import changeResultStyles from '../../styles/ChangeResult.module.scss';
 import { Spinner } from 'govuk-react';
 import { getContinueCompletion, reloadHistory } from '@/app/lib/fetchers';
 import Mermaid from '@/app/diagrams/mermaid';
-import Error from '@/app/components/error';
+import ErrorComponent from '@/app/components/error';
 import GherkinValidate from '../gherkinvalidate';
 
 interface ChangeResultProps {
@@ -34,7 +34,14 @@ const MERMAID_PATTERN = /```mermaid((?:[^`]|`(?!``))+)```?/s;
  * @param {boolean} renderPreview - flag to indicate if the preview should be rendered
  * @return {JSX.Element} the ChangeResult component
  */
-const ChangeResult = ({ conversationId, lastResult, promptType, hasChanged, getLastResult, renderPreview }: ChangeResultProps) => {
+const ChangeResult = ({
+    conversationId,
+    lastResult,
+    promptType,
+    hasChanged,
+    getLastResult,
+    renderPreview,
+}: ChangeResultProps) => {
     const [tabError, setTabError] = useState<string | null>(null);
     const [isLoading, setIsLoading] = useState(false);
     const [isStreaming, setIsStreaming] = useState(false);
@@ -54,24 +61,35 @@ const ChangeResult = ({ conversationId, lastResult, promptType, hasChanged, getL
         setTabError(null);
         setStreamingResult('');
 
-        if (conversationId) {
-            let allTokens = '';
-            for await (const token of getContinueCompletion({ content: changeText }, conversationId)) {
-                setIsLoading(false);
-                setIsStreaming(true);
-                allTokens += token;
-                if (promptType != 'diagram') {
-                    setStreamingResult((result) => result + token);
+        try {
+            if (conversationId) {
+                let allTokens = '';
+                for await (const token of getContinueCompletion({ content: changeText }, conversationId)) {
+                    setIsLoading(false);
+                    setIsStreaming(true);
+                    allTokens += token;
+                    if (promptType != 'diagram') {
+                        setStreamingResult((result) => result + token);
+                    }
+                }
+                setResult(allTokens);
+                setIsStreaming(false);
+                reloadHistory(conversationId);
+
+                if (allTokens) {
+                    getLastResult(allTokens);
                 }
             }
-            setResult(allTokens);
-            setIsStreaming(false);
-            reloadHistory(conversationId);
-
-            if (allTokens) {
-                getLastResult(allTokens);
+        } catch (error) {
+            let errorMessage = '';
+            if (error instanceof Error) {
+                errorMessage = error.message;
+            } else if (typeof error === 'string') {
+                errorMessage = error;
             }
+            handleError(errorMessage);
         }
+
         setIsLoading(false);
     }, [changeText, conversationId, getLastResult, hasChanged, promptType]);
 
@@ -110,7 +128,7 @@ const ChangeResult = ({ conversationId, lastResult, promptType, hasChanged, getL
                     return <Mermaid chart={result} onError={handleError} />;
                 }
             case 'user-story-gherkin':
-                return <GherkinValidate content={result} />; 
+                return <GherkinValidate content={result} />;
             default:
                 return <ReactMarkdown className={jiraStyles.historyResponse}>{result}</ReactMarkdown>;
         }
@@ -130,7 +148,7 @@ const ChangeResult = ({ conversationId, lastResult, promptType, hasChanged, getL
             {!isLoading && (
                 <>
                     <div className="govuk-grid-column-full">
-                        {tabError && <Error error={tabError} />}
+                        {tabError && <ErrorComponent error={tabError} />}
                         <div className="govuk-!-padding-bottom-2">{result && displayResult()}</div>
                     </div>
                     {!isStreaming && !renderPreview && (
