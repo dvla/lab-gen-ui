@@ -52,6 +52,7 @@ const ModelSelect = ({ variantLock }: ModelSelectProps) => {
             setModelContext({
                 provider: selectedModel.provider,
                 variant: selectedModel.variant,
+                family: selectedModel.family,
                 description: selectedModel.description,
                 location: selectedModel.location,
             });
@@ -66,6 +67,7 @@ const ModelSelect = ({ variantLock }: ModelSelectProps) => {
                 setModelContext({
                     provider: matchingModel.provider,
                     variant: matchingModel.variant,
+                    family: matchingModel.family,
                     description: matchingModel.description,
                     location: matchingModel.location,
                 });

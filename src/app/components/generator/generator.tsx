@@ -2,12 +2,14 @@
 import { ChangeEvent, FormEventHandler, useEffect, useRef, useState } from 'react';
 import * as changeCase from 'change-case';
 import chatPageStyles from '../../styles/ChatPage.module.scss';
+import generatorStyles from '../../styles/Generator.module.scss';
 import GeneratorTabs from './generator-tabs';
 import GeneratorHistory from './generator-history';
 import OneShot from '../one-shot/one-shot';
 import FileUpload from '@/app/image-to-text/file-upload';
 import { usePathname, useRouter } from 'next/navigation';
 import { Model } from '@/app/lib/fetchers';
+import TokenCounter from '../token-counter/token-counter';
 
 /**
  * Represents a variable with an id and value.
@@ -65,7 +67,6 @@ interface GeneratorProps {
     displaySettings?: (display: boolean) => void;
 }
 
-
 /**
  * Generates a JSX element for the Generator component.
  *
@@ -87,7 +88,7 @@ const Generator = ({
     showHistory = true,
     showFileUpload = false,
     streaming = true,
-    displaySettings
+    displaySettings,
 }: GeneratorProps): JSX.Element => {
     // State variables
     const [start, setStart] = useState(true);
@@ -126,10 +127,9 @@ const Generator = ({
             setViewHistory(true);
         }
 
-        if(displaySettings){
+        if (displaySettings) {
             displaySettings(false);
         }
-        
     };
 
     /**
@@ -144,7 +144,7 @@ const Generator = ({
         setIsStreaming(false);
         router.replace(pathname);
 
-        if(displaySettings){
+        if (displaySettings) {
             displaySettings(true);
         }
     };
@@ -198,7 +198,7 @@ const Generator = ({
 
         if (!prevHistory.current) {
             setHistory([responseHistory, ...history]);
-        } else if (prevHistory.current && value !== prevHistory.current || streamingFinished) {
+        } else if ((prevHistory.current && value !== prevHistory.current) || streamingFinished) {
             setHistory([responseHistory, ...history]);
         }
 
@@ -216,13 +216,14 @@ const Generator = ({
                     {id === 'input' || id === 'description' ? (
                         <div>
                             <textarea
-                                className="govuk-textarea"
+                                className={`govuk-textarea ${generatorStyles.textareaToken}`}
                                 id={id}
                                 name={id}
                                 value={value}
                                 rows={10}
                                 onChange={(e) => handleInputChange(e, index)}
                             />
+                            <TokenCounter text={value} />
                             {showFileUpload && (
                                 <input
                                     className="govuk-file-upload"
@@ -255,7 +256,12 @@ const Generator = ({
                 <div className="govuk-grid-column-full">
                     <form onSubmit={handleInput}>
                         <fieldset className="govuk-fieldset">{showGeneratorFields(formData)}</fieldset>
-                        <button type="submit" className="govuk-button" data-module="govuk-button" disabled={isStreaming}>
+                        <button
+                            type="submit"
+                            className="govuk-button"
+                            data-module="govuk-button"
+                            disabled={isStreaming}
+                        >
                             Generate
                         </button>
                     </form>
@@ -263,12 +269,27 @@ const Generator = ({
             )}
             {!showTabs && shouldRender && (
                 <div className={'govuk-grid-column-full ' + chatPageStyles.gridRowHalf}>
-                    {promptType && <OneShot variables={formData} promptType={promptType} model={model} updateHistory={updateHistory} />}
+                    {promptType && (
+                        <OneShot
+                            variables={formData}
+                            promptType={promptType}
+                            model={model}
+                            updateHistory={updateHistory}
+                        />
+                    )}
                 </div>
             )}
             {showTabs && shouldRender && !showFileUpload && (
                 <div className="govuk-grid-column-full">
-                    {promptType && <GeneratorTabs promptType={promptType} reset={resetToDefaults} model={model} variables={formData} streamingEnabled={streaming} />}
+                    {promptType && (
+                        <GeneratorTabs
+                            promptType={promptType}
+                            reset={resetToDefaults}
+                            model={model}
+                            variables={formData}
+                            streamingEnabled={streaming}
+                        />
+                    )}
                 </div>
             )}
             {showTabs && shouldRender && showFileUpload && (
@@ -278,7 +299,7 @@ const Generator = ({
             )}
             {viewHistory && (
                 <div className={'govuk-grid-column-full ' + chatPageStyles.gridRowHalf}>
-                    <GeneratorHistory history={history}/>
+                    <GeneratorHistory history={history} />
                 </div>
             )}
         </div>

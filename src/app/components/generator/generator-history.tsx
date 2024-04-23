@@ -4,6 +4,8 @@ import jiraStyles from '../../styles/Jira.module.scss';
 import { ResponseHistory } from './generator';
 import { Model } from '@/app/lib/fetchers';
 import { Spinner } from 'govuk-react';
+import TokenCounter from '../token-counter/token-counter';
+
 interface GeneratorHistoryProps {
     history: ResponseHistory[];
 }
@@ -36,6 +38,12 @@ const GeneratorHistory = ({ history }: GeneratorHistoryProps) => {
                 return 'govuk-tag--orange';
             case 'VERTEX GENERAL':
                 return 'govuk-tag--red';
+            case 'VERTEX ADVANCED':
+                return 'govuk-tag--pink';
+            case 'VERTEX MULTIMODAL':
+                return 'govuk-tag--light-blue';
+            case 'HUGGINGFACE GENERAL':
+                return 'govuk-tag--turquoise';
             default:
                 return 'govuk-tag--grey';
         }
@@ -73,16 +81,16 @@ const GeneratorHistory = ({ history }: GeneratorHistoryProps) => {
                                                     />
                                                 )}
                                             </div>
+                                            {item.streamingFinished && <TokenCounter text={item.data} />}
                                             {item.conversationId && (
                                                 <a
-                                                href={`continue-chat/${item.conversationId}`}
-                                                data-testid="item.conversationID"
-                                                className="govuk-link govuk-link--no-visited-state"
-                                            >
-                                                Continue
-                                            </a>
+                                                    href={`continue-chat/${item.conversationId}`}
+                                                    data-testid="item.conversationID"
+                                                    className="govuk-link govuk-link--no-visited-state"
+                                                >
+                                                    Continue
+                                                </a>
                                             )}
-                                            
                                         </div>
                                     </td>
                                 </tr>

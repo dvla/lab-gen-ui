@@ -7,6 +7,7 @@ import { getContinueCompletion, reloadHistory } from '@/app/lib/fetchers';
 import Mermaid from '@/app/diagrams/mermaid';
 import ErrorComponent from '@/app/components/error';
 import GherkinValidate from '../gherkinvalidate';
+import TokenCounter from '../token-counter/token-counter';
 
 interface ChangeResultProps {
     conversationId: string | null;
@@ -151,6 +152,11 @@ const ChangeResult = ({
                         {tabError && <ErrorComponent error={tabError} />}
                         <div className="govuk-!-padding-bottom-2">{result && displayResult()}</div>
                     </div>
+                    {result && !isStreaming && (
+                        <div className="govuk-grid-column-full">
+                            <TokenCounter text={result} />
+                        </div>
+                    )}
                     {!isStreaming && !renderPreview && (
                         <div className="govuk-grid-column-full">
                             <details className="govuk-details" open>

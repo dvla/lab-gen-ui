@@ -12,6 +12,7 @@ import useStream from '@/app/hooks/useStream';
 import ErrorComponent from '@/app/components/error';
 import HistoryTab from '../history/historyTab';
 import ChangeResult from './change-result';
+import TokenCounter from '../token-counter/token-counter';
 
 interface GeneratorTabsProps {
     reset: () => void;
@@ -44,7 +45,7 @@ const GeneratorTabs = ({
 }: GeneratorTabsProps) => {
     const [tabError, setTabError] = useState<string | null>(null);
     const [hasChanged, setHasChanged] = useState(false);
-    const [lastResponse, setLastResponse] = useState<string>('');
+    const [lastResponse, setLastResponse] = useState<string | null>(null);
     const {
         data,
         isLoading,
@@ -257,6 +258,11 @@ const GeneratorTabs = ({
                             {renderPreview ? <strong className="govuk-tag">Preview</strong> : null}{' '}
                             {!hasChanged && getTabResult(promptType)}
                         </div>
+                        {data && streamingFinished && !hasChanged && (
+                            <div className="govuk-grid-column-full">
+                                <TokenCounter text={renderPreview ? preview : lastResponse ? lastResponse : data} />
+                            </div>
+                        )}
                         {streamingFinished && getChangeResult()}
                     </div>
                 </div>
@@ -267,6 +273,11 @@ const GeneratorTabs = ({
                                 {renderPreview ? preview : lastResponse ? lastResponse : data}
                             </p>
                         </div>
+                        {data && streamingFinished && (
+                            <div className="govuk-grid-column-full">
+                                <TokenCounter text={renderPreview ? preview : lastResponse ? lastResponse : data} />
+                            </div>
+                        )}
                     </div>
                 </div>
                 <div
