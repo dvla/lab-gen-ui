@@ -1,9 +1,13 @@
 import ReactMarkdown from 'react-markdown';
 import chatPageStyles from '../../styles/ChatPage.module.scss';
 import jiraStyles from '../../styles/Jira.module.scss';
+import generatorStyles from '../../styles/Generator.module.scss';
 import { ResponseHistory } from './generator';
 import { Model } from '@/app/lib/fetchers';
 import { Spinner } from 'govuk-react';
+import { useRouter } from 'next/navigation';
+import { useContext } from 'react';
+import { modelContext } from '@/app/config/model-context-config';
 import TokenCounter from '../token-counter/token-counter';
 
 interface GeneratorHistoryProps {
@@ -17,6 +21,9 @@ interface GeneratorHistoryProps {
  * @return {JSX.Element} the rendered history component
  */
 const GeneratorHistory = ({ history }: GeneratorHistoryProps) => {
+    const { setModelContext } = useContext(modelContext);
+    const router = useRouter();
+
     /**
      * Returns the color class for a given model based on its provider and variant.
      *
@@ -46,6 +53,25 @@ const GeneratorHistory = ({ history }: GeneratorHistoryProps) => {
                 return 'govuk-tag--turquoise';
             default:
                 return 'govuk-tag--grey';
+        }
+    };
+
+    /**
+     * Handles the click event for continuing a conversation.
+     *
+     * @param conversationID - The ID of the conversation to continue.
+     * @param model - The model to use for the conversation.
+     */
+    const continueClick = (conversationID: string | null, model: Model) => {
+        if (conversationID) {
+            setModelContext({
+                provider: model.provider,
+                variant: model.variant,
+                family: model.family,
+                description: model.description,
+                location: model.location,
+            });
+            router.push(`/continue-chat/${conversationID}`);
         }
     };
 
@@ -84,9 +110,9 @@ const GeneratorHistory = ({ history }: GeneratorHistoryProps) => {
                                             {item.streamingFinished && <TokenCounter text={item.data} />}
                                             {item.conversationId && (
                                                 <a
-                                                    href={`continue-chat/${item.conversationId}`}
+                                                    onClick={() => continueClick(item.conversationId, item.model)}
                                                     data-testid="item.conversationID"
-                                                    className="govuk-link govuk-link--no-visited-state"
+                                                    className={`govuk-link govuk-link--no-visited-state ${generatorStyles.continueLink}`}
                                                 >
                                                     Continue
                                                 </a>

@@ -1,5 +1,5 @@
 import useSWR, { mutate } from 'swr';
-import { ChangeBody } from '../components/generator/change-result';
+import { ModelFamily } from '../config/model-context-config';
 
 /**
  * Interface representing the body of the request
@@ -56,6 +56,10 @@ export interface Model {
      * The variant of the model.
      */
     variant: string;
+    /**
+     * The family of the model.
+     */
+    family: ModelFamily;
     /**
      * The description of the model.
      */
