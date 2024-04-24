@@ -15,6 +15,8 @@ import ModelSelect from '../components/options/model-select';
  * @return {JSX.Element} The prompt template component
  */
 const PromptTemplate = () => {
+    const LANGUAGE = 'language';
+    const DEFAULT_LANGUAGE = 'Welsh';
     const {
         data: prompts,
         error: promptsError,
@@ -24,7 +26,6 @@ const PromptTemplate = () => {
     const [variables, setVariables] = useState([{ id: 'input', value: '' }]);
     const [previousVariables, setPreviousVariables] = useState<Variable[]>([]);
     const { modelInfo } = useContext(modelContext);
-    
 
     /**
      * Handle the change event for the select element.
@@ -56,6 +57,9 @@ const PromptTemplate = () => {
                             pv = previousVariable.value;
                         }
                     }
+                    if (promptID === LANGUAGE && pv === '') {
+                        pv = DEFAULT_LANGUAGE; // Set the default value for 'language'
+                    }
                     tempVariables.push({ id: promptID, value: pv });
                 }
             }
@@ -72,7 +76,13 @@ const PromptTemplate = () => {
             <div className="govuk-grid-row">
                 <div className="govuk-grid-column-two-thirds">
                     <h1 className="govuk-heading-l">Instant Productivity</h1>
-                    <Generator promptType={promptType} variables={variables} showTabs={false} model={modelInfo} streaming={true}/>
+                    <Generator
+                        promptType={promptType}
+                        variables={variables}
+                        showTabs={false}
+                        model={modelInfo}
+                        streaming={true}
+                    />
                 </div>
                 <div
                     className={'govuk-grid-column-one-third ' + chatPageStyles.gridRowHalf}
