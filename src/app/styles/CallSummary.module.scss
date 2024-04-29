@@ -1,0 +1,30 @@
+.bar {
+    border-left: 1px solid #b1b4b6;
+    border-right: 1px solid #b1b4b6;
+    border-bottom: 1px solid #b1b4b6;
+    padding: 10px 15px 5px 15px;
+    margin-bottom: 20px;
+    &.callBar {
+        border-top: 10px solid #2b8cc4;
+    }
+    &.vehicleBar {
+        border-top: 10px solid #005a30;
+    }
+    &.driverBar {
+        border-top: 10px solid #491644;
+    }
+}
+
+.summaryHeading {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+}
+
+.sentiment {
+    padding-right: 5px !important;
+}
+
+.callActions {
+   font-weight: 600;
+}

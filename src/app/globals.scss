@@ -34,6 +34,45 @@
     font-display: fallback
 }
 
+@font-face {
+    font-family: "DVLA-VRM-Regular";
+    src: url(fonts/DVLA-VRM-ea424d81e1dc91a8d11e.woff) format("woff2");
+}
+
 body{
     margin: 0;
+}
+
+.reg-mark,
+.reg-mark-title,
+.reg-mark-sm,
+.reg-mark-banner {
+    max-width: 210px;
+    text-align: center;
+    font-size: 28px;
+    font-weight: 400;
+    font-family: "DVLA-VRM-Regular", Verdana, sans-serif;
+    background-color: #ffd307;
+    padding: .2em .4em .2em .5em;
+    border-radius: .25em;
+    text-transform: uppercase;
+}
+
+.reg-mark-sm,
+.reg-mark-title,
+.reg-mark-banner {
+    width: 122px;
+    padding: 0;
+    display: inline-block;
+    height: 34px;
+    font-size: 26px;
+    border: .13em solid #333;
+}
+
+.govuk-summary-list__key,
+.govuk-summary-list__value,
+.govuk-summary-list__actions {
+    padding-top: 5px;
+    padding-right: 20px;
+    padding-bottom: 5px;
 }

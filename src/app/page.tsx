@@ -32,7 +32,8 @@ export default function Home() {
                                 Image to Text
                             </NextLink>
                             <p className={styles.homeDescription}>
-                            Unlock the full potential of your visual data with our cutting-edge Image to Text conversion tool
+                                Unlock the full potential of your visual data with our cutting-edge Image to Text
+                                conversion tool
                             </p>
                         </li>
                         <li>
@@ -60,8 +61,17 @@ export default function Home() {
                                 Try a range of pre-defined templates such as summary, alliteration, or keywords
                             </p>
                         </li>
+                        <li>
+                            <NextLink className={styles.homeLinks} href="/calls">
+                                Call Transcripts
+                            </NextLink>
+                            <p className={styles.homeDescription}>
+                                Summarise and analyse your call transcripts with our AI-driven tool
+                            </p>
+                        </li>
                         <li className={styles.infoLink}>
-                            <p className="govuk-body">  <a className="govuk-link" href="/model-info">Find out more about our models</a></p>
+                            <p className="govuk-body"><a className="govuk-link" href="/model-info">Find out more about
+                                our models</a></p>
                         </li>
                     </ul>
                 </section>

@@ -6,7 +6,7 @@ import ReactMarkdown from 'react-markdown';
 import jiraStyles from '../styles/Jira.module.scss';
 import generatorStyles from '../styles/Generator.module.scss';
 
-import { Model, useStartConversation, Body } from '@/app/lib/fetchers';
+import { Model } from '@/app/lib/fetchers';
 import Image from 'next/image';
 import useStream from '../hooks/useStream';
 
@@ -58,7 +58,6 @@ const FileUpload = ({ reset, model, file, variables }: FileUploadProps) => {
     const shouldFetch = !!fileBase64;
     let body = {};
 
-    //const { data, error, isLoading, isValidating } = useStartConversation(shouldFetch ? body : null);
     const { data, error, isLoading, streamingFinished } = useStream(shouldFetch ? {model, variables, fileBase64, fileType: file.type} : {});
 
     if (errorState || error) {

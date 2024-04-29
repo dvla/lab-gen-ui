@@ -9,6 +9,7 @@ interface OneShotProps {
     promptType: string;
     model: Model;
     updateHistory: (history: string, streamingFinished: boolean, conversationId: string | null) => void;
+    apiEndpoint?: string;
 }
 
 /**
@@ -17,8 +18,8 @@ interface OneShotProps {
  * @param {OneShotProps} variables - The variables to be used in the conversation
  * @return {JSX.Element} The JSX element representing the OneShot component
  */
-const OneShot = ({ variables, promptType, model, updateHistory }: OneShotProps) => {
-    const { isLoading, error } = useStream({model, promptType, variables, updateHistory});
+const OneShot = ({ variables, promptType, model, updateHistory, apiEndpoint }: OneShotProps) => {
+    const { isLoading, error } = useStream({ model, promptType, variables, updateHistory, apiEndpoint });
 
     // If there is an error, display error message
     if (error) {

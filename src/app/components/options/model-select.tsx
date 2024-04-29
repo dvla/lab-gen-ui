@@ -1,5 +1,5 @@
 import { ChangeEvent, useContext, useEffect } from 'react';
-import * as changeCase from 'change-case';
+import { capitalCase } from '@/app/lib/utils';
 import useSWR from 'swr';
 import { modelContext } from '@/app/config/model-context-config';
 
@@ -94,7 +94,7 @@ const ModelSelect = ({ variantLock }: ModelSelectProps) => {
                         .filter((model: any) => !variantLock || model.variant === variantLock)
                         .map((model: any, index: number) => (
                             <option key={index} value={`${model.provider} ${model.variant}`}>
-                                {changeCase.capitalCase(`${model.provider} ${model.variant}`)}
+                                {capitalCase(`${model.provider} ${model.variant}`)}
                             </option>
                         ))}
             </select>

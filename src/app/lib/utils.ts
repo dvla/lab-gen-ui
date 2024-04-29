@@ -1,5 +1,5 @@
 import type { Session } from 'next-auth';
-
+import { startCase, toLower } from 'lodash';
 /**
  * Retrieves the business user email from the session object.
  *
@@ -20,7 +20,7 @@ export async function streamError(responseBody: ReadableStream<Uint8Array>): Pro
     const reader = responseBody.getReader();
     const decoder = new TextDecoder();
     let errorChunks = [];
-  
+
     try {
         let readResult;
         do {
@@ -35,3 +35,13 @@ export async function streamError(responseBody: ReadableStream<Uint8Array>): Pro
     let errorBodyString = errorChunks.map(chunk => decoder.decode(chunk)).join('');
     return errorBodyString;
 }
+
+/**
+ * Converts a string to capital case.
+ *
+ * @param {string} str - The string to convert to capital case.
+ * @return {string} The string in capital case.
+ */
+export const capitalCase = (str: string) => startCase(toLower(str));
+
+export const TIMEZONE = 'Europe/London';

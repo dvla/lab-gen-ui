@@ -32,6 +32,11 @@ interface UseStreamProps {
      * @param history - The new history
      */
     updateHistory?: (history: string, streamingFinished: boolean, conversationID: string | null) => void;
+
+    /**
+     * The API endpoint to use for the completion.
+     */
+    apiEndpoint?: string;
 }
 
 /**
@@ -67,6 +72,7 @@ const useStream = ({
     fileBase64,
     fileType,
     updateHistory,
+    apiEndpoint,
 }: UseStreamProps): UseStreamHelpers => {
     // Streamed result from the API
     const [data, setData] = useState<string | null>(null);
@@ -80,6 +86,9 @@ const useStream = ({
     const [error, setError] = useState<string | null>(null);
     // ID of the conversation
     const [conversationId, setConversationId] = useState<string | null>(null);
+
+    // Decide which completion function to use based on the presence of an API endpoint paramater
+    const callCompletion = (body: Body) => (apiEndpoint ? getCompletion(body, apiEndpoint) : getCompletion(body));
 
     // useEffect to start conversation and handle streaming data
     useEffect((): any => {
@@ -132,27 +141,26 @@ const useStream = ({
                     setIsLoading(true);
                     // Initialize conversationId as null
                     let conversationId: string | null = null;
-                    for await (const { token, conversationId: newConversationId } of getCompletion(body)) {
+                    for await (const { token, conversationId: newConversationId } of callCompletion(body)) {
                         // Set conversationId if it's not already set
                         if (newConversationId && conversationId === null) {
                             setConversationId(newConversationId);
                         }
                         setIsLoading(false);
-                        setData((d) => d ? d + token : token);
+                        setData((d) => (d ? d + token : token));
                         allTokens += token;
                         if (updateHistory) {
                             updateHistory(allTokens, false, newConversationId);
                             conversationId = newConversationId;
                         }
                     }
-                    
+
                     // Set streaming finished flag
                     setStreamingFinished(true);
                     if (updateHistory) {
                         updateHistory(allTokens, true, conversationId);
                     }
-                }
-                else {
+                } else {
                     setIsLoading(false);
                     setStreamingFinished(true);
                 }
@@ -183,7 +191,7 @@ const useStream = ({
         isLoading,
         streamingFinished,
         error,
-        conversationId
+        conversationId,
     };
 };
 

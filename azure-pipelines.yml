@@ -50,6 +50,9 @@ stages:
               npm ci
             displayName: 'npm install'
           - script: |
+              npm test
+            displayName: 'npm test'
+          - script: |
               npm run build-ci
             displayName: 'npm build'
           - script: |

@@ -109,40 +109,6 @@ export const fetcher = (url: string) =>
     });
 
 /**
- * Custom hook to start a conversation.
- *
- * @param {string} body - The body of the conversation
- * @return {object} An object containing data, error, isLoading, and isValidating
- */
-export const useStartConversation = (body: Body | null) => {
-    const { data, error, isLoading, isValidating } = useSWR(
-        body ? '/api/start-conversation' : null, // Conditional on body being present
-        (url: string) =>
-            fetch(url, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(body),
-            }).then(async (res) => {
-                if (!res.ok) {
-                    const response = await res.json();
-                    const error = new Error(response.error);
-                    throw error;
-                }
-
-                return await res.text();
-            }),
-        {
-            revalidateOnFocus: false,
-            errorRetryCount: 0,
-        }
-    );
-
-    return { data, error, isLoading, isValidating };
-};
-
-/**
  * Asynchronous generator function to fetch completion tokens from the server.
  *
  * @param {Response} res - the response object from the API call
@@ -184,8 +150,11 @@ async function* streamTokens(
  * @param {Body} body - the request body for the API call
  * @return {AsyncIterable<{ token: string; conversationId: string | null }>} an async iterable of completion tokens
  */
-export async function* getCompletion(body: Body): AsyncIterable<{ token: string; conversationId: string | null }> {
-    const res = await fetch('/api/start-conversation', {
+export async function* getCompletion(
+    body: Body,
+    url = '/api/gen/conversations'
+): AsyncIterable<{ token: string; conversationId: string | null }> {
+    const res = await fetch(url, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -206,7 +175,7 @@ export async function* getCompletion(body: Body): AsyncIterable<{ token: string;
  * @return {AsyncIterable<string>} an async iterator of continue completion tokens
  */
 export async function* getContinueCompletion(body: Body, conversationId: string): AsyncIterable<string> {
-    const res = await fetch(`/api/continue-conversation?conversationId=${conversationId}`, {
+    const res = await fetch(`/api/gen/conversations/${conversationId}`, {
         method: 'PUT',
         headers: {
             'Content-Type': 'application/json',

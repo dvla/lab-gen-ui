@@ -9,18 +9,21 @@ import { useRouter } from 'next/navigation';
 import { useContext } from 'react';
 import { modelContext } from '@/app/config/model-context-config';
 import TokenCounter from '../token-counter/token-counter';
+import CallSummary from '../calls/call-summary';
 
 interface GeneratorHistoryProps {
     history: ResponseHistory[];
+    promptType?: string;
 }
 
 /**
  * Renders the GeneratorHistory component with the given history data.
  *
  * @param {GeneratorHistoryProps} history - the history data to be displayed
+ * @param promptType The type of prompt to use
  * @return {JSX.Element} the rendered history component
  */
-const GeneratorHistory = ({ history }: GeneratorHistoryProps) => {
+const GeneratorHistory = ({ history, promptType }: GeneratorHistoryProps) => {
     const { setModelContext } = useContext(modelContext);
     const router = useRouter();
 
@@ -85,9 +88,13 @@ const GeneratorHistory = ({ history }: GeneratorHistoryProps) => {
                             {history.map((item, index) => (
                                 <tr key={index} className="govuk-table__row">
                                     <td className="govuk-table__cell">
-                                        <ReactMarkdown className={jiraStyles.historyResponse}>
-                                            {item.data}
-                                        </ReactMarkdown>
+                                        { promptType && promptType === 'call_summary' ? (
+                                            <CallSummary callData={item.data} />
+                                        ) : (
+                                            <ReactMarkdown className={jiraStyles.historyResponse}>
+                                                {item.data}
+                                            </ReactMarkdown>
+                                        )}
                                         <div className={jiraStyles.continueTags}>
                                             <div className={jiraStyles.tagLoading}>
                                                 <strong

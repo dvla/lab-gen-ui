@@ -1,6 +1,5 @@
 'use client';
 import { ChangeEvent, FormEventHandler, useEffect, useRef, useState } from 'react';
-import * as changeCase from 'change-case';
 import chatPageStyles from '../../styles/ChatPage.module.scss';
 import generatorStyles from '../../styles/Generator.module.scss';
 import GeneratorTabs from './generator-tabs';
@@ -10,6 +9,7 @@ import FileUpload from '@/app/image-to-text/file-upload';
 import { usePathname, useRouter } from 'next/navigation';
 import { Model } from '@/app/lib/fetchers';
 import TokenCounter from '../token-counter/token-counter';
+import { capitalCase } from '@/app/lib/utils';
 
 /**
  * Represents a variable with an id and value.
@@ -65,6 +65,7 @@ interface GeneratorProps {
     showFileUpload?: boolean;
     streaming?: boolean;
     displaySettings?: (display: boolean) => void;
+    apiEndpoint?: string;
 }
 
 /**
@@ -89,6 +90,7 @@ const Generator = ({
     showFileUpload = false,
     streaming = true,
     displaySettings,
+    apiEndpoint
 }: GeneratorProps): JSX.Element => {
     // State variables
     const [start, setStart] = useState(true);
@@ -211,7 +213,7 @@ const Generator = ({
             show === false ? null : (
                 <div className="govuk-form-group" key={id}>
                     <label className="govuk-label" htmlFor={id}>
-                        {changeCase.capitalCase(name ? name : id)}
+                        {capitalCase(name ? name : id)}
                     </label>
                     {id === 'input' || id === 'description' ? (
                         <div>
@@ -275,6 +277,7 @@ const Generator = ({
                             promptType={promptType}
                             model={model}
                             updateHistory={updateHistory}
+                            apiEndpoint={apiEndpoint}
                         />
                     )}
                 </div>
@@ -299,7 +302,7 @@ const Generator = ({
             )}
             {viewHistory && (
                 <div className={'govuk-grid-column-full ' + chatPageStyles.gridRowHalf}>
-                    <GeneratorHistory history={history} />
+                    <GeneratorHistory history={history} promptType={promptType} />
                 </div>
             )}
         </div>

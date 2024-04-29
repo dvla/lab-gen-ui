@@ -3,7 +3,7 @@ import { ChangeEvent, useContext, useState } from 'react';
 import FixedPage from '../components/fixed-page';
 import Generator, { Variable } from '../components/generator/generator';
 import chatPageStyles from '../styles/ChatPage.module.scss';
-import * as changeCase from 'change-case';
+import { capitalCase } from '@/app/lib/utils';
 import useSWR from 'swr';
 import { SWR_OPTIONS, fetcher } from '../lib/fetchers';
 import { modelContext } from '../config/model-context-config';
@@ -115,7 +115,7 @@ const PromptTemplate = () => {
                                                 onChange={handleRadioChange}
                                             />
                                             <label className="govuk-label govuk-radios__label" htmlFor={key}>
-                                                {changeCase.capitalCase(key)}
+                                                {capitalCase(key)}
                                             </label>
                                         </div>
                                     ))}
