@@ -4,6 +4,7 @@ import moment from 'moment-timezone';
 import { capitalCase, TIMEZONE } from '@/app/lib/utils';
 import VehicleSummary, { Vehicle } from '@/app/components/calls/vehicle-summary';
 import DriverSummary, { Driver } from '@/app/components/calls/driver-summary';
+import ErrorComponent from '@/app/components/error';
 
 interface CallSummaryProps {
     callData: string;
@@ -19,8 +20,12 @@ interface CallDetails {
     topics: string;
     category: string[];
     participants: string;
-    summary: string;
+    customerSituation: string;
+    desiredOutcome: string;
+    resolution: string;
+    steps: string[];
     actions: string;
+    fcr: boolean;
     vehicle: Vehicle;
     driver: Driver;
 }
@@ -30,8 +35,12 @@ interface CallDetails {
  */
 const CallSummary = ({ callData }: CallSummaryProps) => {
     const [callDetails, setCallDetails] = useState<CallDetails>();
+    const [error, setError] = useState<string>('');
     useEffect(() => {
         const jsonDetails = JSON.parse(callData);
+        if (jsonDetails && jsonDetails.detail) {
+            setError(jsonDetails.detail);
+        }
         setCallDetails(jsonDetails);
         if (jsonDetails) {
             console.log(jsonDetails);
@@ -69,6 +78,10 @@ const CallSummary = ({ callData }: CallSummaryProps) => {
         return `${start.format('D-MMM kk:mm')} to ${end.format('kk:mm')} : ${duration.asSeconds()} secs`;
     };
 
+    if (error) {
+        return <ErrorComponent error={error} reset={() => window.location.reload()} />;
+    }
+
     return (
         <>
             {callDetails && callDetails.startTime && (
@@ -81,6 +94,11 @@ const CallSummary = ({ callData }: CallSummaryProps) => {
                             <h3 className="govuk-heading-m section-heading" id="call-heading">
                                 Call : {getDuration(callDetails.startTime, callDetails.endTime)}
                             </h3>
+                            {callDetails.fcr && (
+                                <strong>
+                                    <span className="govuk-tag govuk-tag--yellow">FCR</span>
+                                </strong>
+                            )}
                             {callDetails.sentiment && (
                                 <strong
                                     className={`govuk-tag ${callSummaryStyles.sentiment} ${getTagColour(
@@ -114,17 +132,35 @@ const CallSummary = ({ callData }: CallSummaryProps) => {
                                 <dd className="govuk-summary-list__value">{callDetails.participants}</dd>
                             </div>
                         )}
-                        {callDetails.summary && (
+                        {callDetails.customerSituation && (
                             <div className="govuk-summary-list__row">
-                                <dt className="govuk-summary-list__key">Summary</dt>
-                                <dd className="govuk-summary-list__value">{callDetails.summary}</dd>
+                                <dt className="govuk-summary-list__key">Customer Situation</dt>
+                                <dd className="govuk-summary-list__value">{callDetails.customerSituation}</dd>
                             </div>
                         )}
-                        {callDetails.actions && (
+                        {callDetails.desiredOutcome && (
                             <div className="govuk-summary-list__row">
-                                <dt className="govuk-summary-list__key">Actions</dt>
+                                <dt className="govuk-summary-list__key">Desired Outcome</dt>
+                                <dd className="govuk-summary-list__value">{callDetails.desiredOutcome}</dd>
+                            </div>
+                        )}
+                        {callDetails.steps && (
+                            <div className="govuk-summary-list__row">
+                                <dt className="govuk-summary-list__key">Steps Taken</dt>
+                                <dd className="govuk-summary-list__value">
+                                    <ul className="govuk-list govuk-list--bullet">
+                                        {callDetails.steps.map((step, index) => (
+                                            <li key={index}>{step}</li>
+                                        ))}
+                                    </ul>
+                                </dd>
+                            </div>
+                        )}
+                        {callDetails.resolution && (
+                            <div className="govuk-summary-list__row">
+                                <dt className="govuk-summary-list__key">Call Resolution</dt>
                                 <dd className={`${callSummaryStyles.callActions} govuk-summary-list__value`}>
-                                    {callDetails.actions}
+                                    {callDetails.resolution}
                                 </dd>
                             </div>
                         )}
