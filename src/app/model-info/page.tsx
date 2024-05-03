@@ -64,15 +64,45 @@ const modelInfo = [
     summary: "Strikes the ideal balance between intelligence and speed for many applications"  
     },  
     {  
-    modelName: "Vertex General (Gemini Pro)",  
+    modelName: "Bedrock Multimodal (Claude 3 Sonnet)",  
+    speed: "Fast",  
+    costIndicator: "$$",  
+    trainingData: "August 2023",  
+    contextSize: "200,000 tokens",  
+    capabilities: "Image analysis, textual description, multimodal Q&A",  
+    location: "Paris (EU)",  
+    summary: "Bedrock Advanced with the ability to analyse image and text for comprehensive understanding"  
+    },    
+    {  
+    modelName: "Vertex General (Gemini Pro 1.0)",  
     speed: "Fast",  
     costIndicator: "$",  
-    trainingData: "Feb 2023",  
-    contextSize: "32,760 tokens",  
+    trainingData: "Nov 2023",  
+    contextSize: "30,720 tokens",  
     capabilities: "Natural language tasks, multi-turn text, and code generation",  
     location: "UK",  
     summary: "Fast and affordable AI for easy chat and quick code creation"  
-    }  
+    },
+    {  
+    modelName: "Vertex Advanced (Gemini Pro 1.5)",  
+    speed: "Fast",  
+    costIndicator: "$$",  
+    trainingData: "Nov 2023",  
+    contextSize: "1,000,000 tokens",  
+    capabilities: "Natural language tasks, analysis, and expert code generation",  
+    location: "UK",  
+    summary: "Advanced AI for complex chat, analysis, and expert code creation and more"  
+    },
+    {  
+    modelName: "Vertex Multimodal (Gemini Pro 1.0 Vision)",  
+    speed: "Fast",  
+    costIndicator: "$",  
+    trainingData: "Nov 2023",  
+    contextSize: "12,288 tokens",  
+    capabilities: "Image analysis, textual description, multimodal Q&A",  
+    location: "UK",  
+    summary: "Fast and affordable AI specialised for multimodal tasks"  
+    }   
 ];  
 
 const costHeaders = [
