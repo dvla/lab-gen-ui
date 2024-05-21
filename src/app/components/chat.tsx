@@ -3,6 +3,7 @@ import { Message, useChat } from 'ai/react';
 import styles from '../styles/Chat.module.scss';
 import { useEffect, useRef } from 'react';
 import { ErrorSummary } from 'govuk-react';
+import ChatHistory from './chat-history/chat-history';
 
 const DEFAULT_ROWS = 2;
 const DEFAULT_INITIAL_MESSAGES_LENGTH = 3;
@@ -180,33 +181,7 @@ const Chat = ({
             )}
             {/* Chat History */}
             {showHistory && (
-                <section className={styles.chatHistory}>
-                    <ul className="govuk-list">
-                        {messages.map((m) => (
-                            <li
-                                className={styles.listItem + ' ' + (m.role === 'user' ? styles.right : styles.left)}
-                                key={m.id}
-                            >
-                                <section className={m.role === 'user' ? styles.userMessage : styles.aiMessage}>
-                                    <div
-                                        className={styles.icon + ' ' + (m.role === 'user' ? styles.user : styles.ai)}
-                                    ></div>
-                                    <div>
-                                        <p
-                                            className={
-                                                styles.message + ' ' + (m.role === 'user' ? styles.user : styles.ai)
-                                            }
-                                        >
-                                            {m.content}
-                                        </p>
-                                        <p className={styles.from}>{m.role === 'user' ? 'User' : 'AI'}</p>
-                                    </div>
-                                </section>
-                            </li>
-                        ))}
-                    </ul>
-                    <div ref={chatHistoryBottom} />
-                </section>
+                <ChatHistory messages={messages} />
             )}
             {/* Chat Input */}
             <div className={'govuk-form-group ' + styles.formGroup}>

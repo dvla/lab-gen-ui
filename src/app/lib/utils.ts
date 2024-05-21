@@ -1,5 +1,7 @@
 import type { Session } from 'next-auth';
 import { startCase, toLower } from 'lodash';
+import { Variable } from '../components/generator/generator';
+
 /**
  * Retrieves the business user email from the session object.
  *
@@ -45,3 +47,27 @@ export async function streamError(responseBody: ReadableStream<Uint8Array>): Pro
 export const capitalCase = (str: string) => startCase(toLower(str));
 
 export const TIMEZONE = 'Europe/London';
+
+/**
+ * Converts variables to content based on the given prompt ID.
+ * @param variables - An array of Variable objects.
+ * @param promptID - The ID of the prompt.
+ * @returns The converted content as a string.
+ */
+export const convertVariablesToContent = (variables: Variable[], promptID: string): string => {
+    let content = '';
+
+    if(variables.length === 0) {
+        return content;
+    }
+
+    switch (promptID) {
+        case 'role-play':
+            content = `I will play the role of the DVLA. I want you to play the role of ${variables[0].value}. Your name is ${variables[1].value}. 
+                        Your address is ${variables[2].value}. Your registration number is ${variables[3].value}. 
+                        Situation: ${variables[4].value}. Desired Outcome: ${variables[5].value}. 
+                        Limit your answers to one sentence. Respond with "Yes I am ready" and I will start the conversation.`;
+            break;
+    }
+    return content;
+}

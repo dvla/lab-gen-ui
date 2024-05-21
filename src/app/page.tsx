@@ -10,7 +10,8 @@ export default function Home() {
                     <p className="govuk-phase-banner__content">
                         <strong className="govuk-tag govuk-phase-banner__content__tag">Beta</strong>
                         <span className="govuk-phase-banner__text">
-                            This is an <NextLink href="/experimental">experimental</NextLink> service – your feedback will help us to improve it. Do not use with personal data.
+                            This is an <NextLink href="/experimental">experimental</NextLink> service – your feedback
+                            will help us to improve it. Do not use with personal data.
                         </span>
                     </p>
                 </div>
@@ -69,9 +70,20 @@ export default function Home() {
                                 Summarise and analyse your call transcripts with our AI-driven tool
                             </p>
                         </li>
+                        <li>
+                            <NextLink className={styles.homeLinks} href="/role-play">
+                                Role Play
+                            </NextLink>
+                            <p className={styles.homeDescription}>
+                                Create a role play scenario with our AI-driven chatbot
+                            </p>
+                        </li>
                         <li className={styles.infoLink}>
-                            <p className="govuk-body"><a className="govuk-link" href="/model-info">Find out more about
-                                our models</a></p>
+                            <p className="govuk-body">
+                                <a className="govuk-link" href="/model-info">
+                                    Find out more about our models
+                                </a>
+                            </p>
                         </li>
                     </ul>
                 </section>

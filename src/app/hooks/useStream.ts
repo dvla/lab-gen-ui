@@ -11,6 +11,10 @@ interface UseStreamProps {
      */
     variables?: Variable[];
     /**
+     * The content to pass to the API.
+     */
+    content?: string;
+    /**
      * The prompt type for the API.
      */
     promptType?: string;
@@ -69,6 +73,7 @@ const useStream = ({
     model,
     promptType,
     variables,
+    content,
     fileBase64,
     fileType,
     updateHistory,
@@ -119,6 +124,10 @@ const useStream = ({
                 for (let v of variables) {
                     body.variables[v.id] = v.value;
                 }
+            }
+
+            if(content) {
+                body.content = content;
             }
 
             if (Object.keys(body).length === 0) {
@@ -184,7 +193,7 @@ const useStream = ({
         if (streamingStarted.current === false) {
             startConversation();
         }
-    }, [promptType, variables, updateHistory, fileBase64, fileType, model, streamingFinished]);
+    }, [promptType, variables, content, updateHistory, fileBase64, fileType, model, streamingFinished, callCompletion]);
 
     return {
         data,
