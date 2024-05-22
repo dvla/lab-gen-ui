@@ -40,8 +40,10 @@ const CallSummary = ({ callData }: CallSummaryProps) => {
         const jsonDetails = JSON.parse(callData);
         if (jsonDetails && jsonDetails.detail) {
             setError(jsonDetails.detail);
+        } else {
+            setError('');
+            setCallDetails(jsonDetails);
         }
-        setCallDetails(jsonDetails);
         if (jsonDetails) {
             console.log(jsonDetails);
         }
