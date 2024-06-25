@@ -9,20 +9,19 @@ env.allowLocalModels = false;
  * Props for the TokenCounter component.
  *
  * @prop text The text to be tokenized.
+ * @prop modelFamily The model family.
  */
 interface TokenCounterProps {
     /** The text to be tokenized. */
     text: string | null;
+    /** The model family. */
+    modelFamily?: ModelFamily;
 }
 
 /**
  * The name of the Claude tokenizer model.
  */
 const CLAUDE_TOKENIZER = 'Xenova/claude-tokenizer';
-/**
- * The name of the Gemma tokenizer model.
- */
-const GEMMA_TOKENIZER = 'Xenova/gemma-tokenizer';
 /**
  * The name of the GPT-4 tokenizer model.
  */
@@ -38,22 +37,19 @@ const MISTRAL_TOKENIZER = 'Xenova/mistral-tokenizer';
  * @param {TokenCounterProps} text - The text to be tokenized.
  * @return {JSX.Element} The JSX element representing the TokenCounter component.
  */
-const TokenCounter = ({ text }: TokenCounterProps) => {
+const TokenCounter = ({ text, modelFamily }: TokenCounterProps) => {
     const [tokenizer, setTokenizer] = useState(GPT4_TOKENIZER);
-    const [tokenIds, setTokenIds] = useState<number[]>([]);
+    const [tokens, setTokens] = useState<number>(0);
     const { modelInfo } = useContext(modelContext);
 
     // Set the tokenizer based on the current model.
     // Claude model uses Claude tokenizer.
-    // Google model uses Gemma tokenizer.
+    // Google model uses GPT-4 tokenizer. (Gemma model was slow)
     // All other models use GPT-4 tokenizer.
     useEffect(() => {
-        switch (modelInfo.family) {
+        switch (modelFamily ? modelFamily : modelInfo.family) {
             case ModelFamily.CLAUDE:
                 setTokenizer(CLAUDE_TOKENIZER);
-                break;
-            case ModelFamily.GEMINI:
-                setTokenizer(GEMMA_TOKENIZER);
                 break;
             case ModelFamily.MIXTRAL:
                 setTokenizer(MISTRAL_TOKENIZER);
@@ -61,7 +57,7 @@ const TokenCounter = ({ text }: TokenCounterProps) => {
             default:
                 setTokenizer(GPT4_TOKENIZER);
         }
-    }, [modelInfo]);
+    }, [modelFamily, modelInfo]);
 
     // Post the current text and tokenizer to the worker thread when they change.
     // This allows the worker to tokenize the text in the background.
@@ -82,14 +78,14 @@ const TokenCounter = ({ text }: TokenCounterProps) => {
         const tokenizer = await AutoTokenizer.from_pretrained(model_id);
         const text = tokenText;
         const token_ids = tokenizer.encode(text);
-        setTokenIds(token_ids);
+        setTokens(token_ids.length);
     };
 
     return (
         <>
             {text && (
                 <div id="more-detail-hint" className={`govuk-hint ${tokenStyles.tokenText}`}>
-                    Tokens: {tokenIds.length.toString()} Characters: {text.length.toString()}
+                    Tokens: {tokens} Characters: {text.length.toString()}
                 </div>
             )}
         </>

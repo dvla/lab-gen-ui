@@ -114,7 +114,7 @@ const GeneratorHistory = ({ history, promptType }: GeneratorHistoryProps) => {
                                                     />
                                                 )}
                                             </div>
-                                            {item.streamingFinished && <TokenCounter text={item.data} />}
+                                            {item.streamingFinished && <TokenCounter text={item.data} modelFamily={item.model.family}/>}
                                             {item.conversationId && (
                                                 <a
                                                     onClick={() => continueClick(item.conversationId, item.model)}
