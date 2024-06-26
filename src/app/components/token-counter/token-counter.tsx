@@ -51,7 +51,7 @@ const TokenCounter = ({ text, modelFamily }: TokenCounterProps) => {
             case ModelFamily.CLAUDE:
                 setTokenizer(CLAUDE_TOKENIZER);
                 break;
-            case ModelFamily.MIXTRAL:
+            case ModelFamily.MISTRAL:
                 setTokenizer(MISTRAL_TOKENIZER);
                 break;
             default:

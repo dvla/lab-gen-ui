@@ -5,7 +5,7 @@ export enum ModelFamily{
     GPT = "GPT",
     CLAUDE = "CLAUDE",
     GEMINI = "GEMINI",
-    MIXTRAL = "MIXTRAL",
+    MISTRAL = "MISTRAL",
     UNSPECIFIED = "UNSPECIFIED"
 }
 
