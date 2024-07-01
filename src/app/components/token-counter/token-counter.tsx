@@ -27,6 +27,10 @@ const CLAUDE_TOKENIZER = 'Xenova/claude-tokenizer';
  */
 const GPT4_TOKENIZER = 'Xenova/gpt-4';
 /**
+ * The name of the GPT-4o tokenizer model.
+ */
+const GPT4O_TOKENIZER = 'Xenova/gpt-4o';
+/**
  * The name of the Mistral tokenizer model.
  */
 const MISTRAL_TOKENIZER = 'Xenova/mistral-tokenizer';
@@ -53,6 +57,10 @@ const TokenCounter = ({ text, modelFamily }: TokenCounterProps) => {
                 break;
             case ModelFamily.MISTRAL:
                 setTokenizer(MISTRAL_TOKENIZER);
+                break;
+            case ModelFamily.GPT:
+                let selectedTokenizer = modelInfo.description.toLowerCase().includes('4o') ? GPT4O_TOKENIZER : GPT4_TOKENIZER;
+                setTokenizer(selectedTokenizer);
                 break;
             default:
                 setTokenizer(GPT4_TOKENIZER);
