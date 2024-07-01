@@ -24,8 +24,8 @@ const modelInfo = [
     summary: "A faster and cheaper yet still very capable model"  
     },  
     {  
-    modelName: "Azure Advanced (GPT4)",  
-    speed: "Slow",  
+    modelName: "Azure Advanced (GPT4 Turbo)",  
+    speed: "Mid-Speed",  
     costIndicator: "$$$$$",  
     trainingData: "Apr 2023",  
     contextSize: "128,000 tokens",  
@@ -42,6 +42,16 @@ const modelInfo = [
     capabilities: "Image analysis, textual description, multimodal Q&A",  
     location: "Sweden (EU)",  
     summary: "Multimodal AI that blends visual and textual analysis for comprehensive understanding"  
+    },
+    {  
+    modelName: "Azure Experimental (GPT4o)",  
+    speed: "Fast",  
+    costIndicator: "$$$",  
+    trainingData: "October 2023",  
+    contextSize: "128,000 tokens",  
+    capabilities: "Enhanced text generation, reasoning, understanding complex instructions",  
+    location: "Sweden (EU)",  
+    summary: "Next-level model with elevated digital interactions with enhanced speed, intelligence, and multilingual voice features."  
     },  
     {  
     modelName: "Bedrock General (Claude 3 Haiku)",  
@@ -50,7 +60,7 @@ const modelInfo = [
     trainingData: "August 2023",  
     contextSize: "200,000 tokens",  
     capabilities: "Rapid text generation, quick answers, basic Q&A",  
-    location: "Paris (EU)",  
+    location: "UK",  
     summary: "Designed for simple queries and requests with near-instant responsiveness"  
     },  
     {  
@@ -60,7 +70,7 @@ const modelInfo = [
     trainingData: "August 2023",  
     contextSize: "200,000 tokens",  
     capabilities: "Text generation, summarization, comparing and contrasting multiple documents, and analysis",  
-    location: "Paris (EU)",  
+    location: "UK",  
     summary: "Strikes the ideal balance between intelligence and speed for many applications"  
     },  
     {  
@@ -70,9 +80,19 @@ const modelInfo = [
     trainingData: "August 2023",  
     contextSize: "200,000 tokens",  
     capabilities: "Image analysis, textual description, multimodal Q&A",  
-    location: "Paris (EU)",  
+    location: "UK",  
     summary: "Bedrock Advanced with the ability to analyse image and text for comprehensive understanding"  
-    },    
+    },
+    {  
+    modelName: "Bedrock Experimental (Claude 3.5 Sonnet)",  
+    speed: "Fast",  
+    costIndicator: "$$",  
+    trainingData: "April 2024",  
+    contextSize: "200,000 tokens",  
+    capabilities: "Advanced image analysis, textual description, multimodal Q&A",  
+    location: "USA",  
+    summary: "Anthropic's next-level, powerful model great for all advanced tasks"  
+    },        
     {  
     modelName: "Vertex General (Gemini Pro 1.0)",  
     speed: "Fast",  
