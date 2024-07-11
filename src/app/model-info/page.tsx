@@ -162,7 +162,7 @@ const costDetails = [
 export default function ModelInfo() {
     return (
         <>
-            <FixedPage backButton={true}>
+            <FixedPage backButton={true} isAuthenticated={false}>
                 <h1 className={'govuk-heading-xl' + ' ' + styles.h1XL}>Model Information</h1>
                 <section className={styles.topBorder}>
                     <table className="govuk-table">

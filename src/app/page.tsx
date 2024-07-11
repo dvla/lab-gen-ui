@@ -5,7 +5,7 @@ import FixedPage from './components/fixed-page';
 export default function Home() {
     return (
         <>
-            <FixedPage>
+            <FixedPage isAuthenticated={false}>
                 <div className="govuk-phase-banner">
                     <p className="govuk-phase-banner__content">
                         <strong className="govuk-tag govuk-phase-banner__content__tag">Beta</strong>

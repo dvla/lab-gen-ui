@@ -18,5 +18,5 @@ export const loginAction = async () => {
  * @return {Promise<void>} A promise that resolves when the user has been successfully signed out.
  */
 export const logoutAction = async () => {
-    await signOut();
+    await signOut({redirectTo: '/'});
 }
