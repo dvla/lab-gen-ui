@@ -1,5 +1,6 @@
 'use client';
 import { createContext } from 'react';
+import { Model } from '@/app/lib/fetchers';
 
 export enum ModelFamily{
     GPT = "GPT",
@@ -15,19 +16,12 @@ export const defaultModelInfo = {
     family: ModelFamily.GPT,
     description: 'GPT-3.5 - A faster and cheaper yet still very capable model',
     location: 'UK',
+    key: 'AZUREGPTGENERAL',
 };
 
 export interface ModelContextType {
-    modelInfo: {
-        provider: string;
-        variant: string;
-        family: ModelFamily;
-        description: string;
-        location: string;
-    };
-    setModelContext: React.Dispatch<
-        React.SetStateAction<{ provider: string; variant: string; family: ModelFamily; description: string; location: string }>
-    >;
+    modelInfo: Model;
+    setModelContext: React.Dispatch<React.SetStateAction<Model>>;
 }
 
 export const modelContext = createContext<ModelContextType>({

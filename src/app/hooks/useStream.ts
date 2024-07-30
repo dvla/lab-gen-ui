@@ -19,7 +19,7 @@ interface UseStreamProps {
      */
     promptType?: string;
     /**
-     * The model (i.e. provider and variant) for the API.
+     * The model for the API.
      */
     model?: Model;
     /**
@@ -92,11 +92,11 @@ const useStream = ({
     // ID of the conversation
     const [conversationId, setConversationId] = useState<string | null>(null);
 
-    // Decide which completion function to use based on the presence of an API endpoint paramater
-    const callCompletion = (body: Body) => (apiEndpoint ? getCompletion(body, apiEndpoint) : getCompletion(body));
-
     // useEffect to start conversation and handle streaming data
     useEffect((): any => {
+
+        // Decide which completion function to use based on the presence of an API endpoint paramater
+        const callCompletion = (body: Body) => (apiEndpoint ? getCompletion(body, apiEndpoint) : getCompletion(body));
         /**
          * Get the body of the data, including variables, provider, variant, and promptId.
          *
@@ -110,8 +110,7 @@ const useStream = ({
             }
 
             if (model) {
-                body.provider = model.provider;
-                body.variant = model.variant;
+                body.modelKey = model.key
             }
 
             if (fileBase64 && fileType) {
@@ -193,7 +192,7 @@ const useStream = ({
         if (streamingStarted.current === false) {
             startConversation();
         }
-    }, [promptType, variables, content, updateHistory, fileBase64, fileType, model, streamingFinished, callCompletion]);
+    }, [promptType, variables, content, updateHistory, fileBase64, fileType, model, streamingFinished, apiEndpoint]);
 
     return {
         data,

@@ -19,14 +19,9 @@ export interface Body {
     variables?: any;
 
     /**
-     * Provider for the model
+     * The unique key for the model
      */
-    provider?: string;
-
-    /**
-     * Variant for the model
-     */
-    variant?: string;
+    modelKey?: string;
 
     /**
      * Prompt ID for the prompt type
@@ -68,6 +63,10 @@ export interface Model {
      * The location of the model.
      */
     location: string;
+    /**
+     * The unique identifier for the model.
+     */
+    key: string;
 }
 
 /**

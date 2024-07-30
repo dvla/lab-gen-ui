@@ -34,7 +34,7 @@ const ModelBanner = () => {
                 >
                     <span style={{ display: 'flex', alignItems: 'center' }}>
                         <strong className="govuk-tag govuk-tag--red govuk-phase-banner__content__tag" title={modelInfo.description}>
-                            {modelInfo.provider + ' ' + modelInfo.variant}
+                            {modelInfo.variant + ' ' + modelInfo.family + ' ' + modelInfo.provider}
                         </strong>
                         <span className="govuk-phase-banner__text">
                             The selected model{costMessage}

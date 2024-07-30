@@ -14,10 +14,9 @@ const DEFAULT_SHOW_HISTORY = true;
  */
 export interface ChatBody {
     /**
-     * The provider and variant to select the appropriate model.
+     * The modelKey to select the appropriate model.
      */
-    provider: string;
-    variant: string;
+    modelKey: string;
 }
 
 /**

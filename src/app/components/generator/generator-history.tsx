@@ -73,6 +73,7 @@ const GeneratorHistory = ({ history, promptType }: GeneratorHistoryProps) => {
                 family: model.family,
                 description: model.description,
                 location: model.location,
+                key: model.key,
             });
             router.push(`/continue-chat/${conversationID}`);
         }
@@ -102,7 +103,7 @@ const GeneratorHistory = ({ history, promptType }: GeneratorHistoryProps) => {
                                                         item.model
                                                     )}`}
                                                 >
-                                                    {item.model.provider} {item.model.variant}
+                                                    {item.model.variant} {item.model.family}
                                                 </strong>
                                                 {!item.streamingFinished && (
                                                     <Spinner

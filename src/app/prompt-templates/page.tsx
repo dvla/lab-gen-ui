@@ -103,7 +103,9 @@ const PromptTemplate = () => {
                                 {promptsError && <p className="govuk-body">Prompts failed to load</p>}
                                 {promptsLoading && <p className="govuk-body">Loading...</p>}
                                 {prompts &&
-                                    Object.keys(prompts).map((key) => (
+                                    Object.keys(prompts)
+                                    .sort((a, b) => b.localeCompare(a))
+                                    .map((key) => (
                                         <div className="govuk-radios__item" key={key}>
                                             <input
                                                 className="govuk-radios__input"

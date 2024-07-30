@@ -50,8 +50,7 @@ const Diagrams = () => {
     You should create the diagram for the following specifications:
     `;
 
-    const provider = 'AZURE';
-    const variant = diagramType.startsWith('*') ? 'ADVANCED' : 'GENERAL';
+    const modelKey = 'AZUREGPT' + diagramType.startsWith('*') ? 'ADVANCED' : 'GENERAL';
 
     /**
      * Displays the diagram content in the selected message.
@@ -177,7 +176,7 @@ const Diagrams = () => {
                             showHistory={false}
                             onMessage={displayDiagram}
                             onUndo={displayDiagram}
-                            body={{ provider: provider, variant: variant }}
+                            body={{ modelKey: modelKey }}
                             rows={10}
                             undoMessageRequested={undoMessageRequested}
                             messageLoading={(isLoading) => setIsLoading(isLoading)}

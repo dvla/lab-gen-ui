@@ -46,7 +46,7 @@ const ModelSelect = ({ variantLock }: ModelSelectProps) => {
      */
     const handleSelectChange = (event: ChangeEvent<HTMLSelectElement>) => {
         const selectedValue = event.target.value;
-        const selectedModel = models.find((model: any) => `${model.provider} ${model.variant}` === selectedValue);
+        const selectedModel = models.find((model: any) => model.key === selectedValue);
 
         if (selectedModel) {
             setModelContext({
@@ -55,6 +55,7 @@ const ModelSelect = ({ variantLock }: ModelSelectProps) => {
                 family: selectedModel.family,
                 description: selectedModel.description,
                 location: selectedModel.location,
+                key: selectedModel.key,
             });
         }
     };
@@ -70,6 +71,7 @@ const ModelSelect = ({ variantLock }: ModelSelectProps) => {
                     family: matchingModel.family,
                     description: matchingModel.description,
                     location: matchingModel.location,
+                    key: matchingModel.key,
                 });
             }
         }
@@ -84,7 +86,7 @@ const ModelSelect = ({ variantLock }: ModelSelectProps) => {
                 className="govuk-select"
                 id="models"
                 name="models"
-                value={`${modelInfo.provider} ${modelInfo.variant}`}
+                value={`${modelInfo.key}`}
                 onChange={handleSelectChange}
             >
                 {modelsError && <option>Models failed to load</option>}
@@ -92,9 +94,14 @@ const ModelSelect = ({ variantLock }: ModelSelectProps) => {
                 {models &&
                     models
                         .filter((model: any) => !variantLock || model.variant === variantLock)
+                        .sort((a: any, b: any) => {
+                            const variantComparison = a.variant.localeCompare(b.variant);
+                            if (variantComparison !== 0) return variantComparison;
+                            return a.family.localeCompare(b.family);
+                        })
                         .map((model: any, index: number) => (
-                            <option key={index} value={`${model.provider} ${model.variant}`}>
-                                {capitalCase(`${model.provider} ${model.variant}`)}
+                            <option key={index} value={`${model.key}`}>
+                                {capitalCase(`${model.variant} ${model.family}`)}
                             </option>
                         ))}
             </select>
