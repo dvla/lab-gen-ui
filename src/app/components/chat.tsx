@@ -124,7 +124,7 @@ const Chat = ({
         },
         api: 'api/models/chat',
         initialMessages,
-        body,
+        body
     });
 
     const chatHistoryBottom = useRef<HTMLDivElement>(null);
