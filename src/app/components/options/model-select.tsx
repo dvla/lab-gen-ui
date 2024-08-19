@@ -95,13 +95,13 @@ const ModelSelect = ({ variantLock }: ModelSelectProps) => {
                     models
                         .filter((model: any) => !variantLock || model.variant === variantLock)
                         .sort((a: any, b: any) => {
-                            const variantComparison = a.variant.localeCompare(b.variant);
-                            if (variantComparison !== 0) return variantComparison;
-                            return a.family.localeCompare(b.family);
+                            const familyComparison = a.family.localeCompare(b.family);
+                            if (familyComparison !== 0) return familyComparison;
+                            return a.variant.localeCompare(b.variant);
                         })
                         .map((model: any, index: number) => (
                             <option key={index} value={`${model.key}`}>
-                                {capitalCase(`${model.variant} ${model.family}`)}
+                                {capitalCase(`${model.family} ${model.variant}`)}
                             </option>
                         ))}
             </select>

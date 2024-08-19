@@ -103,7 +103,7 @@ const GeneratorHistory = ({ history, promptType }: GeneratorHistoryProps) => {
                                                         item.model
                                                     )}`}
                                                 >
-                                                    {item.model.variant} {item.model.family}
+                                                    {item.model.family} {item.model.variant}
                                                 </strong>
                                                 {!item.streamingFinished && (
                                                     <Spinner
