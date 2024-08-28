@@ -22,6 +22,7 @@ Create ```.env.local``` file in the project root, with the following -
 AZURE_APP_HOST={BACKEND_URL}
 AZURE_APP_API_KEY={MUST_MATCH_THE_BACKEND_API_KEY}
 AUTH_SECRET={CREATE_RANDOM_SECRET}
+AUTH_URL={http://localhost:3000 or your codespaces URL eg. https://candy-bus-jwvrg.github.dev}
 ```
 
 #### Local Development

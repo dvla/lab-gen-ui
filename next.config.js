@@ -13,4 +13,12 @@ const nextConfig = {
     },
 };
 
+if (process.env.NODE_ENV === 'development') {  
+    nextConfig.experimental = {  
+        serverActions: {  
+            allowedOrigins: ['localhost:3000'],  
+        },  
+    };  
+}
+
 module.exports = nextConfig
