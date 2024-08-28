@@ -1,0 +1,33 @@
+{
+    "name": "Next.js dev",
+    "image": "mcr.microsoft.com/devcontainers/typescript-node:0-20",
+    "waitFor": "onCreateCommand",
+    "containerEnv": {
+        "AUTH_LOCAL_PASSWORD": "passw0rd"
+    },
+    "features": {
+        "ghcr.io/devcontainers/features/git:1": "os-provided"
+    },
+    "customizations": {
+        "vscode": {
+            "extensions": [
+                "dbaeumer.vscode-eslint",
+                "esbenp.prettier-vscode"
+            ]
+        }
+    },
+    "forwardPorts": [
+        3000
+    ],
+    "portsAttributes": {
+        "3000": {
+            "label": "Local Dev Server"
+        }
+    },
+    "onCreateCommand": "cp -n example.env .env.local && npm install && npx --yes auth secret",
+    "remoteUser": "node",
+    "hostRequirements": {
+        "memory": "8gb",
+        "cpus": 4
+    }
+}

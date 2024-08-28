@@ -13,7 +13,7 @@
     "prettier-fix": "prettier --write '**/*.{tsx,ts}'"
   },
   "engines": {
-    "node": "18.18.2"
+    "node": ">=18.18.2"
   },
   "dependencies": {
     "@cucumber/gherkin": "^27.0.0",

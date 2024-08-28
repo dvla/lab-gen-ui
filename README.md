@@ -1,20 +1,50 @@
-# Lab Gen Demo
+# DVLA Emerging Tech Lab Generative AI
+
+This project provides the frontend for the generative AI experiments which can be used in conjunction with the [lab-gen-api](https://github.com/dvla/lab-gen) backend.
 
 ## Getting Started
 
+## Prerequisites
 Install the packages
 ```bash
 npm install
 ```
 
+### Quick Start
+
+[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/dvla/lab-gen-ui)
+
+[![Open in VS Code Dev Containers](https://img.shields.io/static/v1?style=for-the-badge&label=Dev%20Containers&message=Open&color=blue&logo=visualstudiocode)](https://vscode.dev/redirect?url=vscode://ms-vscode-remote.remote-containers/cloneInVolume?url=https://github.com/dvla/lab-gen-ui)
+
 Create ```.env.local``` file in the project root, with the following - 
 
 ```bash
-AZURE_APP_HOST=
-AZURE_APP_API_KEY=
+AZURE_APP_HOST={BACKEND_URL}
+AZURE_APP_API_KEY={MUST_MATCH_THE_BACKEND_API_KEY}
+AUTH_SECRET={CREATE_RANDOM_SECRET}
 ```
 
-First, run the development server:
+#### Local Development
+
+For local development, you can use a local password for authentication by setting the AUTH_LOCAL_PASSWORD environment variable in your ```.env.local``` file:
+
+```bash
+AUTH_LOCAL_PASSWORD=passw0rd
+```
+ 
+This will allow you to sign in with the local credentials provider using the password you set. **This should only be used for local development**.
+
+#### Production
+
+For production, you should use AWS Cognito for authentication. Set the following environment variables for the AWS Cognito authorization. These can be configured in an AWS console.
+
+```bash
+AUTH_COGNITO_CLIENT_ID=123
+AUTH_COGNITO_CLIENT_SECRET=123
+AUTH_COGNITO_ISSUER=https://cognito.eu-west-2.amazonaws.com/eu-west-2_12345678
+```
+
+You can then run the development server:
 
 ```bash
 npm run dev
@@ -26,61 +56,27 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 
 This uses the [govuk-react](https://github.com/govuk-react/govuk-react) framework. The [storyboard](https://govuk-react.github.io/govuk-react/?path=/docs/welcome--docs) has examples of components you can use.
 
-## Components
+More details of the components can be found in the [Components Guide](/components.md).
 
-### FixedPage
+## License
+The MIT License (MIT)
 
-Used for pages you don't want to scroll. For example a chat where you only want to scroll the chat window.
+Copyright (c) 2024 DVLA
 
-#### Example
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
 
-```
-<FixedPage>
-    <p>Some content</p>
-</FixedPage>
-```
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
 
-### Chat
-
-Chat component which uses the Azure model. You can show or hide the chat history with showHistory. The onMessage callback lets you use the chat response in page/component. 
-
-#### Example
-
-```
-    let [isLoading, setIsLoading]: any = useState(false);
-    const initialMessages: Message[] = [
-        {
-            id: '0',
-            role: 'assistant',
-            content: 'Hello! How can I help you?',
-        },
-    ];
-
-    const body = {
-        modelName: 'gpt-3.5-turbo',
-    };
-
-    const handleMessage = (message: string) => {
-        // do something with the message
-    }
-
-    <Chat 
-        showHistory={true}
-        onMessage={handleMessage}
-        initialMessages={initialMessages}
-        body={body}
-        placeholder={"What would you like to know?"}
-        rows={2}
-        messageLoading={(loading) => setIsLoading(loading)}/>
-```
-
-- ```showHistory``` set to true or false whether you want to show the chat history
-- ```onMessage``` callback to receive the response from the chat
-- ```onUndo``` callback to recieve the previous message after an undo request
-- ```undoMessageRequested``` set to true when you want the previous AI message from the chat history and set back to false after this is recieved
-- ```initialMessages``` array of messages
-- ```body``` useChat body
-- ```placeholder``` placeholder text set in textarea or as label if there is no history
-- ```rows``` number of rows in the textarea
-- ```messageLoading``` callback to set loading state
-- ```editedLatestMessage``` updates the most recent message response to this string
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
