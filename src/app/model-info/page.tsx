@@ -14,7 +14,7 @@ const modelHeaders = [
   
 const modelInfo = [  
     {  
-    modelName: "Azure General (GPT3.5 Turbo)",  
+    modelName: "GPT General Azure (GPT3.5 Turbo)",  
     speed: "Fast",  
     costIndicator: "$",  
     trainingData: "Sep 2021",  
@@ -24,7 +24,7 @@ const modelInfo = [
     summary: "A faster and cheaper yet still very capable model"  
     },  
     {  
-    modelName: "Azure Advanced (GPT4 Turbo)",  
+    modelName: "GPT Advanced Azure (GPT4 Turbo)",  
     speed: "Mid-Speed",  
     costIndicator: "$$$$$",  
     trainingData: "Apr 2023",  
@@ -34,17 +34,17 @@ const modelInfo = [
     summary: "The cutting-edge in language models, offering premium capabilities at a higher cost"  
     },  
     {  
-    modelName: "Azure MultiModal (GPT4 Vision)",  
+    modelName: "GPT MultiModal Azure (GPT4o)",  
     speed: "Slow",  
-    costIndicator: "$$$$$",  
-    trainingData: "Apr 2023",  
+    costIndicator: "$$$",  
+    trainingData: "October 2023",  
     contextSize: "128,000 tokens",  
     capabilities: "Image analysis, textual description, multimodal Q&A",  
     location: "Sweden (EU)",  
     summary: "Multimodal AI that blends visual and textual analysis for comprehensive understanding"  
     },
     {  
-    modelName: "Azure Experimental (GPT4o)",  
+    modelName: "GPT Experimental Azure (GPT4o)",  
     speed: "Fast",  
     costIndicator: "$$$",  
     trainingData: "October 2023",  
@@ -54,7 +54,7 @@ const modelInfo = [
     summary: "Next-level model with elevated digital interactions with enhanced speed, intelligence, and multilingual voice features."  
     },  
     {  
-    modelName: "Bedrock General (Claude 3 Haiku)",  
+    modelName: "Claude General Bedrock (Claude 3 Haiku)",  
     speed: "Very Fast",  
     costIndicator: "$",  
     trainingData: "August 2023",  
@@ -64,7 +64,7 @@ const modelInfo = [
     summary: "Designed for simple queries and requests with near-instant responsiveness"  
     },  
     {  
-    modelName: "Bedrock Advanced (Claude 3 Sonnet)",  
+    modelName: "Claude Advanced Bedrock (Claude 3 Sonnet)",  
     speed: "Fast",  
     costIndicator: "$$",  
     trainingData: "August 2023",  
@@ -74,7 +74,7 @@ const modelInfo = [
     summary: "Strikes the ideal balance between intelligence and speed for many applications"  
     },  
     {  
-    modelName: "Bedrock Multimodal (Claude 3 Sonnet)",  
+    modelName: "Claude Multimodal Bedrock (Claude 3 Sonnet)",  
     speed: "Fast",  
     costIndicator: "$$",  
     trainingData: "August 2023",  
@@ -84,7 +84,7 @@ const modelInfo = [
     summary: "Bedrock Advanced with the ability to analyse image and text for comprehensive understanding"  
     },
     {  
-    modelName: "Bedrock Experimental (Claude 3.5 Sonnet)",  
+    modelName: "Claude Experimental Bedrock (Claude 3.5 Sonnet)",  
     speed: "Fast",  
     costIndicator: "$$",  
     trainingData: "April 2024",  
@@ -94,7 +94,7 @@ const modelInfo = [
     summary: "Anthropic's next-level, powerful model great for all advanced tasks"  
     },        
     {  
-    modelName: "Vertex General (Gemini Pro 1.0)",  
+    modelName: "Gemini General Vertex (Gemini Pro 1.0)",  
     speed: "Fast",  
     costIndicator: "$",  
     trainingData: "Nov 2023",  
@@ -104,7 +104,7 @@ const modelInfo = [
     summary: "Fast and affordable AI for easy chat and quick code creation"  
     },
     {  
-    modelName: "Vertex Advanced (Gemini Pro 1.5)",  
+    modelName: "Gemini Advanced Vertex (Gemini Pro 1.5)",  
     speed: "Fast",  
     costIndicator: "$$",  
     trainingData: "Nov 2023",  
@@ -114,7 +114,7 @@ const modelInfo = [
     summary: "Advanced AI for complex chat, analysis, and expert code creation and more"  
     },
     {  
-    modelName: "Vertex Multimodal (Gemini Pro 1.0 Vision)",  
+    modelName: "Gemini Multimodal Vertex (Gemini Pro 1.0 Vision)",  
     speed: "Fast",  
     costIndicator: "$",  
     trainingData: "Nov 2023",  
