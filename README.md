@@ -22,7 +22,7 @@ Create ```.env.local``` file in the project root, with the following -
 AZURE_APP_HOST={BACKEND_URL}
 AZURE_APP_API_KEY={MUST_MATCH_THE_BACKEND_API_KEY}
 AUTH_SECRET={CREATE_RANDOM_SECRET}
-AUTH_URL={http://localhost:3000 or your codespaces URL eg. https://candy-bus-jwvrg.github.dev}
+AUTH_URL={http://localhost:3000 or your codespaces URL eg. https://candy-bus-jwvrg-3000.app.github.dev}
 ```
 
 #### Local Development
@@ -52,6 +52,12 @@ npm run dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+
+#### Codespaces
+
+[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/dvla/lab-gen-ui)
+
+This project can be run in GitHub Codespaces. If you are running the project alongside the backend (also in Codespaces), you will need to ensure the backend forwarding port is set to 'public' to enable it to be accessible. Ensure the AUTH_URL is also set correctly to match the codespaces app url as described in the [quick start](#quick-start).
 
 ## Development
 
