@@ -18,3 +18,11 @@
 .textareaToken{
     margin-bottom: 5px;
 }
+
+.barEnd{
+    display: flex;
+
+    & a {
+        margin-left: 10px;
+    }
+}

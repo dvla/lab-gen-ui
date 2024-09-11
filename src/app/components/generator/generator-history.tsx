@@ -10,6 +10,7 @@ import { useContext } from 'react';
 import { modelContext } from '@/app/config/model-context-config';
 import TokenCounter from '../token-counter/token-counter';
 import CallSummary from '../calls/call-summary';
+import FeedbackButtons from '../feedback/feedback-buttons';
 
 interface GeneratorHistoryProps {
     history: ResponseHistory[];
@@ -89,7 +90,7 @@ const GeneratorHistory = ({ history, promptType }: GeneratorHistoryProps) => {
                             {history.map((item, index) => (
                                 <tr key={index} className="govuk-table__row">
                                     <td className="govuk-table__cell">
-                                        { promptType && promptType === 'call_summary' ? (
+                                        {promptType && promptType === 'call_summary' ? (
                                             <CallSummary callData={item.data} />
                                         ) : (
                                             <ReactMarkdown className={jiraStyles.historyResponse}>
@@ -115,15 +116,21 @@ const GeneratorHistory = ({ history, promptType }: GeneratorHistoryProps) => {
                                                     />
                                                 )}
                                             </div>
-                                            {item.streamingFinished && <TokenCounter text={item.data} modelFamily={item.model.family}/>}
+                                            {item.streamingFinished && (
+                                                <TokenCounter text={item.data} modelFamily={item.model.family} />
+                                            )}
                                             {item.conversationId && (
-                                                <a
-                                                    onClick={() => continueClick(item.conversationId, item.model)}
-                                                    data-testid="item.conversationID"
-                                                    className={`govuk-link govuk-link--no-visited-state ${generatorStyles.continueLink}`}
-                                                >
-                                                    Continue
-                                                </a>
+                                                <div className={generatorStyles.barEnd}>
+                                                    <FeedbackButtons item={item} promptType={promptType}/>
+                                                    <a
+                                                        onClick={() => continueClick(item.conversationId, item.model)}
+                                                        data-testid="item.conversationID"
+                                                        className={`govuk-link govuk-link--no-visited-state ${generatorStyles.continueLink}`}
+                                                    >
+                                                        Continue
+                                                    </a>
+                                                    
+                                                </div>
                                             )}
                                         </div>
                                     </td>

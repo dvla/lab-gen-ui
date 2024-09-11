@@ -1,0 +1,38 @@
+$feedback-buttom-green: #cce2d8;
+$feedback-buttom-red: #f4cdc6;
+$feedback-buttom-green-fill: #005a30;
+$feedback-buttom-red-fill: #2a0b06;
+$feedback-buttom-green-hover: #97c3b0;
+$feedback-buttom-red-hover: #e99bad;
+
+.feedbackButton{
+    height: 24px;
+    width: 24px;
+    margin: 0 5px;
+    background-color: $feedback-buttom-green;
+    fill: $feedback-buttom-green-fill;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 2em;
+    transition: all 0.3s;
+
+    &:hover{
+        background-color: $feedback-buttom-green-hover;
+        cursor: pointer;
+    }
+
+    &.red{
+        fill: $feedback-buttom-red-fill;
+        background-color: $feedback-buttom-red;
+
+        &:hover{
+            background-color: $feedback-buttom-red-hover;
+        }
+    }
+
+    & svg{
+        height: 14px;
+        width: 14px;
+    }
+}
