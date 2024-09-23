@@ -30,7 +30,7 @@ const UserStory = () => {
      * Function to update the display settings.
      *
      * @param {boolean} display - the new display setting
-     * @return {void} 
+     * @return {void}
      */
     const displaySettings = (display: boolean) => {
         setShowSettings(display);
@@ -40,7 +40,7 @@ const UserStory = () => {
         <FixedPage backButton={true} modelBanner={true}>
             <main>
                 <div className="govuk-grid-row">
-                    <div className={showSettings ? "govuk-grid-column-two-thirds" : "govuk-grid-column-full"}>
+                    <div className={showSettings ? 'govuk-grid-column-two-thirds' : 'govuk-grid-column-full'}>
                         <h1 className="govuk-heading-l">User Story Generator</h1>
                         <Generator
                             promptType={promptType}

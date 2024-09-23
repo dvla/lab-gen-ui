@@ -42,7 +42,7 @@ const TextToDiagram = () => {
      * Function to update the display settings.
      *
      * @param {boolean} display - the new display setting
-     * @return {void} 
+     * @return {void}
      */
     const displaySettings = (display: boolean) => {
         setShowSettings(display);

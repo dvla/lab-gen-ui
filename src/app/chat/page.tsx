@@ -8,18 +8,18 @@ import { modelContext } from '../config/model-context-config';
 
 const ChatPage = () => {
     const { modelInfo } = useContext(modelContext);
-    
+
     return (
         <FixedPage backButton={true} modelBanner={true}>
             <h1 className={'govuk-heading-xl ' + styles.h1XL}>TechLab Chat</h1>
             <div className={'govuk-grid-row ' + ' ' + styles.gridRow}>
                 <div className={'govuk-grid-column-three-quarters ' + styles.gridRowHalf}>
-                    <Chat 
+                    <Chat
                         showHistory={true}
-                        placeholder={"What would you like to know?"}
+                        placeholder={'What would you like to know?'}
                         rows={4}
-                        body={{modelKey: modelInfo.key}}
-                   />
+                        body={{ modelKey: modelInfo.key }}
+                    />
                 </div>
                 <div
                     className={'govuk-grid-column-one-quarter ' + styles.gridRowHalf}
@@ -37,6 +37,6 @@ const ChatPage = () => {
             </div>
         </FixedPage>
     );
-}
+};
 
 export default ChatPage;

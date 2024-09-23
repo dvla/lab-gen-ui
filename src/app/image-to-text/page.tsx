@@ -3,15 +3,12 @@ import { useState, ChangeEvent, useContext } from 'react';
 import chatPageStyles from '../styles/ChatPage.module.scss';
 import FixedPage from '../components/fixed-page';
 import Generator from '../components/generator/generator';
-import ModelSelect from '../components/options/model-select';
+import ModelSelect, { MULTIMODAL_VARIANT_LOCK } from '../components/options/model-select';
 import { modelContext } from '../config/model-context-config';
 
 const ImageToText = () => {
-    const [variables, setVariables] = useState([
-        { id: 'input', value: '' },
-    ]);
+    const [variables, setVariables] = useState([{ id: 'input', value: '' }]);
     const { modelInfo } = useContext(modelContext);
-
 
     return (
         <>
@@ -20,7 +17,7 @@ const ImageToText = () => {
                     <div className="govuk-grid-row">
                         <div className="govuk-grid-column-two-thirds">
                             <h1 className="govuk-heading-l">Image to Text</h1>
-                            <Generator variables={variables} model={modelInfo} showFileUpload={true}/>
+                            <Generator variables={variables} model={modelInfo} showFileUpload={true} />
                         </div>
                         <div
                             className={'govuk-grid-column-one-third ' + chatPageStyles.gridRowHalf}
@@ -31,7 +28,7 @@ const ImageToText = () => {
                                     <h1 className="govuk-fieldset__heading">Settings</h1>
                                 </legend>
                                 <div className="govuk-form-group">
-                                    <ModelSelect variantLock='MULTIMODAL'/>
+                                    <ModelSelect variantLock={MULTIMODAL_VARIANT_LOCK} />
                                 </div>
                             </fieldset>
                         </div>

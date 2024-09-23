@@ -1,0 +1,149 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`ModelSelect does not render JOHN variant lock 1`] = `
+<div>
+  <div
+    class="govuk-form-group"
+  >
+    <label
+      class="govuk-label"
+      for="models"
+    >
+      Model
+    </label>
+    <select
+      class="govuk-select"
+      id="models"
+      name="models"
+    />
+  </div>
+</div>
+`;
+
+exports[`ModelSelect renders EXPERIMENTAL variant lock 1`] = `
+<div>
+  <div
+    class="govuk-form-group"
+  >
+    <label
+      class="govuk-label"
+      for="models"
+    >
+      Model
+    </label>
+    <select
+      class="govuk-select"
+      id="models"
+      name="models"
+    >
+      <option
+        value="BEDROCKCLAUDEEXPERIMENTAL"
+      >
+        Claude Experimental
+      </option>
+      <option
+        value="AZUREGPTEXPERIMENTAL"
+      >
+        Gpt Experimental
+      </option>
+    </select>
+  </div>
+</div>
+`;
+
+exports[`ModelSelect renders Multimodal only 1`] = `
+<div>
+  <div
+    class="govuk-form-group"
+  >
+    <label
+      class="govuk-label"
+      for="models"
+    >
+      Model
+    </label>
+    <select
+      class="govuk-select"
+      id="models"
+      name="models"
+    >
+      <option
+        value="BEDROCKCLAUDEMULTIMODAL"
+      >
+        Claude Multimodal
+      </option>
+      <option
+        value="VERTEXGEMINIMULTIMODAL"
+      >
+        Gemini Multimodal
+      </option>
+      <option
+        value="AZUREGPTMULTIMODAL"
+      >
+        Gpt Multimodal
+      </option>
+    </select>
+  </div>
+</div>
+`;
+
+exports[`ModelSelect renders default variant lock 1`] = `
+<div>
+  <div
+    class="govuk-form-group"
+  >
+    <label
+      class="govuk-label"
+      for="models"
+    >
+      Model
+    </label>
+    <select
+      class="govuk-select"
+      id="models"
+      name="models"
+    >
+      <option
+        value="BEDROCKCLAUDEADVANCED"
+      >
+        Claude Advanced
+      </option>
+      <option
+        value="BEDROCKCLAUDEEXPERIMENTAL"
+      >
+        Claude Experimental
+      </option>
+      <option
+        value="BEDROCKCLAUDEGENERAL"
+      >
+        Claude General
+      </option>
+      <option
+        value="VERTEXGEMINIADVANCED"
+      >
+        Gemini Advanced
+      </option>
+      <option
+        value="VERTEXGEMINIGENERAL"
+      >
+        Gemini General
+      </option>
+      <option
+        value="AZUREGPTADVANCED"
+      >
+        Gpt Advanced
+      </option>
+      <option
+        value="AZUREGPTEXPERIMENTAL"
+      >
+        Gpt Experimental
+      </option>
+      <option
+        value="AZUREGPTGENERAL"
+      >
+        Gpt General
+      </option>
+    </select>
+  </div>
+</div>
+`;

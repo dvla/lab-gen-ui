@@ -19,18 +19,25 @@ const SWR_OPTIONS = {
     revalidateOnReconnect: false,
     errorRetryCount: 5,
 };
+const DEFAULT_VARIANT_LOCK = ['GENERAL', 'ADVANCED', 'EXPERIMENTAL'];
+export const MULTIMODAL_VARIANT_LOCK = ['MULTIMODAL'];
 
+/**
+ * Props for the ModelSelect component.
+ *
+ * @interface ModelSelectProps
+ * @property {string[]} [variantLock] - Optional prop to support multiple variants as an array.
+ */
 interface ModelSelectProps {
-    variantLock?: string;
+    variantLock?: string[];
 }
 
 /**
-/**
  * A component that renders a select box for choosing a model.
  * It tracks the current model context, and handles selection changes
- * to update the model context.
+ * to update the model context. Defaults to all models, other than MULTIMODAL.
  */
-const ModelSelect = ({ variantLock }: ModelSelectProps) => {
+const ModelSelect = ({ variantLock = DEFAULT_VARIANT_LOCK }: ModelSelectProps) => {
     const {
         data: models,
         error: modelsError,
@@ -61,10 +68,10 @@ const ModelSelect = ({ variantLock }: ModelSelectProps) => {
     };
 
     useEffect(() => {
-        // If the current modelInfo's variant is not the variantLock, update the context
-        if (variantLock && modelInfo.variant !== variantLock && models) {
-            const matchingModel = models.find((model: any) => model.variant === variantLock);
-            if (matchingModel) {
+        // If the current modelInfo's variant is not in the variantLock array, update the context
+        if (variantLock && Array.isArray(variantLock) && models) {
+            const matchingModel = models.find((model: any) => variantLock.includes(model.variant));
+            if (matchingModel && modelInfo.variant !== matchingModel.variant) {
                 setModelContext({
                     provider: matchingModel.provider,
                     variant: matchingModel.variant,
@@ -93,7 +100,7 @@ const ModelSelect = ({ variantLock }: ModelSelectProps) => {
                 {modelsLoading && <option>Loading...</option>}
                 {models &&
                     models
-                        .filter((model: any) => !variantLock || model.variant === variantLock)
+                        .filter((model: any) => !variantLock || variantLock.includes(model.variant))
                         .sort((a: any, b: any) => {
                             const familyComparison = a.family.localeCompare(b.family);
                             if (familyComparison !== 0) return familyComparison;

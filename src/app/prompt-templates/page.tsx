@@ -104,23 +104,23 @@ const PromptTemplate = () => {
                                 {promptsLoading && <p className="govuk-body">Loading...</p>}
                                 {prompts &&
                                     Object.keys(prompts)
-                                    .sort((a, b) => b.localeCompare(a))
-                                    .map((key) => (
-                                        <div className="govuk-radios__item" key={key}>
-                                            <input
-                                                className="govuk-radios__input"
-                                                id={key}
-                                                name={key}
-                                                type="radio"
-                                                value={key}
-                                                checked={key === promptType}
-                                                onChange={handleRadioChange}
-                                            />
-                                            <label className="govuk-label govuk-radios__label" htmlFor={key}>
-                                                {capitalCase(key)}
-                                            </label>
-                                        </div>
-                                    ))}
+                                        .sort((a, b) => b.localeCompare(a))
+                                        .map((key) => (
+                                            <div className="govuk-radios__item" key={key}>
+                                                <input
+                                                    className="govuk-radios__input"
+                                                    id={key}
+                                                    name={key}
+                                                    type="radio"
+                                                    value={key}
+                                                    checked={key === promptType}
+                                                    onChange={handleRadioChange}
+                                                />
+                                                <label className="govuk-label govuk-radios__label" htmlFor={key}>
+                                                    {capitalCase(key)}
+                                                </label>
+                                            </div>
+                                        ))}
                             </div>
                         </div>
                     </fieldset>
