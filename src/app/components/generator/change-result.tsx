@@ -8,6 +8,7 @@ import Mermaid from '@/app/diagrams/mermaid';
 import ErrorComponent from '@/app/components/error';
 import GherkinValidate from '../gherkinvalidate';
 import TokenCounter from '../token-counter/token-counter';
+import rehypeHighlight from 'rehype-highlight';
 
 interface ChangeResultProps {
     conversationId: string | null;
@@ -131,7 +132,8 @@ const ChangeResult = ({
             case 'user-story-gherkin':
                 return <GherkinValidate content={result} />;
             default:
-                return <ReactMarkdown className={jiraStyles.historyResponse}>{result}</ReactMarkdown>;
+                return <ReactMarkdown className={jiraStyles.historyResponse}
+                rehypePlugins={[rehypeHighlight]}>{result}</ReactMarkdown>;
         }
     };
 
