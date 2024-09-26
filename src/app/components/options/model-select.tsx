@@ -69,7 +69,7 @@ const ModelSelect = ({ variantLock = DEFAULT_VARIANT_LOCK }: ModelSelectProps) =
 
     useEffect(() => {
         // If the current modelInfo's variant is not in the variantLock array, update the context
-        if (variantLock && Array.isArray(variantLock) && models) {
+        if (variantLock && !variantLock.includes(modelInfo.variant) && models) {
             const matchingModel = models.find((model: any) => variantLock.includes(model.variant));
             if (matchingModel && modelInfo.variant !== matchingModel.variant) {
                 setModelContext({
