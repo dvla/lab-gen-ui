@@ -48,13 +48,12 @@ const ChangeResult = ({
     const [isLoading, setIsLoading] = useState(false);
     const [isStreaming, setIsStreaming] = useState(false);
     const [changeText, setChangeText] = useState('');
-    const [result, setResult] = useState(lastResult);
+    const [result, setResult] = useState('');
     const [streamingResult, setStreamingResult] = useState('');
 
     useEffect(() => {
         setResult(lastResult);
-        getLastResult(lastResult);
-    }, [getLastResult, lastResult]);
+    }, [lastResult])
 
     const change = useCallback(async () => {
         hasChanged();
@@ -132,13 +131,24 @@ const ChangeResult = ({
             case 'user-story-gherkin':
                 return <GherkinValidate content={result} />;
             default:
-                return <ReactMarkdown className={jiraStyles.historyResponse}
-                rehypePlugins={[rehypeHighlight]}>{result}</ReactMarkdown>;
+                return (
+                    <ReactMarkdown className={jiraStyles.historyResponse} rehypePlugins={[rehypeHighlight]}>
+                        {result}
+                    </ReactMarkdown>
+                );
         }
     };
 
     return (
         <>
+            {!isLoading && (
+                <>
+                    <div className="govuk-grid-column-full">
+                        {tabError && <ErrorComponent error={tabError} />}
+                        <div className="govuk-!-padding-bottom-2">{result && displayResult()}</div>
+                    </div>
+                </>
+            )}
             {(isLoading || isStreaming) && (
                 <Spinner
                     fill="#b1b4b6"
@@ -150,10 +160,6 @@ const ChangeResult = ({
             )}
             {!isLoading && (
                 <>
-                    <div className="govuk-grid-column-full">
-                        {tabError && <ErrorComponent error={tabError} />}
-                        <div className="govuk-!-padding-bottom-2">{result && displayResult()}</div>
-                    </div>
                     {result && !isStreaming && (
                         <div className="govuk-grid-column-full">
                             <TokenCounter text={result} />
