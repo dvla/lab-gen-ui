@@ -29,7 +29,11 @@ const ChatHistory = ({ messages }: ChatHistoryProps) => {
         <section className={styles.chatHistory}>
             <ul className="govuk-list">
                 {messages.map((m, index) =>
-                    checkUserOrHuman(m.role) ? <UserMessage key={index} content={m.content} /> : <AIMessage key={index} content={m.content} />
+                    checkUserOrHuman(m.role) ? (
+                        <UserMessage key={index} content={m.content} />
+                    ) : (
+                        <AIMessage key={index} content={m.content} />
+                    )
                 )}
             </ul>
             <div ref={chatHistoryBottom} />

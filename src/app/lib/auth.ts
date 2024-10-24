@@ -6,22 +6,22 @@ import CredentialsProvider from 'next-auth/providers/credentials';
 let localProvider = null;
 const localUser = { id: '1', name: 'Local Dev', email: 'local.dev@example.com' };
 
-if (process.env.AUTH_LOCAL_PASSWORD) {  
-    localProvider = CredentialsProvider({  
-        name: 'Credentials',  
-        credentials: {  
-            username: { label: 'Username', type: 'text', placeholder: 'admin' },  
-            password: { label: 'Password', type: 'password' },  
-        },  
-        async authorize(credentials, req) {  
-            if (credentials.password === process.env.AUTH_LOCAL_PASSWORD) {  
-                return localUser;  
-            } else {  
-                return null;  
-            }  
-        },  
-    });  
-}  
+if (process.env.AUTH_LOCAL_PASSWORD) {
+    localProvider = CredentialsProvider({
+        name: 'Credentials',
+        credentials: {
+            username: { label: 'Username', type: 'text', placeholder: 'admin' },
+            password: { label: 'Password', type: 'password' },
+        },
+        async authorize(credentials, req) {
+            if (credentials.password === process.env.AUTH_LOCAL_PASSWORD) {
+                return localUser;
+            } else {
+                return null;
+            }
+        },
+    });
+}
 
 export const config = {
     providers: localProvider

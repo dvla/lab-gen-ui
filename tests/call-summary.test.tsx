@@ -1,11 +1,10 @@
-import '@testing-library/jest-dom'
-import { render, screen } from '@testing-library/react'
+import '@testing-library/jest-dom';
+import { render, screen } from '@testing-library/react';
 import CallSummary from '../src/app/components/calls/call-summary';
 
 describe('CallSummary', () => {
-
-  it('renders a Call Summary', () => {
-    const callData = `{
+    it('renders a Call Summary', () => {
+        const callData = `{
       "startTime": "2024-04-15T16:30:33Z",
       "endTime": "2024-04-15T16:33:26Z",
       "participants": "Bob James, Customer",
@@ -14,18 +13,18 @@ describe('CallSummary', () => {
       ],
       "sentiment": "neutral"
     }`;
-    const tree = render(<CallSummary callData={callData} />)
-    expect(tree).toMatchSnapshot();
-  })
+        const tree = render(<CallSummary callData={callData} />);
+        expect(tree).toMatchSnapshot();
+    });
 
-  it('renders a Blank Summary', () => {
-    const callData = `{}`;
-    const tree = render(<CallSummary callData={callData} />)
-    expect(tree).toMatchSnapshot();
-  })
+    it('renders a Blank Summary', () => {
+        const callData = `{}`;
+        const tree = render(<CallSummary callData={callData} />);
+        expect(tree).toMatchSnapshot();
+    });
 
-  it('renders a Vehicle', () => {
-    const callData = `{
+    it('renders a Vehicle', () => {
+        const callData = `{
       "sentiment": "neutral",
       "vehicle": {
         "registrationNumber": "ABC123",
@@ -35,12 +34,12 @@ describe('CallSummary', () => {
         "registrationDocumentId": "012345678"
       }
     }`;
-    const tree = render(<CallSummary callData={callData} />)
-    expect(tree).toMatchSnapshot();
-  })
+        const tree = render(<CallSummary callData={callData} />);
+        expect(tree).toMatchSnapshot();
+    });
 
-  it('renders a Driver', () => {
-    const callData = `{
+    it('renders a Driver', () => {
+        const callData = `{
       "driver": {
         "drivingLicenceNumber": "FRED230586",
         "firstNames": "Ken",
@@ -48,7 +47,7 @@ describe('CallSummary', () => {
         "postcode": "SA28 0FJ"
       }
     }`;
-    const tree = render(<CallSummary callData={callData} />)
-    expect(tree).toMatchSnapshot();
-  })
-})
+        const tree = render(<CallSummary callData={callData} />);
+        expect(tree).toMatchSnapshot();
+    });
+});

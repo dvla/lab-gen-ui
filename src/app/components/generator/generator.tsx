@@ -90,7 +90,7 @@ const Generator = ({
     showFileUpload = false,
     streaming = true,
     displaySettings,
-    apiEndpoint
+    apiEndpoint,
 }: GeneratorProps): JSX.Element => {
     // State variables
     const [start, setStart] = useState(true);

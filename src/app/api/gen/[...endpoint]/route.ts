@@ -6,7 +6,9 @@ import { getBusinessUser, streamError } from '@/app/lib/utils';
 const appHost = process.env['AZURE_APP_HOST'];
 const appKey = process.env['AZURE_APP_API_KEY'] || 'no-api-key';
 
-interface Params { endpoint: string[] }
+interface Params {
+    endpoint: string[];
+}
 
 const handler = async (req: NextRequest, httpMethod: string, { params }: { params: Params }) => {
     const session = await auth();

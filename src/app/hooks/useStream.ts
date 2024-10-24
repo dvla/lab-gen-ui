@@ -94,7 +94,6 @@ const useStream = ({
 
     // useEffect to start conversation and handle streaming data
     useEffect((): any => {
-
         // Decide which completion function to use based on the presence of an API endpoint paramater
         const callCompletion = (body: Body) => (apiEndpoint ? getCompletion(body, apiEndpoint) : getCompletion(body));
         /**
@@ -110,7 +109,7 @@ const useStream = ({
             }
 
             if (model) {
-                body.modelKey = model.key
+                body.modelKey = model.key;
             }
 
             if (fileBase64 && fileType) {
@@ -125,7 +124,7 @@ const useStream = ({
                 }
             }
 
-            if(content) {
+            if (content) {
                 body.content = content;
             }
 
@@ -175,17 +174,16 @@ const useStream = ({
             } catch (err) {
                 setIsLoading(false);
                 setStreamingFinished(true);
-                let errorMessage = ''
+                let errorMessage = '';
                 if (err instanceof Error) {
                     errorMessage = err.message;
                 } else if (typeof err === 'string') {
-                    errorMessage = err
+                    errorMessage = err;
                 }
                 if (updateHistory) {
                     updateHistory(errorMessage, true, null);
                 }
                 setError(errorMessage);
-
             }
         };
         // Check if streaming has not started and start conversation

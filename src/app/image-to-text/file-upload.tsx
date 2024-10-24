@@ -10,7 +10,7 @@ import { Model } from '@/app/lib/fetchers';
 import Image from 'next/image';
 import useStream from '../hooks/useStream';
 
-const FILE_API_ENDPOINT = "/api/gen/image";
+const FILE_API_ENDPOINT = '/api/gen/image';
 
 interface FileUploadProps {
     reset: () => void;
@@ -20,7 +20,7 @@ interface FileUploadProps {
 }
 
 const FileUpload = ({ reset, model, file, variables }: FileUploadProps) => {
-    const [fileBase64, setFileBase64] = useState<string>("");
+    const [fileBase64, setFileBase64] = useState<string>('');
     const [errorState, setErrorState] = useState<Error | null>(null);
 
     useEffect(() => {
@@ -60,7 +60,9 @@ const FileUpload = ({ reset, model, file, variables }: FileUploadProps) => {
     const shouldFetch = !!fileBase64;
     let body = {};
 
-    const { data, error, isLoading, streamingFinished } = useStream(shouldFetch ? {model, variables, fileBase64, fileType: file.type, apiEndpoint: FILE_API_ENDPOINT} : {});
+    const { data, error, isLoading, streamingFinished } = useStream(
+        shouldFetch ? { model, variables, fileBase64, fileType: file.type, apiEndpoint: FILE_API_ENDPOINT } : {}
+    );
 
     if (errorState || error) {
         const errorMessage = errorState ? errorState.message : error || 'Unknown error';

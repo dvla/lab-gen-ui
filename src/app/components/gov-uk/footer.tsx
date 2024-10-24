@@ -2,10 +2,10 @@ import styles from '../../styles/Footer.module.scss';
 
 const Footer = () => {
     return (
-        <footer className={"govuk-footer " + styles.govukFooter} role="contentinfo">
+        <footer className={'govuk-footer ' + styles.govukFooter} role="contentinfo">
             <div className="govuk-width-container ">
                 <div className="govuk-footer__meta">
-                    <div className={"govuk-footer__meta-item govuk-footer__meta-item--grow " + styles.metaItem}>
+                    <div className={'govuk-footer__meta-item govuk-footer__meta-item--grow ' + styles.metaItem}>
                         <svg
                             aria-hidden="true"
                             focusable="false"
@@ -36,6 +36,6 @@ const Footer = () => {
             </div>
         </footer>
     );
-}
+};
 
 export default Footer;

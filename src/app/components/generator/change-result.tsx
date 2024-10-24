@@ -53,7 +53,7 @@ const ChangeResult = ({
 
     useEffect(() => {
         setResult(lastResult);
-    }, [lastResult])
+    }, [lastResult]);
 
     const change = useCallback(async () => {
         hasChanged();

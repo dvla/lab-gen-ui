@@ -12,7 +12,7 @@ export const POST = async (req: Request, res: NextResponse) => {
                 .resize({
                     width: 800,
                     height: 800,
-                    fit: 'inside'
+                    fit: 'inside',
                 })
                 .toColourspace('rgb8')
                 .jpeg({ quality: 70 })

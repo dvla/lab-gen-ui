@@ -98,8 +98,8 @@ const GeneratorTabs = ({
      * Sets the last response when history changes.
      */
     useEffect(() => {
-        setLastResponse(history && history.length > 1 ? history[history.length - 1].content : null)
-    }, [history])
+        setLastResponse(history && history.length > 1 ? history[history.length - 1].content : null);
+    }, [history]);
 
     /**
      * Handle an error by setting the result error.

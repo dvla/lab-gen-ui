@@ -36,8 +36,13 @@ const FixedPage = ({ children, backButton, modelBanner, backLink, isAuthenticate
         }
     }, [isAuthenticated]);
 
-    if (isLoading) { // While loading, don't render children or anything else
-        return <div className={styles.spinner}><Spinner /></div>; // Show a spinner or any loading indicator
+    if (isLoading) {
+        // While loading, don't render children or anything else
+        return (
+            <div className={styles.spinner}>
+                <Spinner />
+            </div>
+        ); // Show a spinner or any loading indicator
     }
 
     return (

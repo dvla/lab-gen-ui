@@ -1,19 +1,19 @@
-import { useEffect, useState } from "react";
-import useSWR from "swr";
-import { fetcher } from "../lib/fetchers";
+import { useEffect, useState } from 'react';
+import useSWR from 'swr';
+import { fetcher } from '../lib/fetchers';
 
 interface Message {
-    role: string
-    content: string
+    role: string;
+    content: string;
 }
 
-interface UseConversationProps{
-    conversationId: string
+interface UseConversationProps {
+    conversationId: string;
 }
 
-interface UseConversationHelpers{
+interface UseConversationHelpers {
     messages: Message[];
-    sendMessage: (message: string) => void
+    sendMessage: (message: string) => void;
 }
 
 /**
@@ -23,29 +23,32 @@ interface UseConversationHelpers{
  * @return {UseConversationHelpers} An object containing messages state and sendMessage function.
  */
 const useConversation = ({ conversationId }: UseConversationProps): UseConversationHelpers => {
-    const {data, error} = useSWR(conversationId ?
-        `/api/get-history?conversationId=${conversationId}` : null, fetcher, {
-        revalidateOnFocus: false,
-        errorRetryCount: 0,
-    });
+    const { data, error } = useSWR(
+        conversationId ? `/api/get-history?conversationId=${conversationId}` : null,
+        fetcher,
+        {
+            revalidateOnFocus: false,
+            errorRetryCount: 0,
+        }
+    );
     const [messages, setMessages] = useState<Message[]>([]);
 
     //Get Conversation History on initial render
     useEffect(() => {
-        if(data){
+        if (data) {
             setMessages(data);
         }
-    }, [data])
+    }, [data]);
     //Handle submit to send a new message. Add message and response to messages
     const sendMessage = (message: string) => {
-        console.log(message)
+        console.log(message);
         setMessages([...messages, { role: 'human', content: message }]);
-    }
+    };
 
     return {
         messages: messages,
-        sendMessage
+        sendMessage,
     };
-}
+};
 
 export default useConversation;

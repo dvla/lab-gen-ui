@@ -19,7 +19,6 @@ const ModelContextProvider = ({ children }: { children: React.ReactNode }) => {
             setModelContext(parsedState);
         }
         setLoadedModelFromSession(true);
-        
     }, []);
 
     useEffect(() => {
@@ -28,11 +27,7 @@ const ModelContextProvider = ({ children }: { children: React.ReactNode }) => {
         }
     }, [modelInfo, loadedModelFromSession]);
 
-    return (
-        <modelContext.Provider value={{ modelInfo, setModelContext }}>
-            {children}
-        </modelContext.Provider>
-    );
+    return <modelContext.Provider value={{ modelInfo, setModelContext }}>{children}</modelContext.Provider>;
 };
 
 export default ModelContextProvider;

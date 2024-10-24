@@ -2,12 +2,12 @@
 import { createContext } from 'react';
 import { Model } from '@/app/lib/fetchers';
 
-export enum ModelFamily{
-    GPT = "GPT",
-    CLAUDE = "CLAUDE",
-    GEMINI = "GEMINI",
-    MISTRAL = "MISTRAL",
-    UNSPECIFIED = "UNSPECIFIED"
+export enum ModelFamily {
+    GPT = 'GPT',
+    CLAUDE = 'CLAUDE',
+    GEMINI = 'GEMINI',
+    MISTRAL = 'MISTRAL',
+    UNSPECIFIED = 'UNSPECIFIED',
 }
 
 export const defaultModelInfo = {

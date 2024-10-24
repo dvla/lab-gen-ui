@@ -8,12 +8,12 @@ const AuthTest = () => {
         <>
             <Page>
                 <H1>Authentication Test</H1>
-                < AuthProvider>
+                <AuthProvider>
                     <Login />
                 </AuthProvider>
             </Page>
         </>
     );
-}
+};
 
 export default AuthTest;

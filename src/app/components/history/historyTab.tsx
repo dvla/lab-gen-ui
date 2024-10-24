@@ -72,7 +72,7 @@ const HistoryTab = ({
                                             {message.content.length > LARGE_USER_MESSAGE_LENGTH && (
                                                 <details className="govuk-details">
                                                     <summary
-                                                        className={"govuk-details__summary" + ' ' + styles.userSummary}
+                                                        className={'govuk-details__summary' + ' ' + styles.userSummary}
                                                     >
                                                         {'View full message'}
                                                     </summary>
@@ -117,7 +117,11 @@ const HistoryTab = ({
                                                     ) : (
                                                         <a
                                                             href="#"
-                                                            className={"govuk-link govuk-link--no-visited-state" + ' ' + styles.previewButton}
+                                                            className={
+                                                                'govuk-link govuk-link--no-visited-state' +
+                                                                ' ' +
+                                                                styles.previewButton
+                                                            }
                                                             onClick={(e) => {
                                                                 e.preventDefault();
                                                                 previewHistoricResult(aiMessage?.content ?? null);

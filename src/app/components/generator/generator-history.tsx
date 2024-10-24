@@ -121,7 +121,7 @@ const GeneratorHistory = ({ history, promptType }: GeneratorHistoryProps) => {
                                             )}
                                             {item.conversationId && (
                                                 <div className={generatorStyles.barEnd}>
-                                                    <FeedbackButtons item={item} promptType={promptType}/>
+                                                    <FeedbackButtons item={item} promptType={promptType} />
                                                     <a
                                                         onClick={() => continueClick(item.conversationId, item.model)}
                                                         data-testid="item.conversationID"
@@ -129,7 +129,6 @@ const GeneratorHistory = ({ history, promptType }: GeneratorHistoryProps) => {
                                                     >
                                                         Continue
                                                     </a>
-                                                    
                                                 </div>
                                             )}
                                         </div>

@@ -40,7 +40,8 @@ const JiraTickets = () => {
     2) The acceptance criteria which must be inferred from the title or description provided.`;
     const PROMPT_INTRODUCTION = `Given a Jira ticket based on the following sections, a title and a description, your job is to take a Jira User Story title and description and make significant improvements to allow it to fit within Agile standards.`;
     const OLD_TICKET = `Here is the ticket that must be improved upon: Title: ${ticketTitle}, Description: ${description}`;
-    const PLAIN_RESPONSE = 'Please do not include any pleasantries or human-like interaction before or after the improved ticket. Also ensure that the Title, Description and Acceptance Criteria heading are output as markdown headings';
+    const PLAIN_RESPONSE =
+        'Please do not include any pleasantries or human-like interaction before or after the improved ticket. Also ensure that the Title, Description and Acceptance Criteria heading are output as markdown headings';
     const INITIAL_PROMPT = `You are an Agile practitioner with over 10 years of experience in the project management field. 
     You are an expert in Jira and well versed in User Story conventions as well as Behavior-Driven Development processes and operations.`;
 
@@ -163,7 +164,7 @@ const JiraTickets = () => {
 
     return (
         <>
-            <FixedPage backButton={true} backLink='/experimental'>
+            <FixedPage backButton={true} backLink="/experimental">
                 {error != null && (
                     <section id="errorSection">
                         <ErrorSummary heading="There was an error" errors={[{ text: (error as any).toString() }]} />

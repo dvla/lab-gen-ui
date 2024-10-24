@@ -29,11 +29,14 @@ export const DELETE = async (request: Request) => {
                     'Content-Type': 'application/json',
                     'x-business-user': getBusinessUser(session),
                     Authorization: appKey,
-                }
+                },
             });
 
             if (response.ok) {
-                return NextResponse.json({ message: 'History entries deleted successfully' }, { status: response.status });
+                return NextResponse.json(
+                    { message: 'History entries deleted successfully' },
+                    { status: response.status }
+                );
             } else {
                 // Handle non-successful response
                 console.error('Error deleting history entries:', response.status, response.statusText);

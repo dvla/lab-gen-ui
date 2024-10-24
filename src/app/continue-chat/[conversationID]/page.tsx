@@ -21,7 +21,7 @@ const ContinueChat = ({ params }: any) => {
     /**
      * Reset the window location to '/prompt-templates'.
      *
-     * @return {void} 
+     * @return {void}
      */
     const reset = () => {
         window.location.href = '/prompt-templates';
@@ -29,7 +29,7 @@ const ContinueChat = ({ params }: any) => {
 
     useEffect(() => {
         setShowResult(true);
-    }, [])
+    }, []);
 
     return (
         <FixedPage backButton={true} modelBanner={true}>
@@ -37,14 +37,16 @@ const ContinueChat = ({ params }: any) => {
                 <div className="govuk-grid-column-full">
                     <div className="govuk-grid-row">
                         {!showResult && <Spinner fill="#b1b4b6" height="56px" width="56px" />}
-                        {showResult && <GeneratorTabs
-                            model={modelInfo}
-                            variables={variables}
-                            promptType={promptType}
-                            reset={reset}
-                            streamingEnabled={true}
-                            conversationId={params.conversationID}
-                        />}
+                        {showResult && (
+                            <GeneratorTabs
+                                model={modelInfo}
+                                variables={variables}
+                                promptType={promptType}
+                                reset={reset}
+                                streamingEnabled={true}
+                                conversationId={params.conversationID}
+                            />
+                        )}
                     </div>
                 </div>
             </main>

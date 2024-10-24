@@ -1,4 +1,4 @@
-"use client";
+'use client';
 import { Message, useChat } from 'ai/react';
 import styles from '../styles/Chat.module.scss';
 import { useEffect, useRef } from 'react';
@@ -109,8 +109,7 @@ const Chat = ({
     undoMessageRequested,
     messageLoading,
     editedLatestMessage,
-    resetChat
-
+    resetChat,
 }: ChatProps) => {
     const { messages, input, error, handleInputChange, handleSubmit, isLoading } = useChat({
         onFinish: (message: Message) => {
@@ -124,7 +123,7 @@ const Chat = ({
         },
         api: 'api/models/chat',
         initialMessages,
-        body
+        body,
     });
 
     const chatHistoryBottom = useRef<HTMLDivElement>(null);
@@ -151,8 +150,8 @@ const Chat = ({
 
     // Set the latest message to the new edited message
     useEffect(() => {
-        if(editedLatestMessage) {
-            messages[messages.length - 1].content = editedLatestMessage
+        if (editedLatestMessage) {
+            messages[messages.length - 1].content = editedLatestMessage;
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [editedLatestMessage]);
@@ -163,9 +162,9 @@ const Chat = ({
             messages.splice(0);
             if (initialMessages) {
                 for (let i = 0; i < initialMessages.length; i++) {
-                  messages.push(initialMessages[i]);
+                    messages.push(initialMessages[i]);
                 }
-              }
+            }
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [resetChat, initialMessages]);
@@ -179,9 +178,7 @@ const Chat = ({
                 </section>
             )}
             {/* Chat History */}
-            {showHistory && (
-                <ChatHistory messages={messages} />
-            )}
+            {showHistory && <ChatHistory messages={messages} />}
             {/* Chat Input */}
             <div className={'govuk-form-group ' + styles.formGroup}>
                 <form onSubmit={handleSubmit} id="chat-form">

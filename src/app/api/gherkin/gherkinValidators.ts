@@ -49,9 +49,8 @@ export const validateScenarioSteps = (doc: GherkinDocument): boolean => {
 export const validateStepKeywords = (doc: GherkinDocument): boolean => {
     if (doc.feature) {
         const stepKeywords = ['Given', 'When', 'Then', 'And'];
-        return doc.feature.children.every(
-            (child) =>
-                child.scenario?.steps.every((step: { keyword: string }) => stepKeywords.includes(step.keyword.trim()))
+        return doc.feature.children.every((child) =>
+            child.scenario?.steps.every((step: { keyword: string }) => stepKeywords.includes(step.keyword.trim()))
         );
     }
 
@@ -77,6 +76,6 @@ export const fullValidation = (gherkinDocument: GherkinDocument) => {
         titles: validTitles,
         steps: validSteps,
         keywords: validKeywords,
-        valid: validTitles && validSteps && validKeywords
+        valid: validTitles && validSteps && validKeywords,
     };
 };

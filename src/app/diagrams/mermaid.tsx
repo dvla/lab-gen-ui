@@ -10,7 +10,7 @@ interface MermaidProps {
 }
 
 const DIAGRAM_ERROR_MESSAGE =
-        'Error loading diagram: Please reset and try amending your specifications or using a different model.';
+    'Error loading diagram: Please reset and try amending your specifications or using a different model.';
 
 /**
  * Renders Mermaid charts inside a React component, handling
@@ -49,7 +49,7 @@ const Mermaid = ({ chart, onError }: MermaidProps) => {
                 await mermaid.run({ nodes: [mermaidRef.current] });
                 setIsLoading(true);
             } catch (error: any) {
-                if(error.hash !== "TypeError") {
+                if (error.hash !== 'TypeError') {
                     setError(error);
                     onError(DIAGRAM_ERROR_MESSAGE);
                 }

@@ -10,7 +10,7 @@ import { redirect } from 'next/navigation';
 export const loginAction = async () => {
     const url = await signIn('cognito', { redirect: false });
     redirect(url.replace('signin', 'api/auth/signin'));
-}
+};
 
 /**
  * Logs out the user.
@@ -18,5 +18,5 @@ export const loginAction = async () => {
  * @return {Promise<void>} A promise that resolves when the user has been successfully signed out.
  */
 export const logoutAction = async () => {
-    await signOut({redirectTo: '/'});
-}
+    await signOut({ redirectTo: '/' });
+};

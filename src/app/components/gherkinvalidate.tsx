@@ -39,7 +39,7 @@ const GherkinValidate = ({ content }: GherkinValidateProps) => {
     return (
         <>
             <ReactMarkdown className={jiraStyles.historyResponse}>{data.content}</ReactMarkdown>
-            { data.validation.valid ? <Tag tint="GREEN">{data.message}</Tag> : <Tag tint="YELLOW">{data.message}</Tag> }
+            {data.validation.valid ? <Tag tint="GREEN">{data.message}</Tag> : <Tag tint="YELLOW">{data.message}</Tag>}
         </>
     );
 };

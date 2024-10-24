@@ -19,10 +19,9 @@ const NEGATIVE_SCORE = 0;
  * @returns {JSX.Element} The rendered component.
  */
 const FeedbackButtons = ({ item, promptType }: FeedbackButtonsProps) => {
-    
     /**
      * Adds a positive or negative score to the result.
-     * 
+     *
      * @param score - The score to be added.
      */
     const addScore = (score: number) => {

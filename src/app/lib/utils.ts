@@ -34,7 +34,7 @@ export async function streamError(responseBody: ReadableStream<Uint8Array>): Pro
         reader.releaseLock();
     }
 
-    let errorBodyString = errorChunks.map(chunk => decoder.decode(chunk)).join('');
+    let errorBodyString = errorChunks.map((chunk) => decoder.decode(chunk)).join('');
     return errorBodyString;
 }
 
@@ -57,7 +57,7 @@ export const TIMEZONE = 'Europe/London';
 export const convertVariablesToContent = (variables: Variable[], promptID: string): string => {
     let content = '';
 
-    if(variables.length === 0) {
+    if (variables.length === 0) {
         return content;
     }
 
@@ -70,4 +70,4 @@ export const convertVariablesToContent = (variables: Variable[], promptID: strin
             break;
     }
     return content;
-}
+};

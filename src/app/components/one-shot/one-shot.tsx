@@ -23,15 +23,13 @@ const OneShot = ({ variables, promptType, model, updateHistory, apiEndpoint }: O
 
     // If there is an error, display error message
     if (error) {
-        return (
-            <ErrorComponent error={error} reset={() => window.location.reload()}/>
-        );
+        return <ErrorComponent error={error} reset={() => window.location.reload()} />;
     }
 
     return (
         <div className="govuk-grid-row">
             <div className="govuk-grid-column-full">
-                {(isLoading) && (
+                {isLoading && (
                     // Render spinner if loading or validating
                     <Spinner
                         fill="#b1b4b6"

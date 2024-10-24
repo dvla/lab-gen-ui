@@ -20,7 +20,7 @@ const extractGherkin = (inputText: string) => {
         }
     }
     return '';
-}
+};
 
 /**
  * Parses the input text using Gherkin parser.
@@ -40,7 +40,7 @@ const getParser = (inputText: string) => {
         console.log('PARSER ERROR');
         throw error;
     }
-}
+};
 
 export const POST = async (req: Request, res: NextResponse) => {
     try {
@@ -49,9 +49,15 @@ export const POST = async (req: Request, res: NextResponse) => {
 
         const validation = fullValidation(gherkinDocument);
         if (validation.valid) {
-            return NextResponse.json({ message: 'Gherkin data is valid', validation: validation, content: jsonBody }, { status: 200 });
+            return NextResponse.json(
+                { message: 'Gherkin data is valid', validation: validation, content: jsonBody },
+                { status: 200 }
+            );
         } else {
-            return NextResponse.json({ message: 'Gherkin data is invalid', validation: validation, content: jsonBody }, { status: 200 });
+            return NextResponse.json(
+                { message: 'Gherkin data is invalid', validation: validation, content: jsonBody },
+                { status: 200 }
+            );
         }
     } catch (error) {
         return NextResponse.json({ error: 'Error Processing Gherkin' }, { status: 500 });

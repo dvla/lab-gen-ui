@@ -38,7 +38,7 @@ const Login = () => {
             </div>
         </>
     );
-}
+};
 
 const formStyle = { display: 'flex', alignItems: 'center' };
 const containerStyle = { display: 'flex', justifyContent: 'flex-end', alignItems: 'center' };

@@ -37,7 +37,10 @@ export const GET = async (request: Request) => {
             } else {
                 // Handle non-successful response
                 console.error('Error fetching message history:', response.status, response.statusText);
-                return NextResponse.json({ error: 'Failed to fetch conversation history' }, { status: response.status });
+                return NextResponse.json(
+                    { error: 'Failed to fetch conversation history' },
+                    { status: response.status }
+                );
             }
         } catch (error) {
             console.error('Error fetching conversation history:', error);

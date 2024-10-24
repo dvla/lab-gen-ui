@@ -15,7 +15,8 @@ describe('convertVariablesToContent', () => {
 
         const result = convertVariablesToContent(variables, promptID);
 
-        expect(result).toEqual(`I will play the role of the DVLA. I want you to play the role of Doctor. Your name is John Doe. 
+        expect(result)
+            .toEqual(`I will play the role of the DVLA. I want you to play the role of Doctor. Your name is John Doe. 
                         Your address is 123 Main St. Your registration number is ABC123. 
                         Situation: Patient is unwell. Desired Outcome: Diagnose the patient. 
                         Limit your answers to one sentence. Respond with "Yes I am ready" and I will start the conversation.`);

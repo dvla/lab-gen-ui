@@ -59,7 +59,9 @@ const TokenCounter = ({ text, modelFamily }: TokenCounterProps) => {
                 setTokenizer(MISTRAL_TOKENIZER);
                 break;
             case ModelFamily.GPT:
-                let selectedTokenizer = modelInfo.description.toLowerCase().includes('4o') ? GPT4O_TOKENIZER : GPT4_TOKENIZER;
+                let selectedTokenizer = modelInfo.description.toLowerCase().includes('4o')
+                    ? GPT4O_TOKENIZER
+                    : GPT4_TOKENIZER;
                 setTokenizer(selectedTokenizer);
                 break;
             default:

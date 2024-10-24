@@ -50,6 +50,9 @@ stages:
               npm ci
             displayName: 'npm install'
           - script: |
+              npm run lint
+            displayName: 'Run ESLint'
+          - script: |
               npm test
             displayName: 'npm test'
           - script: |
@@ -81,7 +84,6 @@ stages:
                   targetPath: '$(Pipeline.Workspace)/bin'
               - task: AzureRmWebAppDeployment@4
                 displayName: Deploy the Web App
-                # condition: or(eq(variables['Build.Reason'], 'Manual'),eq(variables['Build.SourceBranch'], 'refs/heads/main'))
                 inputs:
                   ConnectionType: 'AzureRM'
                   appType: 'webAppLinux'
@@ -91,6 +93,7 @@ stages:
                   WebAppName: $(webAppName)
                   ResourceGroupName: $(resourceGroupName)
                   Package: '$(Pipeline.Workspace)/bin/$(zipFile)'
+
   - stage: ProdDeploy
     displayName: Deploy to production
     dependsOn: Deploy
