@@ -18,13 +18,6 @@ const TextToDiagram = () => {
     const [showSettings, setShowSettings] = useState(true);
     const { modelInfo } = useContext(modelContext);
 
-    // Sets the diagram type back to sequence if an advanced diagram is selected with a general model
-    useEffect(() => {
-        if (modelInfo.variant != 'ADVANCED' && diagramType.startsWith('*')) {
-            setDiagramType('sequence');
-        }
-    }, [modelInfo.variant, diagramType]);
-
     /**
      * Handles the change event of the select element.
      *
@@ -80,7 +73,7 @@ const TextToDiagram = () => {
                                         Select a diagram type
                                     </label>
                                     <div className="govuk-hint" id="diagram-type-hint">
-                                        * work with advanced models
+
                                     </div>
                                     <select
                                         className="govuk-select"
@@ -98,24 +91,11 @@ const TextToDiagram = () => {
                                         <option value="gantt">Gantt</option>
                                         <option value="pie chart">Pie Chart</option>
                                         <option value="requirement">Requirement</option>
-                                        <option value="*user journey" disabled={modelInfo.variant !== 'ADVANCED'}>
-                                            * User Journey
-                                        </option>
-                                        <option
-                                            value="*c4 - system context"
-                                            disabled={modelInfo.variant !== 'ADVANCED'}
-                                        >
-                                            * C4 - System Context
-                                        </option>
-                                        <option value="*c4 - container" disabled={modelInfo.variant !== 'ADVANCED'}>
-                                            * C4 - Container
-                                        </option>
-                                        <option value="*c4 - deployment" disabled={modelInfo.variant !== 'ADVANCED'}>
-                                            * C4 - Deployment
-                                        </option>
-                                        <option value="*c4 - dynamic" disabled={modelInfo.variant !== 'ADVANCED'}>
-                                            * C4 - Dynamic
-                                        </option>
+                                        <option value="user journey">User Journey</option>
+                                        <option value="c4 - system context">C4 - System Context</option>
+                                        <option value="c4 - container">C4 - Container</option>
+                                        <option value="c4 - deployment">C4 - Deployment</option>
+                                        <option value="c4 - dynamic">C4 - Dynamic</option>
                                     </select>
                                 </div>
                             </fieldset>
