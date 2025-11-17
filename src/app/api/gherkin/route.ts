@@ -42,7 +42,7 @@ const getParser = (inputText: string) => {
     }
 };
 
-export const POST = async (req: Request, res: NextResponse) => {
+export const POST = async (req: Request) => {
     try {
         const jsonBody = await req.json();
         const gherkinDocument = getParser(extractGherkin(jsonBody));

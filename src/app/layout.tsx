@@ -14,8 +14,8 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
     return (
         <html lang="en">
-            <body className={'govuk-template__body' + inter.className}>
-                <Script id="govuk-frontend-body">
+            <body className={'govuk-template__body ' + inter.className}>
+                <Script id="govuk-frontend-body" strategy="beforeInteractive">
                     {
                         "document.body.className += ' js-enabled' + ('noModule' in HTMLScriptElement.prototype ? ' govuk-frontend-supported' : '');"
                     }

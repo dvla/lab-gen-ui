@@ -2,8 +2,7 @@
 const nextConfig = {
     output: 'standalone',
     // Override the default webpack configuration
-    webpack: (config) => {
-        // See https://webpack.js.org/configuration/resolve/#resolvealias
+    turbopack: (config) => {
         config.resolve.alias = {
             ...config.resolve.alias,
             "sharp$": false,

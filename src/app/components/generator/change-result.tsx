@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from 'react';
-import ReactMarkdown from 'react-markdown';
+import Markdown from 'react-markdown';
 import jiraStyles from '../../styles/Jira.module.scss';
 import changeResultStyles from '../../styles/ChangeResult.module.scss';
 import { Spinner } from 'govuk-react';
@@ -132,9 +132,11 @@ const ChangeResult = ({
                 return <GherkinValidate content={result} />;
             default:
                 return (
-                    <ReactMarkdown className={jiraStyles.historyResponse} rehypePlugins={[rehypeHighlight]}>
-                        {result}
-                    </ReactMarkdown>
+                    <div className={jiraStyles.historyResponse}>
+                        <Markdown rehypePlugins={[rehypeHighlight]}>
+                            {result}
+                        </Markdown>
+                    </div>
                 );
         }
     };

@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import sharp from 'sharp';
 
-export const POST = async (req: Request, res: NextResponse) => {
+export const POST = async (req: Request) => {
     try {
         const formData = await req.formData();
         const imageFile = formData.get('file');

@@ -1,4 +1,4 @@
-import ReactMarkdown from 'react-markdown';
+import Markdown from 'react-markdown';
 import chatPageStyles from '../../styles/ChatPage.module.scss';
 import jiraStyles from '../../styles/Jira.module.scss';
 import generatorStyles from '../../styles/Generator.module.scss';
@@ -93,9 +93,9 @@ const GeneratorHistory = ({ history, promptType }: GeneratorHistoryProps) => {
                                         {promptType && promptType === 'call_summary' ? (
                                             <CallSummary callData={item.data} />
                                         ) : (
-                                            <ReactMarkdown className={jiraStyles.historyResponse}>
-                                                {item.data}
-                                            </ReactMarkdown>
+                                            <div className={jiraStyles.historyResponse}>
+                                                <Markdown>{item.data}</Markdown>
+                                            </div>
                                         )}
                                         <div className={jiraStyles.continueTags}>
                                             <div className={jiraStyles.tagLoading}>

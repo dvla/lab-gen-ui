@@ -40,7 +40,7 @@ stages:
         steps:
           - task: UseNode@1
             inputs:
-              version: '18.x'
+              version: '22.21.0'
             displayName: 'Install Node.js'
           - script: |
               echo "Slot is $(slot), tag is $(tag) and isMain is $(isMain)"

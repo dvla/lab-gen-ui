@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { Spinner } from 'govuk-react';
 import { Tabs } from 'govuk-frontend';
 import { Variable } from '../components/generator/generator';
-import ReactMarkdown from 'react-markdown';
+import Markdown from 'react-markdown';
 import jiraStyles from '../styles/Jira.module.scss';
 import generatorStyles from '../styles/Generator.module.scss';
 
@@ -23,17 +23,24 @@ const FileUpload = ({ reset, model, file, variables }: FileUploadProps) => {
     const [fileBase64, setFileBase64] = useState<string>('');
     const [errorState, setErrorState] = useState<Error | null>(null);
 
+    // useEffect hook to initialize tabs
     useEffect(() => {
         if (typeof window !== 'undefined') {
-            let config: any;
-            config = typeof config !== 'undefined' ? config : {};
-            var $scope = config.scope instanceof HTMLElement ? config.scope : document;
-            let $tabs: HTMLElement[] = $scope.querySelectorAll('[data-module="govuk-tabs"]');
-            for (let tab of $tabs) {
-                new Tabs(tab).init();
+            try {
+                const $tabs = document.querySelectorAll('[data-module="govuk-tabs"]');
+
+                $tabs.forEach((tabElement) => {
+                    // Only initialize if not already initialized
+                    if (!tabElement.classList.contains('govuk-tabs--initialized')) {
+                        new Tabs(tabElement as HTMLElement);
+                        tabElement.classList.add('govuk-tabs--initialized');
+                    }
+                });
+            } catch (error) {
+                console.error('Error initializing GOV.UK tabs:', error);
             }
         }
-    }, []);
+    }, []); // Only initialize once on mount
 
     useEffect(() => {
         const formData = new FormData();
@@ -119,7 +126,9 @@ const FileUpload = ({ reset, model, file, variables }: FileUploadProps) => {
                                     width="56px"
                                 />
                             ) : (
-                                <ReactMarkdown className={jiraStyles.historyResponse}>{data}</ReactMarkdown>
+                                <div className={jiraStyles.historyResponse}>
+                                    <Markdown>{data}</Markdown>
+                                </div>
                             )}
                         </div>
                     </div>

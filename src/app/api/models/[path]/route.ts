@@ -1,16 +1,28 @@
-import { StreamingTextResponse } from 'ai';
 import { auth } from '@/app/lib/auth';
-import type { NextApiResponse } from 'next';
+import { createUIMessageStream, createUIMessageStreamResponse } from 'ai';
+import { UIMessage } from 'ai';
 
 const appHost = process.env['AZURE_APP_HOST'];
 const appKey = process.env['AZURE_APP_API_KEY'] || 'no-api-key';
 
-export const POST = async (req: Request, { params }: { params: { path: string } }, res: NextApiResponse) => {
+/**
+ * Defines a UIMessage type that includes text data parts.
+ */
+export type TextUIMessage = UIMessage<
+  never, // metadata type
+  {
+    text: {
+        message: string;
+    }
+  } // data parts type
+>;
+
+export const POST = async (req: Request, { params }: { params: Promise<{ path: string }> }) => {
     const session = await auth();
     if (session?.user) {
         const userEmail = session.user.email?.split('@')[0] as string;
         try {
-            const path = params.path || 'chat';
+            const { path } = await params;
             const requestBody = await req.json();
             const response = await fetch(appHost + path, {
                 method: 'POST',
@@ -31,7 +43,31 @@ export const POST = async (req: Request, { params }: { params: { path: string } 
                 } else {
                     // If not JSON, stream the response
                     if (response.body) {
-                        return new StreamingTextResponse(response.body);
+                        const stream = createUIMessageStream<TextUIMessage>({
+                            execute: async ({ writer }) => {
+                                const reader = response.body!.getReader();
+                                const decoder = new TextDecoder();
+
+                                try {
+                                    while (true) {
+                                        const { done, value } = await reader.read();
+                                        if (done) break;
+
+                                        const chunk = decoder.decode(value, { stream: true });
+                                        
+                                        // Write text chunks to the stream
+                                        writer.write({
+                                            type: 'data-text',
+                                            data: { message: chunk },
+                                        });
+                                    }
+                                } catch (error) {
+                                    console.error('Error reading stream:', error);
+                                    throw error;
+                                }
+                            },
+                        });
+                        return createUIMessageStreamResponse({ stream });
                     } else {
                         return new Response();
                     }

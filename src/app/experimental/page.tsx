@@ -17,14 +17,6 @@ const Legacy = () => {
                             Streamline your diagram creation and editing process with our intuitive AI Diagram Generator
                         </p>
                     </li>
-                    <li>
-                        <NextLink className={styles.homeLinks} href="/jira-tickets">
-                            User Story Generator
-                        </NextLink>
-                        <p className={styles.homeDescription}>
-                            Enhance your Jira ticket creation and refinement with our sophisticated User Story Generator
-                        </p>
-                    </li>
                 </ul>
             </section>
         </FixedPage>

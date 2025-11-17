@@ -1,9 +1,11 @@
 'use client';
-import { Message, useChat } from 'ai/react';
+import { useChat } from '@ai-sdk/react';
 import styles from '../styles/Chat.module.scss';
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { ErrorSummary } from 'govuk-react';
 import ChatHistory from './chat-history/chat-history';
+import { DefaultChatTransport } from 'ai';
+import { TextUIMessage } from '../api/models/[path]/route';
 
 const DEFAULT_ROWS = 2;
 const DEFAULT_INITIAL_MESSAGES_LENGTH = 3;
@@ -32,18 +34,18 @@ interface ChatProps {
      * A callback function that is called when a message is sent in the chat.
      * @param message The message sent in the chat.
      */
-    onMessage?: (message: string) => void;
+    onMessage?: (message: TextUIMessage) => void;
 
     /**
      * A callback function that is called when a message is needed after an undo action from the chat history.
      * @param message The message sent in the chat.
      */
-    onUndo?: (message: string) => void;
+    onUndo?: (message: TextUIMessage) => void;
 
     /**
      * The initial messages to display in the chat.
      */
-    initialMessages?: Message[];
+    initialMessages?: TextUIMessage[];
 
     /**
      * The body of the chat.
@@ -74,7 +76,7 @@ interface ChatProps {
     /**
      * The edited latest message
      */
-    editedLatestMessage?: string;
+    editedLatestMessage?: TextUIMessage;
 
     /**
      * Reset the chat to the initial prompt
@@ -111,19 +113,22 @@ const Chat = ({
     editedLatestMessage,
     resetChat,
 }: ChatProps) => {
-    const { messages, input, error, handleInputChange, handleSubmit, isLoading } = useChat({
-        onFinish: (message: Message) => {
+    const [input, setInput] = useState('');
+    const { messages, error, status, sendMessage } = useChat<TextUIMessage>({
+        onFinish: ({ message }) => {
             if (onMessage) {
-                onMessage(message.content);
+                onMessage(message);
             }
 
             if (messageLoading) {
-                messageLoading(isLoading);
+                messageLoading(status === 'streaming');
             }
         },
-        api: 'api/models/chat',
-        initialMessages,
-        body,
+        transport: new DefaultChatTransport({
+            api: 'api/models/chat',
+            body
+        }),
+        messages: initialMessages,
     });
 
     const chatHistoryBottom = useRef<HTMLDivElement>(null);
@@ -132,9 +137,9 @@ const Chat = ({
         // Scroll to the bottom of the chat history
         chatHistoryBottom.current?.scrollIntoView();
         if (messageLoading) {
-            messageLoading(isLoading);
+            messageLoading(status === 'streaming');
         }
-    }, [messages, isLoading, messageLoading]);
+    }, [messages, status, messageLoading]);
 
     useEffect(() => {
         if (undoMessageRequested) {
@@ -142,7 +147,8 @@ const Chat = ({
             if (messages.length > DEFAULT_INITIAL_MESSAGES_LENGTH) {
                 messages.pop();
                 messages.pop();
-                onUndo?.(messages[messages.length - 1].content);
+                const prevMessage = messages[messages.length - 1];
+                onUndo?.(prevMessage);
             }
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -151,7 +157,7 @@ const Chat = ({
     // Set the latest message to the new edited message
     useEffect(() => {
         if (editedLatestMessage) {
-            messages[messages.length - 1].content = editedLatestMessage;
+            messages[messages.length - 1] = editedLatestMessage;
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [editedLatestMessage]);
@@ -168,6 +174,16 @@ const Chat = ({
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [resetChat, initialMessages]);
+
+    /**
+     * Handle form submission
+     * @param e Form event
+     */
+    const handleSubmit = (e: React.FormEvent) => {
+        e.preventDefault();
+        if (input.trim() !== '') sendMessage({text: input});
+        setInput('');
+    }
 
     return (
         <>
@@ -190,7 +206,7 @@ const Chat = ({
                     <div className={styles.chatFormFieldInline}>
                         <textarea
                             value={input}
-                            onChange={handleInputChange}
+                            onChange={(e) => setInput(e.target.value)}
                             className={'govuk-textarea ' + styles.textArea}
                             id="chat-input"
                             name="chatInput"

@@ -1,7 +1,7 @@
 import { useContext, useEffect, useState } from 'react';
 import tokenStyles from '../../styles/TokenCounter.module.scss';
 import { ModelFamily, modelContext } from '@/app/config/model-context-config';
-import { env, AutoTokenizer } from '@xenova/transformers';
+import { env, AutoTokenizer } from '@huggingface/transformers';
 
 env.allowLocalModels = false;
 

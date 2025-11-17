@@ -1,18 +1,24 @@
 'use client';
 import FixedPage from '@/app/components/fixed-page';
 import { Spinner } from 'govuk-react';
-import { useContext, useEffect, useState } from 'react';
+import { use, useContext, useEffect, useState } from 'react';
 import { Variable } from '@/app/components/generator/generator';
 import GeneratorTabs from '@/app/components/generator/generator-tabs';
 import { modelContext } from '@/app/config/model-context-config';
 
+interface ContinueChatParams {
+    conversationID: string;
+}
+
 /**
  * Generate the ContinueChat component.
  *
- * @param {any} params - object containing parameters
+ * @param {ContinueChatParams} params - object containing parameters
  * @return {JSX.Element} the ContinueChat component
  */
-const ContinueChat = ({ params }: any) => {
+const ContinueChat = ({ params }: { params: Promise<ContinueChatParams> }) => {
+    const { conversationID } = use(params);
+    console.log('Conversation ID:', conversationID);
     const promptType = 'text';
     const variables: Variable[] = [];
     const { modelInfo } = useContext(modelContext);
@@ -44,7 +50,7 @@ const ContinueChat = ({ params }: any) => {
                                 promptType={promptType}
                                 reset={reset}
                                 streamingEnabled={true}
-                                conversationId={params.conversationID}
+                                conversationId={conversationID}
                             />
                         )}
                     </div>

@@ -91,7 +91,7 @@ const Generator = ({
     streaming = true,
     displaySettings,
     apiEndpoint,
-}: GeneratorProps): JSX.Element => {
+}: GeneratorProps): React.JSX.Element => {
     // State variables
     const [start, setStart] = useState(true);
     const [shouldRender, setShouldRender] = useState(false);
@@ -101,7 +101,7 @@ const Generator = ({
     const [history, setHistory] = useState<ResponseHistory[]>([]);
     const [isStreaming, setIsStreaming] = useState(false);
     // Ref for previous history value
-    const prevHistory = useRef<string>();
+    const prevHistory = useRef<string>("");
     const router = useRouter();
     const pathname = usePathname();
 

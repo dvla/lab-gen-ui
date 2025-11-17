@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Spinner } from 'govuk-react';
 import { Tabs } from 'govuk-frontend';
-import ReactMarkdown from 'react-markdown';
+import Markdown from 'react-markdown';
 import jiraStyles from '../../styles/Jira.module.scss';
 import generatorStyles from '../../styles/Generator.module.scss';
 import { Model, useConversationHistory, useDeleteConversationHistoryEntries } from '@/app/lib/fetchers';
@@ -63,19 +63,28 @@ const GeneratorTabs = ({
     }
 
     const { data: history } = useConversationHistory((streamingFinished && conversationId) || '');
+
     // useEffect hook to initialize tabs
     useEffect(() => {
         if (typeof window !== 'undefined') {
-            let config: any;
-            config = typeof config !== 'undefined' ? config : {};
-            var $scope = config.scope instanceof HTMLElement ? config.scope : document;
-            let $tabs: HTMLElement[] = $scope.querySelectorAll('[data-module="govuk-tabs"]');
-            for (let tab of $tabs) {
-                new Tabs(tab).init();
+            try {
+                const $tabs = document.querySelectorAll('[data-module="govuk-tabs"]');
+
+                $tabs.forEach((tabElement) => {
+                    // Only initialize if not already initialized
+                    if (!tabElement.classList.contains('govuk-tabs--initialized')) {
+                        new Tabs(tabElement as HTMLElement);
+                        tabElement.classList.add('govuk-tabs--initialized');
+                    }
+                });
+            } catch (error) {
+                console.error('Error initializing GOV.UK tabs:', error);
             }
         }
+    }, []); // Only initialize once on mount
 
-        // Handle hash changes to check whether the history tab is open
+    // Handle hash changes to check whether the history tab is open
+    useEffect(() => {
         const handleHashChange = () => {
             setIsHistoryTabOpen(window.location.hash === '#history');
             // Reset the result to the latest message if the history tab is opened
@@ -161,7 +170,11 @@ const GeneratorTabs = ({
 
         // If streaming, return current streaming data in markdown
         if (!streamingFinished && data) {
-            return <ReactMarkdown className={jiraStyles.historyResponse}>{data}</ReactMarkdown>;
+            return (
+                <div className={jiraStyles.historyResponse}>
+                    <Markdown>{data}</Markdown>
+                </div>
+            );
         }
 
         // If streaming has finished display final result
@@ -182,7 +195,11 @@ const GeneratorTabs = ({
                         return <Mermaid chart={resultToBeRendered} onError={handleError} />;
                     }
                 default:
-                    return <ReactMarkdown className={jiraStyles.historyResponse}>{resultToBeRendered}</ReactMarkdown>;
+                    return (
+                        <div className={jiraStyles.historyResponse}>
+                            <Markdown>{resultToBeRendered}</Markdown>
+                        </div>
+                    );
             }
         }
     };

@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { auth } from '@/app/lib/auth';
-import { StreamingTextResponse } from 'ai';
 import { getBusinessUser, streamError } from '@/app/lib/utils';
 
 const appHost = process.env['AZURE_APP_HOST'];
@@ -10,11 +9,11 @@ interface Params {
     endpoint: string[];
 }
 
-const handler = async (req: NextRequest, httpMethod: string, { params }: { params: Params }) => {
+const handler = async (req: NextRequest, httpMethod: string, { params }: { params: Promise<Params> }) => {
     const session = await auth();
     if (session?.user) {
         try {
-            const { endpoint } = params;
+            const { endpoint } = await params;
             const body = await req.json();
             const response = await fetch(appHost + endpoint.join('/'), {
                 method: httpMethod,
@@ -49,11 +48,15 @@ const handler = async (req: NextRequest, httpMethod: string, { params }: { param
                 } else {
                     // If not JSON, stream the response
                     if (response.body) {
-                        const streamingResponse = new StreamingTextResponse(response.body);
+                        const headers: HeadersInit = {};
+                        
                         if (conversationId) {
-                            streamingResponse.headers.set('x-conversation-id', conversationId);
+                            headers['x-conversation-id'] = conversationId;
                         }
-                        return streamingResponse;
+                        return new Response(response.body, {
+                            status: response.status,
+                            headers: headers,
+                        });
                     } else {
                         return new Response();
                     }
@@ -75,5 +78,5 @@ const handler = async (req: NextRequest, httpMethod: string, { params }: { param
     return NextResponse.json({ message: 'Not authenticated' }, { status: 401 });
 };
 
-export const PUT = async (req: NextRequest, context: { params: Params }) => handler(req, 'PUT', context);
-export const POST = async (req: NextRequest, context: { params: Params }) => handler(req, 'POST', context);
+export const PUT = async (req: NextRequest, context: { params: Promise<Params> }) => handler(req, 'PUT', context);
+export const POST = async (req: NextRequest, context: { params: Promise<Params> }) => handler(req, 'POST', context);
