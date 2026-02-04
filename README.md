@@ -1,5 +1,8 @@
 # DVLA Emerging Tech Lab Generative AI
 
+> [!WARNING]
+> **This project is no longer maintained.**
+
 This project provides the frontend for the generative AI experiments which can be used in conjunction with the [lab-gen-api](https://github.com/dvla/lab-gen) backend.
 
 ## Getting Started
